@@ -16,5 +16,5 @@ public enum Permission {
     EDIT_OTHERS_PROFILE,           // Chỉnh sửa thông tin cá nhân của tài khoản khác
     MANAGE_BOOKS,                  // Quản lý sách (thêm, sửa, xoá, xử lý yêu cầu)
     SEND_NOTIFICATIONS,            // Gửi thông báo
-    MANAGE_SYSTEM                  // Quản lý hệ thống (sao lưu, phục hồi, thống kê)
+    MANAGE_SYSTEM;                 // Quản lý hệ thống (sao lưu, phục hồi, thống kê)
 }
