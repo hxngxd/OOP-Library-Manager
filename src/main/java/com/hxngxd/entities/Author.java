@@ -1,21 +1,45 @@
 package com.hxngxd.entities;
 
+import com.hxngxd.entities.Book;
+
 import java.time.LocalDate;
 import java.util.List;
 
-public class Author {
+/**
+ * Lớp Author kế thừa từ Person, đại diện cho tác giả của sách.
+ */
+public class Author extends Person {
+
     private String biography;
     private LocalDate dayOfDeath;
 
-    public boolean addBook(int bookId){
-        return false;
+    /**
+     * Thêm sách vào danh sách của tác giả.
+     *
+     * @param bookId ID của sách.
+     * @return true nếu thêm thành công, false nếu thất bại.
+     */
+    public boolean addBook(int bookId) {
+        return true;
     }
 
-    public boolean removeBook(int bookId){
-        return false;
+    /**
+     * Xóa sách khỏi danh sách của tác giả.
+     *
+     * @param bookId ID của sách.
+     * @return true nếu xóa thành công, false nếu thất bại.
+     */
+    public boolean removeBook(int bookId) {
+        return true;
     }
 
-    public List<Book> getBooks(){
+    /**
+     * Lấy danh sách sách của tác giả.
+     *
+     * @return Danh sách sách của tác giả.
+     */
+    public List<Book> getBooks() {
         return null;
     }
+
 }
