@@ -1,5 +1,9 @@
 package com.hxngxd.enums;
 
+/**
+ * Enum Permission đại diện cho các quyền hạn của các vai trò.
+ */
+
 public enum Permission {
     CREATE_ACCOUNT,                // Người mới có thể tạo tài khoản
     SEARCH_VIEW_SAVE_BOOK,         // Tìm kiếm, xem, lưu sách
