@@ -1,17 +1,15 @@
 package com.hxngxd.library_manager;
 
-import com.hxngxd.enums.Permission;
-import com.hxngxd.enums.Role;
-import com.hxngxd.utils.Logger;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import com.hxngxd.database.DBManager;
 
 public class Main {
 
     public static void main(String[] args){
-
+        if (DBManager.connect()){
+            System.out.println("OK ROI");
+        }
+        if (DBManager.disconnect()){
+            System.out.println("OK ROI");
+        }
     }
 }
