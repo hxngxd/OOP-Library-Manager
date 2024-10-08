@@ -35,7 +35,18 @@ public class UserService {
      * @param password Mật khẩu.
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
-    public boolean login(String username, String password) {
+    public boolean loginByUsername(String username, String password) {
+        return true;
+    }
+
+    /**
+     * Đăng nhập vào hệ thống.
+     *
+     * @param email    Địa chỉ email.
+     * @param password Mật khẩu.
+     * @return true nếu đăng nhập thành công, false nếu thất bại.
+     */
+    public boolean loginByEmail(String email, String password) {
         return true;
     }
 
@@ -246,6 +257,26 @@ public class UserService {
      * @return Thông tin người dùng.
      */
     public User getUserById(int id) {
-        return new User();
+        return null;
+    }
+
+    /**
+     * Lấy thông tin người dùng bằng tên đăng nhập.
+     *
+     * @param username Tên đăng nhập của người dùng.
+     * @return Thông tin người dùng.
+     */
+    public User getUserByUsername(String username) {
+        return null;
+    }
+
+    /**
+     * Lấy thông tin người dùng bằng địa chỉ email.
+     *
+     * @param email Địa chỉ email của người dùng.
+     * @return Thông tin người dùng.
+     */
+    public User getUserByEmail(String email) {
+        return null;
     }
 }
