@@ -36,43 +36,44 @@ public class Logger {
      * Các cột sẽ được căn chỉnh để dễ đọc hơn.
      *
      * @param level Mức độ của log (INFO, DEBUG, hoặc ERROR).
-     * @param className Tên của lớp gọi đến logger.
+     * @param clazz Lớp gọi đến phương thức log.
      * @param message Thông báo log cần ghi.
      */
-    private void log(String level, String className, String message) {
+    private void log(String level, Class<?> clazz, String message) {
         String timestamp = LocalTime.now().format(timeFormatter);
+        String className = clazz.getSimpleName(); // Lấy tên đơn giản của lớp gọi đến
         // Căn chỉnh thời gian, mức độ log và tên lớp
-        String logMessage = String.format("[%s] [%-5s] %-15s: %s", timestamp, level, className, message);
+        String logMessage = String.format("[%s] [%s] %-20s: %s", timestamp, level, className, message);
         System.out.println(logMessage);
     }
 
     /**
      * Ghi log một thông báo ở mức độ INFO.
      *
-     * @param className Tên của lớp gọi đến logger.
+     * @param clazz Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ INFO.
      */
-    public void info(String className, String message) {
-        log("INFO", className, message);
+    public void info(Class<?> clazz, String message) {
+        log("INFO", clazz, message);
     }
 
     /**
      * Ghi log một thông báo ở mức độ DEBUG.
      *
-     * @param className Tên của lớp gọi đến logger.
+     * @param clazz Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ DEBUG.
      */
-    public void debug(String className, String message) {
-        log("DEBUG", className, message);
+    public void debug(Class<?> clazz, String message) {
+        log("DEBUG", clazz, message);
     }
 
     /**
      * Ghi log một thông báo ở mức độ ERROR.
      *
-     * @param className Tên của lớp gọi đến logger.
+     * @param clazz Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ ERROR.
      */
-    public void error(String className, String message) {
-        log("ERROR", className, message);
+    public void error(Class<?> clazz, String message) {
+        log("ERROR", clazz, message);
     }
 }
