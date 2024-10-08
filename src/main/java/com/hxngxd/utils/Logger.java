@@ -15,7 +15,7 @@ public class Logger {
      * Phương thức khởi tạo private để ngăn tạo đối tượng từ bên ngoài (Singleton pattern).
      */
     private Logger() {
-        this.timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // Định dạng thời gian chỉ giờ, phút, giây
+        this.timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     }
 
     private static final class InstanceHolder {
@@ -35,14 +35,13 @@ public class Logger {
      * Ghi log một thông báo với mức độ log và thông báo cụ thể.
      * Các cột sẽ được căn chỉnh để dễ đọc hơn.
      *
-     * @param level Mức độ của log (INFO, DEBUG, hoặc ERROR).
-     * @param clazz Lớp gọi đến phương thức log.
+     * @param level   Mức độ của log (INFO, DEBUG, hoặc ERROR).
+     * @param clazz   Lớp gọi đến phương thức log.
      * @param message Thông báo log cần ghi.
      */
     private void log(String level, Class<?> clazz, String message) {
         String timestamp = LocalTime.now().format(timeFormatter);
-        String className = clazz.getSimpleName(); // Lấy tên đơn giản của lớp gọi đến
-        // Căn chỉnh thời gian, mức độ log và tên lớp
+        String className = clazz.getSimpleName();
         String logMessage = String.format("[%s] [%s] %-20s: %s", timestamp, level, className, message);
         System.out.println(logMessage);
     }
@@ -50,7 +49,7 @@ public class Logger {
     /**
      * Ghi log một thông báo ở mức độ INFO.
      *
-     * @param clazz Lớp gọi đến phương thức log.
+     * @param clazz   Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ INFO.
      */
     public void info(Class<?> clazz, String message) {
@@ -60,7 +59,7 @@ public class Logger {
     /**
      * Ghi log một thông báo ở mức độ DEBUG.
      *
-     * @param clazz Lớp gọi đến phương thức log.
+     * @param clazz   Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ DEBUG.
      */
     public void debug(Class<?> clazz, String message) {
@@ -70,7 +69,7 @@ public class Logger {
     /**
      * Ghi log một thông báo ở mức độ ERROR.
      *
-     * @param clazz Lớp gọi đến phương thức log.
+     * @param clazz   Lớp gọi đến phương thức log.
      * @param message Thông báo cần ghi ở mức độ ERROR.
      */
     public void error(Class<?> clazz, String message) {

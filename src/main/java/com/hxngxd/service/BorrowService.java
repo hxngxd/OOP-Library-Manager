@@ -52,7 +52,7 @@ public class BorrowService {
     /**
      * Yêu cầu gia hạn thêm số ngày mượn sách.
      *
-     * @param borrowing Thông tin mượn sách.
+     * @param borrowing      Thông tin mượn sách.
      * @param additionalDays Số ngày muốn gia hạn.
      * @return true nếu gia hạn thành công, false nếu thất bại.
      */

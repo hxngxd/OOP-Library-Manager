@@ -11,7 +11,7 @@ public class Book {
     private String title;
     private short yearOfPublication;
     private String shortDescription;
-//    private Img coverImage;
+    //    private Img coverImage;
     private int numberOfPages;
     private LocalDateTime dateAdded;
     private LocalDateTime lastUpdated;

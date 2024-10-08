@@ -17,7 +17,7 @@ public class Review {
     /**
      * Chỉnh sửa đánh giá.
      *
-     * @param newRating Điểm số mới.
+     * @param newRating  Điểm số mới.
      * @param newComment Bình luận mới.
      * @return true nếu chỉnh sửa thành công, false nếu thất bại.
      */

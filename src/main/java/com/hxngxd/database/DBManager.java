@@ -42,7 +42,7 @@ public class DBManager {
         return false;
     }
 
-    public static Connection getConnection(){
+    public static Connection getConnection() {
         return connection;
     }
 }
