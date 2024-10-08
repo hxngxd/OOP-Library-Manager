@@ -1,10 +1,14 @@
 package com.hxngxd.service;
 
+import com.hxngxd.database.DBManager;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 /**
@@ -13,10 +17,10 @@ import java.time.LocalDate;
 public class UserService {
 
     // Thuộc tính
-    private User currentUser;
-    private boolean isLoggedIn;
-    private String passwordHash;
-    private boolean twoFactorEnabled;
+    private static User currentUser;
+    private static boolean isLoggedIn;
+    private static String passwordHash;
+    private static boolean twoFactorEnabled;
 
     /**
      * Đăng ký tài khoản mới.
@@ -24,7 +28,7 @@ public class UserService {
      * @param newUser Thông tin người dùng mới.
      * @return true nếu đăng ký thành công, false nếu thất bại.
      */
-    public boolean register(User newUser) {
+    public static boolean register(User newUser) {
         return true;
     }
 
@@ -35,7 +39,7 @@ public class UserService {
      * @param password Mật khẩu.
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
-    public boolean loginByUsername(String username, String password) {
+    public static boolean loginByUsername(String username, String password) {
         return true;
     }
 
@@ -46,7 +50,7 @@ public class UserService {
      * @param password Mật khẩu.
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
-    public boolean loginByEmail(String email, String password) {
+    public static boolean loginByEmail(String email, String password) {
         return true;
     }
 
@@ -55,7 +59,7 @@ public class UserService {
      *
      * @return true nếu đăng xuất thành công.
      */
-    public boolean logout() {
+    public static boolean logout() {
         return true;
     }
 
@@ -64,7 +68,7 @@ public class UserService {
      *
      * @return true nếu thao tác thành công.
      */
-    public boolean toggleTwoFactorAuthentication() {
+    public static boolean toggleTwoFactorAuthentication() {
         return true;
     }
 
@@ -75,7 +79,7 @@ public class UserService {
      * @param newFirstName Tên mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeFirstName(int personId, String newFirstName) {
+    public static boolean changeFirstName(int personId, String newFirstName) {
         return true;
     }
 
@@ -86,7 +90,7 @@ public class UserService {
      * @param newLastName Họ mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeLastName(int personId, String newLastName) {
+    public static boolean changeLastName(int personId, String newLastName) {
         return true;
     }
 
@@ -97,7 +101,7 @@ public class UserService {
      * @param newDate  Ngày sinh mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeDateOfBirth(int personId, LocalDate newDate) {
+    public static boolean changeDateOfBirth(int personId, LocalDate newDate) {
         return true;
     }
 
@@ -108,7 +112,7 @@ public class UserService {
      * @param photoURL URL ảnh đại diện mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changePhoto(int personId, String photoURL) {
+    public static boolean changePhoto(int personId, String photoURL) {
         return true;
     }
 
@@ -119,7 +123,7 @@ public class UserService {
      * @param newEmail Email mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeEmail(int userId, String newEmail) {
+    public static boolean changeEmail(int userId, String newEmail) {
         return true;
     }
 
@@ -130,7 +134,7 @@ public class UserService {
      * @param newAddress Địa chỉ mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeAddress(int userId, String newAddress) {
+    public static boolean changeAddress(int userId, String newAddress) {
         return true;
     }
 
@@ -141,7 +145,7 @@ public class UserService {
      * @param role   Chức vụ mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeRole(int userId, Role role) {
+    public static boolean changeRole(int userId, Role role) {
         return true;
     }
 
@@ -152,7 +156,7 @@ public class UserService {
      * @param status Trạng thái tài khoản mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changeAccountStatus(int userId, AccountStatus status) {
+    public static boolean changeAccountStatus(int userId, AccountStatus status) {
         return true;
     }
 
@@ -162,7 +166,7 @@ public class UserService {
      * @param userId ID của người dùng vi phạm.
      * @return true nếu xử lý thành công.
      */
-    public boolean violate(int userId) {
+    public static boolean violate(int userId) {
         return true;
     }
 
@@ -173,7 +177,7 @@ public class UserService {
      * @param newPassword Mật khẩu mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changePassword(String oldPassword, String newPassword) {
+    public static boolean changePassword(String oldPassword, String newPassword) {
         return true;
     }
 
@@ -184,7 +188,7 @@ public class UserService {
      * @param newPassword Mật khẩu mới.
      * @return true nếu thay đổi thành công.
      */
-    public boolean changePassword(int userId, String newPassword) {
+    public static boolean changePassword(int userId, String newPassword) {
         return true;
     }
 
@@ -194,7 +198,7 @@ public class UserService {
      * @param email Địa chỉ email cần khôi phục.
      * @return true nếu yêu cầu thành công.
      */
-    public boolean resetPasswordRequest(String email) {
+    public static boolean resetPasswordRequest(String email) {
         return true;
     }
 
@@ -204,7 +208,7 @@ public class UserService {
      * @param email Địa chỉ email.
      * @return true nếu yêu cầu thành công.
      */
-    public boolean emailOTPRequest(String email) {
+    public static boolean emailOTPRequest(String email) {
         return true;
     }
 
@@ -215,7 +219,7 @@ public class UserService {
      * @param OTP   Mã xác minh.
      * @return true nếu xác minh thành công.
      */
-    public boolean verifyEmail(String email, String OTP) {
+    public static boolean verifyEmail(String email, String OTP) {
         return true;
     }
 
@@ -226,7 +230,7 @@ public class UserService {
      * @param OTP      Mã xác minh.
      * @return true nếu xoá thành công.
      */
-    public boolean deleteAccount(String password, String OTP) {
+    public static boolean deleteAccount(String password, String OTP) {
         return true;
     }
 
@@ -236,7 +240,7 @@ public class UserService {
      * @param userId ID của tài khoản cần xoá.
      * @return true nếu xoá thành công.
      */
-    public boolean deleteAccount(int userId) {
+    public static boolean deleteAccount(int userId) {
         return true;
     }
 
@@ -246,7 +250,7 @@ public class UserService {
      * @param permission Quyền hạn cần kiểm tra.
      * @return true nếu người dùng có quyền, false nếu không.
      */
-    public boolean hasPermission(Permission permission) {
+    public static boolean hasPermission(Permission permission) {
         return true;
     }
 
@@ -256,8 +260,8 @@ public class UserService {
      * @param id ID của người dùng.
      * @return Thông tin người dùng.
      */
-    public User getUserById(int id) {
-        return null;
+    public static User getUserById(int id) {
+        return getUserByField("id", String.valueOf(id));
     }
 
     /**
@@ -266,8 +270,8 @@ public class UserService {
      * @param username Tên đăng nhập của người dùng.
      * @return Thông tin người dùng.
      */
-    public User getUserByUsername(String username) {
-        return null;
+    public static User getUserByUsername(String username) {
+        return getUserByField("username", username);
     }
 
     /**
@@ -276,7 +280,40 @@ public class UserService {
      * @param email Địa chỉ email của người dùng.
      * @return Thông tin người dùng.
      */
-    public User getUserByEmail(String email) {
+    public static User getUserByEmail(String email) {
+        return getUserByField("email", email);
+    }
+
+    /**
+     * Lấy thông tin người dùng bằng một trường duy nhất.
+     *
+     * @param field Tên trường duy nhất để tìm kiếm.
+     * @param info  Giá trị của trường cần tìm.
+     * @return Thông tin người dùng nếu tìm thấy, null nếu không tìm thấy.
+     */
+    private static User getUserByField(String field, String info) {
+        String query = "select * from User where " + field + " = ?";
+        try (PreparedStatement pStatement = DBManager.getConnection().prepareStatement(query)) {
+            pStatement.setString(1, info);
+            try (ResultSet resultSet = pStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String firstName = resultSet.getString("first_name");
+                    String lastName = resultSet.getString("last_name");
+                    LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
+                    String username = resultSet.getString("username");
+                    String email = resultSet.getString("email");
+                    String address = resultSet.getString("address");
+                    Role role = Role.valueOf(resultSet.getString("role"));
+                    AccountStatus accountStatus = AccountStatus.valueOf(resultSet.getString("account_status"));
+                    int violationCount = resultSet.getInt("violation_count");
+
+                    return new User(id, firstName, lastName, dateOfBirth, username, email, address, role, accountStatus, violationCount); // Trả về đối tượng User
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

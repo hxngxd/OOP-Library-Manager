@@ -1,7 +1,5 @@
 package com.hxngxd.entities;
 
-import com.hxngxd.entities.Book;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,6 +10,10 @@ public class Author extends Person {
 
     private String biography;
     private LocalDate dayOfDeath;
+
+    public Author(int id, String firstName, String lastName, LocalDate dateOfBirth) {
+        super(id, firstName, lastName, dateOfBirth);
+    }
 
     /**
      * Thêm sách vào danh sách của tác giả.

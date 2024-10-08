@@ -1,17 +1,22 @@
 package com.hxngxd.database;
 
 import com.hxngxd.utils.Logger;
+import lombok.Getter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBManager {
+    @Getter
     private static Connection connection = null;
 
     private static final String database_url = "jdbc:mysql://localhost:3306/library_management";
     private static final String username = "root";
     private static final String password = "07112005";
+
+    private DBManager() {
+    }
 
     public static boolean connect() {
         try {
@@ -40,9 +45,5 @@ public class DBManager {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static Connection getConnection() {
-        return connection;
     }
 }
