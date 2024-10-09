@@ -53,7 +53,7 @@ public class UserService {
         if (isLoggedIn()) {
             return false;
         }
-        Logger.info(UserService.class, "Try logging into " + username + "...");
+        Logger.info(UserService.class, "Try logging in by username: " + username + "...");
         return login(getUserByUsername(username), password);
     }
 
@@ -68,7 +68,7 @@ public class UserService {
         if (isLoggedIn()) {
             return false;
         }
-        Logger.info(UserService.class, "Try logging into " + email + "...");
+        Logger.info(UserService.class, "Try logging in by email: " + email + "...");
         return login(getUserByEmail(email), password);
     }
 
@@ -80,16 +80,26 @@ public class UserService {
      * @return true nếu đăng nhập thành công, false nếu tài khoản không tồn tại hoặc mật khẩu sai.
      */
     private static boolean login(User user, String password) {
+        if (!DBManager.isConnected()) {
+            Logger.info(UserService.class, "Can not log in because the database is not connected.");
+            return false;
+        }
+
         if (user == null) {
-            Logger.info(UserService.class, "Account does not exist!");
+            Logger.info(UserService.class, "User does not exist.");
             return false;
         } else {
             if (PasswordEncoder.compare(password, passwordHash)) {
-                Logger.info(UserService.class, "Logged in!");
-                currentUser = user;
-                return true;
+                if (!twoFactorEnabled) {
+                    Logger.info(UserService.class, "Logged in.");
+                    currentUser = user;
+                    return true;
+                } else {
+                    Logger.info(UserService.class, "Two facter authenciation required.");
+                    return false;
+                }
             } else {
-                Logger.info(UserService.class, "Wrong password!");
+                Logger.info(UserService.class, "Wrong password.");
                 return false;
             }
         }
@@ -333,6 +343,10 @@ public class UserService {
      * @return Thông tin người dùng nếu tìm thấy, null nếu không tìm thấy.
      */
     private static User getUserByUniqueField(String field, String info) {
+        if (!DBManager.isConnected()) {
+            return null;
+        }
+
         String query = "select * from user where " + field + " = ?";
         try (PreparedStatement pStatement = DBManager.getConnection().prepareStatement(query)) {
             pStatement.setString(1, info);

@@ -20,14 +20,17 @@ public class DBManager {
 
     public static boolean connect() {
         try {
-            if (connection == null || connection.isClosed()) {
+            if (!isConnected()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(database_url, username, password);
-                Logger.info(DBManager.class, "Connected to database.");
+                Logger.info(DBManager.class, "Connected to the database.");
                 return true;
+            } else {
+                Logger.info(DBManager.class, "Already connected to the database.");
+                return false;
             }
         } catch (SQLException | ClassNotFoundException e) {
-            Logger.error(DBManager.class, "Failed to connect to database.");
+            Logger.error(DBManager.class, "Failed to connect to the database.");
             e.printStackTrace();
         }
         return false;
@@ -35,13 +38,25 @@ public class DBManager {
 
     public static boolean disconnect() {
         try {
-            if (connection != null && !connection.isClosed()) {
+            if (isConnected()) {
                 connection.close();
                 Logger.info(DBManager.class, "Database disconnected.");
                 return true;
+            } else {
+                Logger.info(DBManager.class, "The database is not connected.");
+                return false;
             }
         } catch (SQLException e) {
-            Logger.error(DBManager.class, "Failed to disconnect database.");
+            Logger.error(DBManager.class, "Failed to disconnect the database.");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean isConnected() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
