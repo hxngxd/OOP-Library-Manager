@@ -50,6 +50,9 @@ public class UserService {
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
     public static boolean loginByUsername(String username, String password) {
+        if (isLoggedIn()) {
+            return false;
+        }
         Logger.info(UserService.class, "Try logging into " + username + "...");
         return login(getUserByUsername(username), password);
     }
@@ -62,6 +65,9 @@ public class UserService {
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
     public static boolean loginByEmail(String email, String password) {
+        if (isLoggedIn()) {
+            return false;
+        }
         Logger.info(UserService.class, "Try logging into " + email + "...");
         return login(getUserByEmail(email), password);
     }
