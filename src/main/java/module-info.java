@@ -1,4 +1,4 @@
-module com.hxngxd.library_manager {
+module com.hxngxd.libraryManager {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
@@ -6,6 +6,7 @@ module com.hxngxd.library_manager {
     requires jbcrypt;
     requires static lombok;
 
-    opens com.hxngxd.library_manager to javafx.fxml;
-    exports com.hxngxd.library_manager;
+    opens com.hxngxd.libraryManager to javafx.fxml;
+    exports com.hxngxd.libraryManager;
+    opens com.hxngxd.controller to javafx.fxml;
 }
