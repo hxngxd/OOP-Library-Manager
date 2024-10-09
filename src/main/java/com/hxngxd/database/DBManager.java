@@ -11,7 +11,7 @@ public class DBManager {
     @Getter
     private static Connection connection = null;
 
-    private static final String database_url = "jdbc:mysql://localhost:3306/library_management";
+    private static final String database_url = "jdbc:mysql://localhost:3306/libraryManagement";
     private static final String username = "root";
     private static final String password = "07112005";
 

@@ -5,6 +5,8 @@ import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
+import com.hxngxd.utils.Logger;
+import com.hxngxd.utils.PasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,9 +20,17 @@ public class UserService {
 
     // Thuộc tính
     private static User currentUser;
-    private static boolean isLoggedIn;
     private static String passwordHash;
     private static boolean twoFactorEnabled;
+
+    /**
+     * Kiểm tra xem người dùng hiện tại đã đăng nhập hay chưa.
+     *
+     * @return true nếu người dùng hiện tại đã đăng nhập, false nếu không.
+     */
+    public static boolean isLoggedIn() {
+        return currentUser != null;
+    }
 
     /**
      * Đăng ký tài khoản mới.
@@ -40,7 +50,8 @@ public class UserService {
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
     public static boolean loginByUsername(String username, String password) {
-        return true;
+        Logger.info(UserService.class, "Try logging into " + username + "...");
+        return login(getUserByUsername(username), password);
     }
 
     /**
@@ -51,7 +62,31 @@ public class UserService {
      * @return true nếu đăng nhập thành công, false nếu thất bại.
      */
     public static boolean loginByEmail(String email, String password) {
-        return true;
+        Logger.info(UserService.class, "Try logging into " + email + "...");
+        return login(getUserByEmail(email), password);
+    }
+
+    /**
+     * Đăng nhập cho người dùng với mật khẩu được cung cấp.
+     *
+     * @param user     Đối tượng người dùng cần đăng nhập.
+     * @param password Mật khẩu của người dùng.
+     * @return true nếu đăng nhập thành công, false nếu tài khoản không tồn tại hoặc mật khẩu sai.
+     */
+    private static boolean login(User user, String password) {
+        if (user == null) {
+            Logger.info(UserService.class, "Account does not exist!");
+            return false;
+        } else {
+            if (PasswordEncoder.compare(password, passwordHash)) {
+                Logger.info(UserService.class, "Logged in!");
+                currentUser = user;
+                return true;
+            } else {
+                Logger.info(UserService.class, "Wrong password!");
+                return false;
+            }
+        }
     }
 
     /**
@@ -261,7 +296,7 @@ public class UserService {
      * @return Thông tin người dùng.
      */
     public static User getUserById(int id) {
-        return getUserByField("id", String.valueOf(id));
+        return getUserByUniqueField("id", String.valueOf(id));
     }
 
     /**
@@ -271,7 +306,7 @@ public class UserService {
      * @return Thông tin người dùng.
      */
     public static User getUserByUsername(String username) {
-        return getUserByField("username", username);
+        return getUserByUniqueField("username", username);
     }
 
     /**
@@ -281,34 +316,36 @@ public class UserService {
      * @return Thông tin người dùng.
      */
     public static User getUserByEmail(String email) {
-        return getUserByField("email", email);
+        return getUserByUniqueField("email", email);
     }
 
     /**
      * Lấy thông tin người dùng bằng một trường duy nhất.
      *
-     * @param field Tên trường duy nhất để tìm kiếm.
+     * @param field Trường duy nhất cần truy vấn.
      * @param info  Giá trị của trường cần tìm.
      * @return Thông tin người dùng nếu tìm thấy, null nếu không tìm thấy.
      */
-    private static User getUserByField(String field, String info) {
-        String query = "select * from User where " + field + " = ?";
+    private static User getUserByUniqueField(String field, String info) {
+        String query = "select * from user where " + field + " = ?";
         try (PreparedStatement pStatement = DBManager.getConnection().prepareStatement(query)) {
             pStatement.setString(1, info);
             try (ResultSet resultSet = pStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String firstName = resultSet.getString("first_name");
-                    String lastName = resultSet.getString("last_name");
-                    LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
-                    String username = resultSet.getString("username");
-                    String email = resultSet.getString("email");
-                    String address = resultSet.getString("address");
-                    Role role = Role.valueOf(resultSet.getString("role"));
-                    AccountStatus accountStatus = AccountStatus.valueOf(resultSet.getString("account_status"));
-                    int violationCount = resultSet.getInt("violation_count");
-
-                    return new User(id, firstName, lastName, dateOfBirth, username, email, address, role, accountStatus, violationCount); // Trả về đối tượng User
+                    passwordHash = resultSet.getString("passwordHash");
+                    twoFactorEnabled = resultSet.getBoolean("twoFactorEnabled");
+                    return new User(
+                            resultSet.getInt("id"),
+                            resultSet.getString("firstName"),
+                            resultSet.getString("lastName"),
+                            resultSet.getDate("dateOfBirth").toLocalDate(),
+                            resultSet.getString("username"),
+                            resultSet.getString("email"),
+                            resultSet.getString("address"),
+                            Role.valueOf(resultSet.getString("role")),
+                            AccountStatus.valueOf(resultSet.getString("accountStatus")),
+                            resultSet.getInt("violationCount")
+                    );
                 }
             }
         } catch (SQLException e) {
