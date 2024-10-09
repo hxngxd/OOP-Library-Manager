@@ -111,7 +111,19 @@ public class UserService {
      * @return true nếu đăng xuất thành công.
      */
     public static boolean logout() {
-        return true;
+        if (!DBManager.isConnected()) {
+            Logger.info(UserService.class, "Cannot log out because the database is not connected.");
+            return false; // Không thể đăng xuất nếu không có kết nối
+        }
+
+        if (currentUser == null) {
+            Logger.info(UserService.class, "No user is logged in.");
+            return false; // Không thể đăng xuất nếu không có người dùng đang đăng nhập
+        }
+
+        Logger.info(UserService.class,  " logged out.");
+        currentUser = null; // Đăng xuất người dùng
+        return true; // Đăng xuất thành công
     }
 
     /**
