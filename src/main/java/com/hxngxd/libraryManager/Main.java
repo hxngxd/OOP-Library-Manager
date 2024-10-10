@@ -18,12 +18,13 @@ public class Main extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+        boolean connect = DBManager.connect();
+        UserService.loginByUsername("23020078", "Hung@07112005");
+        UserService.logout();
+        boolean disconnect = DBManager.disconnect();
     }
 
     public static void main(String[] args) {
         launch();
-        boolean connect = DBManager.connect();
-        UserService.loginByUsername("23020078", "Hung@07112005");
-        boolean disconnect = DBManager.disconnect();
     }
 }

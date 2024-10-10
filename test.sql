@@ -151,5 +151,3 @@ insert into user(firstName, lastName, dateOfBirth, username, email, address, rol
 ('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'O QUY', 'ADMIN', '$2a$11$EQFy4/NKDPQ0y1DBql9UtuCQmDOEQO/iY8LjLEhTRQcKz4X.OST9u');
 
 select * from user;
-
-select id, passwordHash from user;
