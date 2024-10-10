@@ -3,6 +3,7 @@ package com.hxngxd.entities;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class User extends Person {
 
     private String username;

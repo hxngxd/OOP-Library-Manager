@@ -5,14 +5,12 @@ import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
+import com.hxngxd.utils.EmailValidator;
 import com.hxngxd.utils.Logger;
 import com.hxngxd.utils.PasswordEncoder;
 import com.mysql.cj.log.Log;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -36,12 +34,103 @@ public class UserService {
     }
 
     /**
-     * Đăng ký tài khoản mới.
+     * Phương thức đăng ký người dùng mới.
+     * <p>
+     * Phương thức này sẽ thực hiện đăng ký tài khoản mới cho người dùng nếu như
+     * các điều kiện được đáp ứng và không có lỗi xảy ra. Trước khi đăng ký,
+     * phương thức sẽ kiểm tra các điều kiện như: người dùng đã đăng nhập hay chưa,
+     * kết nối cơ sở dữ liệu có sẵn hay không, thông tin người dùng có hợp lệ không,
+     * tài khoản đã tồn tại chưa, mật khẩu có khớp hay không.
      *
-     * @param newUser Thông tin người dùng mới.
-     * @return true nếu đăng ký thành công, false nếu thất bại.
+     * @param firstName Tên người dùng.
+     * @param lastName Họ của người dùng.
+     * @param dateOfBirth Ngày sinh của người dùng.
+     * @param username Tên đăng nhập của người dùng.
+     * @param email Địa chỉ email của người dùng.
+     * @param address Địa chỉ nhà của người dùng.
+     * @param password Mật khẩu mà người dùng chọn.
+     * @param confirmedPassword Mật khẩu xác nhận lại.
+     * @return {@code true} nếu đăng ký thành công, ngược lại {@code false}.
+     * <p>
+     * Các điều kiện trả về {@code false}:
+     * - Người dùng hiện tại đã đăng nhập.
+     * - Kết nối cơ sở dữ liệu không khả dụng.
+     * - Một số thông tin như họ, tên, tên đăng nhập, email hoặc địa chỉ quá dài.
+     * - Địa chỉ email không hợp lệ.
+     * - Người dùng đã tồn tại trong hệ thống với tên đăng nhập hoặc email đã cho.
+     * - Mật khẩu và mật khẩu xác nhận không khớp.
+     * - Có lỗi trong quá trình tạo tài khoản trong cơ sở dữ liệu.
      */
-    public static boolean register(User newUser) {
+    public static boolean register(String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, String password, String confirmedPassword) {
+        if (isLoggedIn()) {
+            Logger.info(UserService.class, "Log out before log in.");
+            return false;
+        }
+
+        if (!DBManager.isConnected()) {
+            Logger.info(UserService.class, "Can not register because the database is not connected.");
+            return false;
+        }
+
+        if (firstName.length() > 127 || lastName.length() > 127 ||
+            username.length() > 127 || email.length() > 127 ||
+            address.length() > 255) {
+            Logger.info(UserService.class, "Some informations are too long.");
+            return false;
+        }
+
+        if (!EmailValidator.validate(email)){
+            Logger.info(UserService.class, "Email is not valid.");
+            return false;
+        }
+
+        String query = "select count(*) as countAccount from user where username = ? or email = ?";
+        try (ResultSet resultSet = DBManager.executeQuery(query, username, email)){
+            if (resultSet != null && resultSet.next()){
+                if (resultSet.getInt("countAccount") > 0){
+                    Logger.info(UserService.class, "User already exists.");
+                    return false;
+                }
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            Logger.error(UserService.class, "Something wrong while creating your account.");
+            return false;
+        }
+
+        if (!confirmedPassword.equals(password)){
+            Logger.info(UserService.class, "Reconfirm your password.");
+            return false;
+        }
+
+        passwordHash = PasswordEncoder.encode(confirmedPassword);
+
+        query = "insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash, accountStatus) value (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            int updates = DBManager.executeUpdate(query,
+                    firstName, lastName,
+                    Date.valueOf(dateOfBirth),
+                    username, email,
+                    address, Role.USER.name(),
+                    passwordHash, AccountStatus.ACTIVE.name());
+
+            if (updates < 1){
+                Logger.error(UserService.class, "Something wrong while creating your account.");
+                return false;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+
+        currentUser = new User(getNumberOfUsers(),
+                firstName, lastName,
+                dateOfBirth,
+                username, email,
+                address,
+                Role.USER, AccountStatus.ACTIVE, 0);
+        twoFactorEnabled = false;
+        Logger.info(UserService.class, "Account created.");
         return true;
     }
 
@@ -54,6 +143,7 @@ public class UserService {
      */
     public static boolean loginByUsername(String username, String password) {
         if (isLoggedIn()) {
+            Logger.info(UserService.class, "Log out before log in.");
             return false;
         }
         Logger.info(UserService.class, "Try logging in by username: " + username + "...");
@@ -69,6 +159,7 @@ public class UserService {
      */
     public static boolean loginByEmail(String email, String password) {
         if (isLoggedIn()) {
+            Logger.info(UserService.class, "Log out before log in.");
             return false;
         }
         Logger.info(UserService.class, "Try logging in by email: " + email + "...");
@@ -415,5 +506,22 @@ public class UserService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static int getNumberOfUsers(){
+        if (!DBManager.isConnected()) {
+            return -1;
+        }
+
+        String query = "select count(*) as total from user";
+        try (ResultSet resultSet = DBManager.executeQuery(query)){
+            if (resultSet != null && resultSet.next()){
+                return resultSet.getInt("total");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return -1;
     }
 }

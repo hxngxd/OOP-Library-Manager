@@ -1,14 +1,17 @@
 package com.hxngxd.libraryManager;
 
 import com.hxngxd.database.DBManager;
+import com.hxngxd.entities.User;
 import com.hxngxd.service.UserService;
 
+import com.hxngxd.utils.EmailValidator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class Main extends Application {
     @Override
@@ -19,6 +22,15 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         boolean connect = DBManager.connect();
+        UserService.register(
+                "Hxngxd",
+                "Nguyen",
+                LocalDate.of(2005, 11, 7),
+                "hngxd",
+                "hunguong05@gmail.com",
+                "quang ninh",
+                "07112005", "07112005"
+        );
         UserService.loginByUsername("23020078", "Hung@07112005");
     }
 
