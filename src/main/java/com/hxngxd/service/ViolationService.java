@@ -18,4 +18,5 @@ public class ViolationService {
     public List<Violation> getUsersViolations(int userId) {
         return null;
     }
+
 }

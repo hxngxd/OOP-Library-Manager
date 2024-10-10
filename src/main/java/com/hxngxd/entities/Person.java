@@ -1,19 +1,10 @@
 package com.hxngxd.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.LocalDate;
 
 /**
  * Lớp Person là lớp cha của User và Author, đại diện cho một cá nhân trong hệ thống.
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Person {
 
     protected int id;
@@ -21,4 +12,47 @@ public class Person {
     protected String lastName;
     protected LocalDate dateOfBirth;
 //    protected Img photo;
+
+    public Person() {
+    }
+
+    public Person(int id, String firstName, String lastName, LocalDate dateOfBirth) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
 }

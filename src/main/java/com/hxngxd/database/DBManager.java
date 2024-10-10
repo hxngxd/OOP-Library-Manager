@@ -1,7 +1,7 @@
 package com.hxngxd.database;
 
-import com.hxngxd.utils.Logger;
-import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
@@ -11,25 +11,12 @@ import java.sql.*;
  */
 public class DBManager {
 
-    /**
-     * Đối tượng Connection để lưu trữ kết nối đến cơ sở dữ liệu.
-     */
-    @Getter
+    public static final Logger logger = LogManager.getLogger(DBManager.class);
+
     private static Connection connection = null;
 
-    /**
-     * URL kết nối đến cơ sở dữ liệu MySQL.
-     */
     private static final String database_url = "jdbc:mysql://localhost:3306/libraryManagement";
-
-    /**
-     * Tên người dùng để kết nối cơ sở dữ liệu.
-     */
     private static final String username = "root";
-
-    /**
-     * Mật khẩu để kết nối cơ sở dữ liệu.
-     */
     private static final String password = "07112005";
 
     /**
@@ -37,6 +24,10 @@ public class DBManager {
      * Lớp này chỉ cung cấp các phương thức tĩnh để thao tác.
      */
     private DBManager() {
+    }
+
+    public static Connection getConnection() {
+        return connection;
     }
 
     /**
@@ -49,15 +40,14 @@ public class DBManager {
             if (!isConnected()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(database_url, username, password);
-                Logger.info(DBManager.class, "Connected to the database.");
+                logger.info("Successfully connected to the database");
                 return true;
             } else {
-                Logger.info(DBManager.class, "Already connected to the database.");
+                logger.info("The database is already connected");
                 return false;
             }
         } catch (SQLException | ClassNotFoundException e) {
-            Logger.error(DBManager.class, "Failed to connect to the database.");
-            e.printStackTrace();
+            logger.info("Failed to connect to the database", e);
         }
         return false;
     }
@@ -71,14 +61,14 @@ public class DBManager {
         try {
             if (isConnected()) {
                 connection.close();
-                Logger.info(DBManager.class, "Database disconnected.");
+                logger.info("Database disconnected");
                 return true;
             } else {
-                Logger.info(DBManager.class, "The database is not connected.");
+                logger.info("The database is not connected yet");
                 return false;
             }
         } catch (SQLException e) {
-            Logger.error(DBManager.class, "Failed to disconnect the database.");
+            logger.error("Failed to disconnect from the database", e);
             e.printStackTrace();
         }
         return false;
@@ -93,7 +83,7 @@ public class DBManager {
         try {
             return connection != null && !connection.isClosed();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong while checking the database connection", e);
         }
         return false;
     }
@@ -101,7 +91,7 @@ public class DBManager {
     /**
      * Thực thi một truy vấn SQL và trả về kết quả dưới dạng ResultSet.
      *
-     * @param query câu truy vấn SQL cần thực thi.
+     * @param query  câu truy vấn SQL cần thực thi.
      * @param params các tham số cần truyền vào câu truy vấn.
      * @return ResultSet chứa kết quả truy vấn hoặc null nếu không kết nối.
      * @throws SQLException nếu có lỗi xảy ra khi thực thi truy vấn.
@@ -118,7 +108,7 @@ public class DBManager {
     /**
      * Thực thi một truy vấn cập nhật (INSERT, UPDATE, DELETE) và trả về số hàng bị ảnh hưởng.
      *
-     * @param query câu truy vấn SQL cần thực thi.
+     * @param query  câu truy vấn SQL cần thực thi.
      * @param params các tham số cần truyền vào câu truy vấn.
      * @return số hàng bị ảnh hưởng bởi câu truy vấn.
      * @throws SQLException nếu có lỗi xảy ra khi thực thi truy vấn.
@@ -136,7 +126,7 @@ public class DBManager {
      * Đặt các tham số vào PreparedStatement cho câu truy vấn SQL.
      *
      * @param pStatement đối tượng PreparedStatement để truyền tham số.
-     * @param params các tham số cần truyền vào câu truy vấn.
+     * @param params     các tham số cần truyền vào câu truy vấn.
      * @throws SQLException nếu có lỗi xảy ra khi thiết lập tham số.
      */
     private static void setParameters(PreparedStatement pStatement, Object... params) throws SQLException {
@@ -144,4 +134,5 @@ public class DBManager {
             pStatement.setObject(i + 1, params[i]);
         }
     }
+
 }

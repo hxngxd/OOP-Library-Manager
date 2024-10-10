@@ -68,4 +68,5 @@ public class NotificationService {
     public List<Notification> getUnreadNotifications(int userId) {
         return null;
     }
+
 }

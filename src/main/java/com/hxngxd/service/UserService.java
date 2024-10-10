@@ -6,20 +6,24 @@ import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
 import com.hxngxd.utils.EmailValidator;
-import com.hxngxd.utils.Logger;
 import com.hxngxd.utils.PasswordEncoder;
-import com.mysql.cj.log.Log;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Lớp UserService cung cấp các chức năng quản lý người dùng bao gồm đăng ký, đăng nhập, chỉnh sửa thông tin và quản lý xác thực.
  */
 public class UserService {
 
-    // Thuộc tính
+    private static final Logger logger = LogManager.getLogger(UserService.class);
     private static User currentUser;
     private static String passwordHash;
     private static boolean twoFactorEnabled;
@@ -42,13 +46,13 @@ public class UserService {
      * kết nối cơ sở dữ liệu có sẵn hay không, thông tin người dùng có hợp lệ không,
      * tài khoản đã tồn tại chưa, mật khẩu có khớp hay không.
      *
-     * @param firstName Tên người dùng.
-     * @param lastName Họ của người dùng.
-     * @param dateOfBirth Ngày sinh của người dùng.
-     * @param username Tên đăng nhập của người dùng.
-     * @param email Địa chỉ email của người dùng.
-     * @param address Địa chỉ nhà của người dùng.
-     * @param password Mật khẩu mà người dùng chọn.
+     * @param firstName         Tên người dùng.
+     * @param lastName          Họ của người dùng.
+     * @param dateOfBirth       Ngày sinh của người dùng.
+     * @param username          Tên đăng nhập của người dùng.
+     * @param email             Địa chỉ email của người dùng.
+     * @param address           Địa chỉ nhà của người dùng.
+     * @param password          Mật khẩu mà người dùng chọn.
      * @param confirmedPassword Mật khẩu xác nhận lại.
      * @return {@code true} nếu đăng ký thành công, ngược lại {@code false}.
      * <p>
@@ -63,43 +67,42 @@ public class UserService {
      */
     public static boolean register(String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, String password, String confirmedPassword) {
         if (isLoggedIn()) {
-            Logger.info(UserService.class, "Log out before log in.");
+            logger.info("The current user has not logged out yet");
             return false;
         }
 
         if (!DBManager.isConnected()) {
-            Logger.info(UserService.class, "Can not register because the database is not connected.");
+            logger.info("Unable to register because the database is not connected");
             return false;
         }
 
         if (firstName.length() > 127 || lastName.length() > 127 ||
-            username.length() > 127 || email.length() > 127 ||
-            address.length() > 255) {
-            Logger.info(UserService.class, "Some informations are too long.");
+                username.length() > 127 || email.length() > 127 ||
+                address.length() > 255) {
+            logger.info("Some information is too long");
             return false;
         }
 
-        if (!EmailValidator.validate(email)){
-            Logger.info(UserService.class, "Email is not valid.");
+        if (!EmailValidator.validate(email)) {
+            logger.info("The provided email is not valid");
             return false;
         }
 
         String query = "select count(*) as countAccount from user where username = ? or email = ?";
-        try (ResultSet resultSet = DBManager.executeQuery(query, username, email)){
-            if (resultSet != null && resultSet.next()){
-                if (resultSet.getInt("countAccount") > 0){
-                    Logger.info(UserService.class, "User already exists.");
+        try (ResultSet resultSet = DBManager.executeQuery(query, username, email)) {
+            if (resultSet != null && resultSet.next()) {
+                if (resultSet.getInt("countAccount") > 0) {
+                    logger.info("User already exists");
                     return false;
                 }
             }
-        } catch (SQLException e){
-            e.printStackTrace();
-            Logger.error(UserService.class, "Something wrong while creating your account.");
+        } catch (SQLException e) {
+            logger.error("Something went wrong while creating your account", e);
             return false;
         }
 
-        if (!confirmedPassword.equals(password)){
-            Logger.info(UserService.class, "Reconfirm your password.");
+        if (!confirmedPassword.equals(password)) {
+            logger.info("Reconfirm your password");
             return false;
         }
 
@@ -107,30 +110,25 @@ public class UserService {
 
         query = "insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash, accountStatus) value (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            int updates = DBManager.executeUpdate(query,
-                    firstName, lastName,
-                    Date.valueOf(dateOfBirth),
-                    username, email,
-                    address, Role.USER.name(),
-                    passwordHash, AccountStatus.ACTIVE.name());
+            int updates = DBManager.executeUpdate(query, firstName, lastName,
+                    Date.valueOf(dateOfBirth), username, email,
+                    address, Role.USER.name(), passwordHash, AccountStatus.ACTIVE.name());
 
-            if (updates < 1){
-                Logger.error(UserService.class, "Something wrong while creating your account.");
-                return false;
+            if (updates < 1) {
+                throw new SQLException();
             }
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("Something went wrong while creating your account", e);
             return false;
         }
 
-        currentUser = new User(getNumberOfUsers(),
-                firstName, lastName,
-                dateOfBirth,
-                username, email,
-                address,
-                Role.USER, AccountStatus.ACTIVE, 0);
+        currentUser = new User(getNumberOfUsers(), firstName, lastName,
+                dateOfBirth, username, email,
+                address, Role.USER, AccountStatus.ACTIVE, 0);
+
         twoFactorEnabled = false;
-        Logger.info(UserService.class, "Account created.");
+
+        logger.info("Successfully created account");
         return true;
     }
 
@@ -143,10 +141,10 @@ public class UserService {
      */
     public static boolean loginByUsername(String username, String password) {
         if (isLoggedIn()) {
-            Logger.info(UserService.class, "Log out before log in.");
+            logger.info("The current user has not logged out yet");
             return false;
         }
-        Logger.info(UserService.class, "Try logging in by username: " + username + "...");
+        logger.info("Try logging in by username: {}...", username);
         return login(getUserByUsername(username), password);
     }
 
@@ -159,10 +157,10 @@ public class UserService {
      */
     public static boolean loginByEmail(String email, String password) {
         if (isLoggedIn()) {
-            Logger.info(UserService.class, "Log out before log in.");
+            logger.info("The current user has not logged out yet");
             return false;
         }
-        Logger.info(UserService.class, "Try logging in by email: " + email + "...");
+        logger.info("Try logging in by email: {}...", email);
         return login(getUserByEmail(email), password);
     }
 
@@ -175,40 +173,40 @@ public class UserService {
      */
     private static boolean login(User user, String password) {
         if (!DBManager.isConnected()) {
-            Logger.info(UserService.class, "Can not log in because the database is not connected.");
+            logger.info("Unable to log in because the database is not connected");
             return false;
         }
 
         if (user == null) {
-            Logger.info(UserService.class, "User does not exist.");
+            logger.info("User does not exits");
             return false;
         }
 
         if (!PasswordEncoder.compare(password, passwordHash)) {
-            Logger.info(UserService.class, "Wrong password.");
+            logger.info("Wrong password");
             return false;
         }
 
         if (twoFactorEnabled) {
-            Logger.info(UserService.class, "Two facter authenciation required.");
+            logger.info("Two-factor authentication is required");
             return false;
         }
 
         String query = "update user set accountStatus = ? where id = ?";
         try {
             int updates = DBManager.executeUpdate(query, AccountStatus.ACTIVE.name(), user.getId());
-            if (updates < 1) {
-                throw new SQLException();
-            } else {
-                Logger.info(UserService.class, "Logged in");
+            if (updates >= 1) {
                 currentUser = user;
+                logger.info("Successfully logged in");
                 return true;
+            } else {
+                throw new SQLException();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            Logger.error(UserService.class, "Failed to log in.");
             currentUser = null;
-            passwordHash = "";
+            passwordHash = null;
+            twoFactorEnabled = false;
+            logger.error("Failed to log in", e);
             return false;
         }
     }
@@ -220,29 +218,29 @@ public class UserService {
      */
     public static boolean logout() {
         if (!DBManager.isConnected()) {
-            Logger.info(UserService.class, "Cannot log out because the database is not connected.");
+            logger.info("Unable to log out because the database is not connected");
             return false;
         }
 
         if (!isLoggedIn()) {
-            Logger.info(UserService.class, "No user is logged in.");
+            logger.info("No user is logged in");
             return false;
         }
 
         String query = "update user set lastActive = ?, accountStatus = ? where id = ?";
         try {
             int updates = DBManager.executeUpdate(query, Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name(), currentUser.getId());
-            if (updates < 1) {
-                throw new SQLException();
-            } else {
+            if (updates >= 1) {
                 currentUser = null;
                 passwordHash = "";
-                Logger.info(UserService.class, "Logged out.");
+                twoFactorEnabled = false;
+                logger.info("Successfully logged out");
                 return true;
+            } else {
+                throw new SQLException();
             }
-        } catch (SQLException e){
-            e.printStackTrace();
-            Logger.error(UserService.class, "Failed to log out.");
+        } catch (SQLException e) {
+            logger.error("Failed to log out", e);
             return false;
         }
     }
@@ -477,18 +475,16 @@ public class UserService {
      */
     private static User getUserByUniqueField(String field, String info) {
         if (!DBManager.isConnected()) {
+            logger.info("Unable to find user because the database is not connected");
             return null;
         }
 
         String query = "select * from user where " + field + " = ?";
         try (ResultSet resultSet = DBManager.executeQuery(query, info)) {
-            if (resultSet == null) {
-                return null;
-            }
-            if (resultSet.next()) {
+            if (resultSet != null && resultSet.next()) {
                 passwordHash = resultSet.getString("passwordHash");
                 twoFactorEnabled = resultSet.getBoolean("twoFactorEnabled");
-                Logger.info(UserService.class, "User found.");
+                logger.info("Found user by {}: {}", field, info);
                 return new User(
                         resultSet.getInt("id"),
                         resultSet.getString("firstName"),
@@ -503,25 +499,27 @@ public class UserService {
                 );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Something went wrong while finding user");
         }
         return null;
     }
 
-    public static int getNumberOfUsers(){
+    public static int getNumberOfUsers() {
         if (!DBManager.isConnected()) {
+            logger.info("Unable to get number of users because the database is not connected");
             return -1;
         }
 
         String query = "select count(*) as total from user";
-        try (ResultSet resultSet = DBManager.executeQuery(query)){
-            if (resultSet != null && resultSet.next()){
+        try (ResultSet resultSet = DBManager.executeQuery(query)) {
+            if (resultSet != null && resultSet.next()) {
                 return resultSet.getInt("total");
             }
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("Something went wrong while getting number of users");
         }
 
         return -1;
     }
+
 }

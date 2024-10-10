@@ -2,18 +2,12 @@ package com.hxngxd.entities;
 
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
 /**
  * Lớp User kế thừa từ Person, đại diện cho người dùng trong hệ thống.
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class User extends Person {
 
     private String username;
@@ -22,6 +16,9 @@ public class User extends Person {
     private Role role;
     private AccountStatus accountStatus;
     private int violationCount;
+
+    public User() {
+    }
 
     public User(int id, String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, Role role, AccountStatus accountStatus, int violationCount) {
         super(id, firstName, lastName, dateOfBirth);
@@ -32,4 +29,53 @@ public class User extends Person {
         this.accountStatus = accountStatus;
         this.violationCount = violationCount;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+    public int getViolationCount() {
+        return violationCount;
+    }
+
+    public void setViolationCount(int violationCount) {
+        this.violationCount = violationCount;
+    }
+    
 }

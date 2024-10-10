@@ -41,12 +41,4 @@ public enum Role {
         return permissions.contains(permission);
     }
 
-    /**
-     * Lấy danh sách các quyền hạn của vai trò.
-     *
-     * @return Tập hợp các quyền hạn.
-     */
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
 }

@@ -1,19 +1,22 @@
 package com.hxngxd.libraryManager;
 
 import com.hxngxd.database.DBManager;
-import com.hxngxd.entities.User;
 import com.hxngxd.service.UserService;
 
-import com.hxngxd.utils.EmailValidator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalDate;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
+
+    private static final Logger logger = LogManager.getLogger(Main.class);
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
@@ -22,20 +25,11 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         boolean connect = DBManager.connect();
-        UserService.register(
-                "Hxngxd",
-                "Nguyen",
-                LocalDate.of(2005, 11, 7),
-                "hngxd",
-                "hunguong05@gmail.com",
-                "quang ninh",
-                "07112005", "07112005"
-        );
         UserService.loginByUsername("23020078", "Hung@07112005");
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         UserService.logout();
         boolean disconnect = DBManager.disconnect();
     }
