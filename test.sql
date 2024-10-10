@@ -15,6 +15,7 @@ create table user (
     address varchar(255),
     role enum('USER', 'MODERATOR', 'ADMIN') not null,
     accountStatus enum('ACTIVE', 'INACTIVE', 'SUSPENDED', 'BANNED') not null default 'INACTIVE',
+    dateCreated datetime default current_timestamp,
     lastActive datetime,
     violationCount int default 0,
     passwordHash varchar(255) not null,
@@ -148,6 +149,6 @@ create index idxNotificationType on notification(notificationType);
 
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash) values
 ('Hung', 'Nguyen Tuong', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'ADMIN', '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK'),
-('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'O QUY', 'ADMIN', '$2a$11$EQFy4/NKDPQ0y1DBql9UtuCQmDOEQO/iY8LjLEhTRQcKz4X.OST9u');
+('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'Phường', 'ADMIN', '$2a$11$EQFy4/NKDPQ0y1DBql9UtuCQmDOEQO/iY8LjLEhTRQcKz4X.OST9u');
 
 select * from user;

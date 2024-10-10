@@ -7,11 +7,14 @@ import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
 import com.hxngxd.utils.Logger;
 import com.hxngxd.utils.PasswordEncoder;
+import com.mysql.cj.log.Log;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Lớp UserService cung cấp các chức năng quản lý người dùng bao gồm đăng ký, đăng nhập, chỉnh sửa thông tin và quản lý xác thực.
@@ -88,20 +91,34 @@ public class UserService {
         if (user == null) {
             Logger.info(UserService.class, "User does not exist.");
             return false;
-        } else {
-            if (PasswordEncoder.compare(password, passwordHash)) {
-                if (!twoFactorEnabled) {
-                    Logger.info(UserService.class, "Logged in.");
-                    currentUser = user;
-                    return true;
-                } else {
-                    Logger.info(UserService.class, "Two facter authenciation required.");
-                    return false;
-                }
+        }
+
+        if (!PasswordEncoder.compare(password, passwordHash)) {
+            Logger.info(UserService.class, "Wrong password.");
+            return false;
+        }
+
+        if (twoFactorEnabled) {
+            Logger.info(UserService.class, "Two facter authenciation required.");
+            return false;
+        }
+
+        String query = "update user set accountStatus = ? where id = ?";
+        try {
+            int updates = DBManager.executeUpdate(query, AccountStatus.ACTIVE.name(), user.getId());
+            if (updates < 1) {
+                throw new SQLException();
             } else {
-                Logger.info(UserService.class, "Wrong password.");
-                return false;
+                Logger.info(UserService.class, "Logged in");
+                currentUser = user;
+                return true;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger.error(UserService.class, "Failed to log in.");
+            currentUser = null;
+            passwordHash = "";
+            return false;
         }
     }
 
@@ -121,10 +138,22 @@ public class UserService {
             return false;
         }
 
-        currentUser = null;
-        passwordHash = "";
-        Logger.info(UserService.class,  "Logged out.");
-        return true;
+        String query = "update user set lastActive = ?, accountStatus = ? where id = ?";
+        try {
+            int updates = DBManager.executeUpdate(query, Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name(), currentUser.getId());
+            if (updates < 1) {
+                throw new SQLException();
+            } else {
+                currentUser = null;
+                passwordHash = "";
+                Logger.info(UserService.class, "Logged out.");
+                return true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            Logger.error(UserService.class, "Failed to log out.");
+            return false;
+        }
     }
 
     /**
@@ -361,25 +390,26 @@ public class UserService {
         }
 
         String query = "select * from user where " + field + " = ?";
-        try (PreparedStatement pStatement = DBManager.getConnection().prepareStatement(query)) {
-            pStatement.setString(1, info);
-            try (ResultSet resultSet = pStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    passwordHash = resultSet.getString("passwordHash");
-                    twoFactorEnabled = resultSet.getBoolean("twoFactorEnabled");
-                    return new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("firstName"),
-                            resultSet.getString("lastName"),
-                            resultSet.getDate("dateOfBirth").toLocalDate(),
-                            resultSet.getString("username"),
-                            resultSet.getString("email"),
-                            resultSet.getString("address"),
-                            Role.valueOf(resultSet.getString("role")),
-                            AccountStatus.valueOf(resultSet.getString("accountStatus")),
-                            resultSet.getInt("violationCount")
-                    );
-                }
+        try (ResultSet resultSet = DBManager.executeQuery(query, info)) {
+            if (resultSet == null) {
+                return null;
+            }
+            if (resultSet.next()) {
+                passwordHash = resultSet.getString("passwordHash");
+                twoFactorEnabled = resultSet.getBoolean("twoFactorEnabled");
+                Logger.info(UserService.class, "User found.");
+                return new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("firstName"),
+                        resultSet.getString("lastName"),
+                        resultSet.getDate("dateOfBirth").toLocalDate(),
+                        resultSet.getString("username"),
+                        resultSet.getString("email"),
+                        resultSet.getString("address"),
+                        Role.valueOf(resultSet.getString("role")),
+                        AccountStatus.valueOf(resultSet.getString("accountStatus")),
+                        resultSet.getInt("violationCount")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();

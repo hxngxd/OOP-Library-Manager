@@ -3,9 +3,7 @@ package com.hxngxd.database;
 import com.hxngxd.utils.Logger;
 import lombok.Getter;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DBManager {
     @Getter
@@ -60,5 +58,29 @@ public class DBManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static ResultSet executeQuery(String query, Object... params) throws SQLException {
+        if (!isConnected()) {
+            return null;
+        }
+        PreparedStatement pStatement = connection.prepareStatement(query);
+        setParameters(pStatement, params);
+        return pStatement.executeQuery();
+    }
+
+    public static int executeUpdate(String query, Object... params) throws SQLException {
+        if (!isConnected()) {
+            return 0;
+        }
+        PreparedStatement pStatement = DBManager.getConnection().prepareStatement(query);
+        setParameters(pStatement, params);
+        return pStatement.executeUpdate();
+    }
+
+    private static void setParameters(PreparedStatement pStatement, Object... params) throws SQLException {
+        for (int i = 0; i < params.length; i++) {
+            pStatement.setObject(i + 1, params[i]);
+        }
     }
 }

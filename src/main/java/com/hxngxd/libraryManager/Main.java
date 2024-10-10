@@ -20,6 +20,10 @@ public class Main extends Application {
         stage.show();
         boolean connect = DBManager.connect();
         UserService.loginByUsername("23020078", "Hung@07112005");
+    }
+
+    @Override
+    public void stop(){
         UserService.logout();
         boolean disconnect = DBManager.disconnect();
     }
