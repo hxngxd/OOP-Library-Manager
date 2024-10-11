@@ -99,16 +99,8 @@ public class UserService {
             return false;
         }
 
-        String query = "select count(*) as countAccount from user where username = ? or email = ?";
-        try (ResultSet resultSet = DBManager.executeQuery(query, username, email)) {
-            if (resultSet != null && resultSet.next()) {
-                if (resultSet.getInt("countAccount") > 0) {
-                    logger.info(LogMsg.userExist);
-                    return false;
-                }
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.smthwr("creating your account"), e);
+        if (getUserByUsername(username) != null || getUserByEmail(email) != null) {
+            logger.info(LogMsg.userExist);
             return false;
         }
 
@@ -119,17 +111,12 @@ public class UserService {
 
         passwordHash = PasswordEncoder.encode(confirmedPassword);
 
-        query = "insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash, accountStatus) value (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            int updates = DBManager.executeUpdate(query, firstName, lastName,
-                    Date.valueOf(dateOfBirth), username, email,
-                    address, Role.USER.name(), passwordHash, AccountStatus.ACTIVE.name());
-
-            if (updates < 1) {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.smthwr("creating your account"), e);
+        String query = "insert into user(firstName, lastName, dateOfBirth, " +
+                " username, email, address, role, passwordHash, accountStatus) " +
+                "value (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if (!executeUserQuery("register", query, firstName, lastName,
+                Date.valueOf(dateOfBirth), username, email,
+                address, Role.USER.name(), passwordHash, AccountStatus.ACTIVE.name())) {
             return false;
         }
 
@@ -207,19 +194,12 @@ public class UserService {
         }
 
         String query = "update user set accountStatus = ? where id = ?";
-        try {
-            int updates = DBManager.executeUpdate(query, AccountStatus.ACTIVE.name(), user.getId());
-            if (updates >= 1) {
-                currentUser = user;
-                logger.info(LogMsg.success("logged in"));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
+        if (executeUserQuery("log in", query, AccountStatus.ACTIVE.name(), user.getId())) {
+            currentUser = user;
+            return true;
+        } else {
             currentUser = null;
             passwordHash = null;
-            logger.error(LogMsg.fail("log in"), e);
             return false;
         }
     }
@@ -241,18 +221,11 @@ public class UserService {
         }
 
         String query = "update user set lastActive = ?, accountStatus = ? where id = ?";
-        try {
-            int updates = DBManager.executeUpdate(query, Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name(), currentUser.getId());
-            if (updates >= 1) {
-                currentUser = null;
-                passwordHash = "";
-                logger.info(LogMsg.success("logged out"));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.fail("log out"), e);
+        if (executeUserQuery("log out", query, Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name(), currentUser.getId())) {
+            currentUser = null;
+            passwordHash = "";
+            return true;
+        } else {
             return false;
         }
     }
@@ -294,20 +267,8 @@ public class UserService {
         }
 
         String query = "update user set firstName = ?, lastName = ?, dateOfBirth = ?, address = ? where id = ?";
-        try {
-            int updates = DBManager.executeUpdate(query,
-                    newFirstName, newLastName,
-                    Date.valueOf(newDateOfBirth), newAddress, userId);
-            if (updates >= 1) {
-                logger.info(LogMsg.success("updated profile"));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.fail("update profile"), e);
-            return false;
-        }
+        return executeUserQuery("update profile", query, newFirstName, newLastName,
+                Date.valueOf(newDateOfBirth), newAddress, userId);
     }
 
     /**
@@ -370,18 +331,7 @@ public class UserService {
         }
 
         String query = "update user set role = ? where id = ?";
-        try {
-            int updates = DBManager.executeUpdate(query, role.name(), userId);
-            if (updates >= 1) {
-                logger.info(LogMsg.success("changed role"));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.fail("change role"), e);
-            return false;
-        }
+        return executeUserQuery("change role", query, role.name(), userId);
     }
 
     /**
@@ -429,18 +379,7 @@ public class UserService {
         }
 
         String query = "update user set accountStatus = ? where id = ?";
-        try {
-            int updates = DBManager.executeUpdate(query, status.name(), userId);
-            if (updates >= 1) {
-                logger.info(LogMsg.success("changed account status"));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.fail("change account status"), e);
-            return false;
-        }
+        return executeUserQuery("change account status", query, status.name(), userId);
     }
 
     /**
@@ -461,7 +400,30 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changePassword(String oldPassword, String newPassword) {
-        return true;
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("change password"));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+
+        if (newPassword.equals(oldPassword)) {
+            logger.info("New password is the same");
+            return false;
+        }
+
+        if (!PasswordEncoder.compare(oldPassword, passwordHash)) {
+            logger.info(LogMsg.wrongPW);
+            return false;
+        }
+
+        passwordHash = PasswordEncoder.encode(newPassword);
+
+        String query = "update user set passwordHash = ? where id = ?";
+        return executeUserQuery("change password", query, passwordHash, currentUser.getId());
     }
 
     /**
@@ -612,4 +574,18 @@ public class UserService {
         return -1;
     }
 
+    public static boolean executeUserQuery(String work, String query, Object... params) {
+        try {
+            int updates = DBManager.executeUpdate(query, params);
+            if (updates >= 1) {
+                logger.info(LogMsg.success(work));
+                return true;
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            logger.error(LogMsg.fail(work), e);
+            return false;
+        }
+    }
 }

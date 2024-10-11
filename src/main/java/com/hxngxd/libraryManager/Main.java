@@ -35,8 +35,8 @@ public class Main extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-        UserService.loginByUsername("23020078", "Hung@07112005");
-        UserService.changeOthersRole(2, Role.ADMIN);
+        UserService.loginByUsername("23020078", "Hung@haha");
+        UserService.changePassword("Hung@07112005", "Hung@haha");
     }
 
     @Override
