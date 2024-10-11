@@ -7,6 +7,7 @@ import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
 import com.hxngxd.utils.EmailValidator;
 import com.hxngxd.utils.PasswordEncoder;
+import com.hxngxd.utils.LogMsg;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -26,7 +27,10 @@ public class UserService {
     private static final Logger logger = LogManager.getLogger(UserService.class);
     private static User currentUser;
     private static String passwordHash;
-    private static boolean twoFactorEnabled;
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
 
     /**
      * Kiểm tra xem người dùng hiện tại đã đăng nhập hay chưa.
@@ -67,12 +71,19 @@ public class UserService {
      */
     public static boolean register(String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, String password, String confirmedPassword) {
         if (isLoggedIn()) {
-            logger.info("The current user has not logged out yet");
+            logger.info(LogMsg.userNotLogOut);
             return false;
         }
 
         if (!DBManager.isConnected()) {
-            logger.info("Unable to register because the database is not connected");
+            logger.info(LogMsg.noDBConnection("register"));
+            return false;
+        }
+
+        if (firstName.isEmpty() || lastName.isEmpty() ||
+                username.isEmpty() || email.isEmpty() ||
+                address.isEmpty()) {
+            logger.info("Some information is missing");
             return false;
         }
 
@@ -92,12 +103,12 @@ public class UserService {
         try (ResultSet resultSet = DBManager.executeQuery(query, username, email)) {
             if (resultSet != null && resultSet.next()) {
                 if (resultSet.getInt("countAccount") > 0) {
-                    logger.info("User already exists");
+                    logger.info(LogMsg.userExist);
                     return false;
                 }
             }
         } catch (SQLException e) {
-            logger.error("Something went wrong while creating your account", e);
+            logger.error(LogMsg.smthwr("creating your account"), e);
             return false;
         }
 
@@ -118,7 +129,7 @@ public class UserService {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            logger.error("Something went wrong while creating your account", e);
+            logger.error(LogMsg.smthwr("creating your account"), e);
             return false;
         }
 
@@ -126,9 +137,7 @@ public class UserService {
                 dateOfBirth, username, email,
                 address, Role.USER, AccountStatus.ACTIVE, 0);
 
-        twoFactorEnabled = false;
-
-        logger.info("Successfully created account");
+        logger.info(LogMsg.success("created account"));
         return true;
     }
 
@@ -141,7 +150,7 @@ public class UserService {
      */
     public static boolean loginByUsername(String username, String password) {
         if (isLoggedIn()) {
-            logger.info("The current user has not logged out yet");
+            logger.info(LogMsg.userNotLogOut);
             return false;
         }
         logger.info("Try logging in by username: {}...", username);
@@ -157,7 +166,7 @@ public class UserService {
      */
     public static boolean loginByEmail(String email, String password) {
         if (isLoggedIn()) {
-            logger.info("The current user has not logged out yet");
+            logger.info(LogMsg.userNotLogOut);
             return false;
         }
         logger.info("Try logging in by email: {}...", email);
@@ -173,22 +182,17 @@ public class UserService {
      */
     private static boolean login(User user, String password) {
         if (!DBManager.isConnected()) {
-            logger.info("Unable to log in because the database is not connected");
+            logger.info(LogMsg.noDBConnection("log in"));
             return false;
         }
 
         if (user == null) {
-            logger.info("User does not exits");
+            logger.info(LogMsg.userNotFound);
             return false;
         }
 
         if (!PasswordEncoder.compare(password, passwordHash)) {
-            logger.info("Wrong password");
-            return false;
-        }
-
-        if (twoFactorEnabled) {
-            logger.info("Two-factor authentication is required");
+            logger.info(LogMsg.wrongPW);
             return false;
         }
 
@@ -197,7 +201,7 @@ public class UserService {
             int updates = DBManager.executeUpdate(query, AccountStatus.ACTIVE.name(), user.getId());
             if (updates >= 1) {
                 currentUser = user;
-                logger.info("Successfully logged in");
+                logger.info(LogMsg.success("logged in"));
                 return true;
             } else {
                 throw new SQLException();
@@ -205,8 +209,7 @@ public class UserService {
         } catch (SQLException e) {
             currentUser = null;
             passwordHash = null;
-            twoFactorEnabled = false;
-            logger.error("Failed to log in", e);
+            logger.error(LogMsg.fail("log in"), e);
             return false;
         }
     }
@@ -218,12 +221,12 @@ public class UserService {
      */
     public static boolean logout() {
         if (!DBManager.isConnected()) {
-            logger.info("Unable to log out because the database is not connected");
+            logger.info(LogMsg.noDBConnection("log out"));
             return false;
         }
 
         if (!isLoggedIn()) {
-            logger.info("No user is logged in");
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -233,25 +236,15 @@ public class UserService {
             if (updates >= 1) {
                 currentUser = null;
                 passwordHash = "";
-                twoFactorEnabled = false;
-                logger.info("Successfully logged out");
+                logger.info(LogMsg.success("logged out"));
                 return true;
             } else {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            logger.error("Failed to log out", e);
+            logger.error(LogMsg.fail("log out"), e);
             return false;
         }
-    }
-
-    /**
-     * Bật/tắt xác thực 2 bước.
-     *
-     * @return true nếu thao tác thành công.
-     */
-    public static boolean toggleTwoFactorAuthentication() {
-        return true;
     }
 
     /**
@@ -261,41 +254,49 @@ public class UserService {
      * @param newFirstName Tên mới.
      * @return true nếu thay đổi thành công.
      */
-    public static boolean changeFirstName(int personId, String newFirstName) {
-        return true;
-    }
-
-    /**
-     * Thay đổi họ của người dùng.
-     *
-     * @param personId    ID của người dùng.
-     * @param newLastName Họ mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeLastName(int personId, String newLastName) {
-        return true;
-    }
-
-    /**
-     * Thay đổi ngày sinh của người dùng.
-     *
-     * @param personId ID của người dùng.
-     * @param newDate  Ngày sinh mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeDateOfBirth(int personId, LocalDate newDate) {
-        return true;
-    }
-
-    /**
-     * Thay đổi ảnh đại diện của người dùng.
-     *
-     * @param personId ID của người dùng.
-     * @param photoURL URL ảnh đại diện mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changePhoto(int personId, String photoURL) {
-        return true;
+    public static boolean updateProfile(int personId, String newFirstName, String newLastName, LocalDate newDateOfBirth, String newAddress) {
+//        if (!DBManager.isConnected()) {
+//            logger.info(LogMsg.noDBConnection("update profile"));
+//            return false;
+//        }
+//
+//        if (!isLoggedIn()) {
+//            logger.info(LogMsg.userNotLogIn);
+//            return false;
+//        }
+//
+//        if (personId != currentUser.getId()) {
+//            if (currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
+//                logger.info(LogMsg.userNotAllowTo("change others' profile"));
+//                return false;
+//            }
+//
+//            User other = getUserById(personId);
+//            if (other == null) {
+//                logger.info(LogMsg.userNotFound);
+//                return false;
+//            } else {
+//                if (other.getRole() == Role.ADMIN) {
+//                    logger.info(LogMsg.userCant("change other Admins' profile"));
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        String query = "update user set firstName = ?, lastName = ? where id = ?";
+//        try {
+//            int updates = DBManager.executeUpdate(query, newFirstName, newLastName, personId);
+//            if (updates >= 1) {
+//                logger.info(LogMsg.success("changed name"));
+//                return true;
+//            } else {
+//                throw new SQLException();
+//            }
+//        } catch (SQLException e) {
+//            logger.error(LogMsg.fail("change name"), e);
+//            return false;
+//        }
+        return false;
     }
 
     /**
@@ -306,17 +307,6 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changeEmail(int userId, String newEmail) {
-        return true;
-    }
-
-    /**
-     * Thay đổi địa chỉ của người dùng.
-     *
-     * @param userId     ID của người dùng.
-     * @param newAddress Địa chỉ mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeAddress(int userId, String newAddress) {
         return true;
     }
 
@@ -338,8 +328,56 @@ public class UserService {
      * @param status Trạng thái tài khoản mới.
      * @return true nếu thay đổi thành công.
      */
-    public static boolean changeAccountStatus(int userId, AccountStatus status) {
-        return true;
+    public static boolean changeOthersAccountStatus(int userId, AccountStatus status) {
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("change account status"));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+
+        if (currentUser.getRole() != Role.ADMIN) {
+            logger.info(LogMsg.userNotAllowTo("change others' account status"));
+            return false;
+        }
+
+        if (status == AccountStatus.ACTIVE || status == AccountStatus.INACTIVE) {
+            logger.info(LogMsg.userDontHaveTo);
+            return false;
+        }
+
+        if (userId == currentUser.getId()) {
+            logger.info(LogMsg.userCant("set their own account status to SUSPENDED or BANNED"));
+            return false;
+        }
+
+        User other = getUserById(userId);
+        if (other == null) {
+            logger.info(LogMsg.userNotFound);
+            return false;
+        }
+
+        if (other.getRole() == Role.ADMIN) {
+            logger.info(LogMsg.userCant("change others' Admin account status"));
+            return false;
+        }
+
+        String query = "update user set accountStatus = ? where id = ?";
+        try {
+            int updates = DBManager.executeUpdate(query, status.name(), userId);
+            if (updates >= 1) {
+                logger.info(LogMsg.success("changed account status"));
+                return true;
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            logger.error(LogMsg.fail("change account status"), e);
+            return false;
+        }
     }
 
     /**
@@ -427,16 +465,6 @@ public class UserService {
     }
 
     /**
-     * Kiểm tra quyền hạn của người dùng hiện tại.
-     *
-     * @param permission Quyền hạn cần kiểm tra.
-     * @return true nếu người dùng có quyền, false nếu không.
-     */
-    public static boolean hasPermission(Permission permission) {
-        return true;
-    }
-
-    /**
      * Lấy thông tin người dùng bằng ID.
      *
      * @param id ID của người dùng.
@@ -475,7 +503,7 @@ public class UserService {
      */
     private static User getUserByUniqueField(String field, String info) {
         if (!DBManager.isConnected()) {
-            logger.info("Unable to find user because the database is not connected");
+            logger.info(LogMsg.noDBConnection("find user"));
             return null;
         }
 
@@ -483,7 +511,6 @@ public class UserService {
         try (ResultSet resultSet = DBManager.executeQuery(query, info)) {
             if (resultSet != null && resultSet.next()) {
                 passwordHash = resultSet.getString("passwordHash");
-                twoFactorEnabled = resultSet.getBoolean("twoFactorEnabled");
                 logger.info("Found user by {}: {}", field, info);
                 return new User(
                         resultSet.getInt("id"),
@@ -499,14 +526,14 @@ public class UserService {
                 );
             }
         } catch (SQLException e) {
-            logger.error("Something went wrong while finding user");
+            logger.error(LogMsg.smthwr("finding user"));
         }
         return null;
     }
 
     public static int getNumberOfUsers() {
         if (!DBManager.isConnected()) {
-            logger.info("Unable to get number of users because the database is not connected");
+            logger.info(LogMsg.noDBConnection("get number of users"));
             return -1;
         }
 
@@ -516,7 +543,7 @@ public class UserService {
                 return resultSet.getInt("total");
             }
         } catch (SQLException e) {
-            logger.error("Something went wrong while getting number of users");
+            logger.error(LogMsg.smthwr("getting number of users"));
         }
 
         return -1;

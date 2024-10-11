@@ -6,21 +6,20 @@ use libraryManagement;
 
 create table user
 (
-    id               int auto_increment primary key,
-    firstName        varchar(127)                                       not null,
-    lastName         varchar(127)                                       not null,
-    dateOfBirth      date,
-    photo            mediumblob,
-    username         varchar(127)                                       not null unique,
-    email            varchar(127)                                       not null unique,
-    address          varchar(255),
-    role             enum ('USER', 'MODERATOR', 'ADMIN')                not null,
-    accountStatus    enum ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'BANNED') not null default 'INACTIVE',
-    dateCreated      datetime                                                    default current_timestamp,
-    lastActive       datetime,
-    violationCount   int                                                         default 0,
-    passwordHash     varchar(255)                                       not null,
-    twoFactorEnabled bool                                               not null default false
+    id             int auto_increment primary key,
+    firstName      varchar(127)                                       not null,
+    lastName       varchar(127)                                       not null,
+    dateOfBirth    date,
+    photo          mediumblob,
+    username       varchar(127)                                       not null unique,
+    email          varchar(127)                                       not null unique,
+    address        varchar(255),
+    role           enum ('USER', 'MODERATOR', 'ADMIN')                not null,
+    accountStatus  enum ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'BANNED') not null default 'INACTIVE',
+    dateCreated    datetime                                                    default current_timestamp,
+    lastActive     datetime,
+    violationCount int                                                         default 0,
+    passwordHash   varchar(255)                                       not null
 );
 
 create index idxUserRole on user (role);
