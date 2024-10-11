@@ -196,6 +196,16 @@ public class UserService {
             return false;
         }
 
+        if (user.getAccountStatus() == AccountStatus.SUSPENDED) {
+            logger.info("User is suspended");
+            return false;
+        }
+
+        if (user.getAccountStatus() == AccountStatus.BANNED) {
+            logger.info("User is banned");
+            return false;
+        }
+
         String query = "update user set accountStatus = ? where id = ?";
         try {
             int updates = DBManager.executeUpdate(query, AccountStatus.ACTIVE.name(), user.getId());
@@ -250,53 +260,54 @@ public class UserService {
     /**
      * Thay đổi tên của người dùng.
      *
-     * @param personId     ID của người dùng.
+     * @param userId       ID của người dùng.
      * @param newFirstName Tên mới.
      * @return true nếu thay đổi thành công.
      */
-    public static boolean updateProfile(int personId, String newFirstName, String newLastName, LocalDate newDateOfBirth, String newAddress) {
-//        if (!DBManager.isConnected()) {
-//            logger.info(LogMsg.noDBConnection("update profile"));
-//            return false;
-//        }
-//
-//        if (!isLoggedIn()) {
-//            logger.info(LogMsg.userNotLogIn);
-//            return false;
-//        }
-//
-//        if (personId != currentUser.getId()) {
-//            if (currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
-//                logger.info(LogMsg.userNotAllowTo("change others' profile"));
-//                return false;
-//            }
-//
-//            User other = getUserById(personId);
-//            if (other == null) {
-//                logger.info(LogMsg.userNotFound);
-//                return false;
-//            } else {
-//                if (other.getRole() == Role.ADMIN) {
-//                    logger.info(LogMsg.userCant("change other Admins' profile"));
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        String query = "update user set firstName = ?, lastName = ? where id = ?";
-//        try {
-//            int updates = DBManager.executeUpdate(query, newFirstName, newLastName, personId);
-//            if (updates >= 1) {
-//                logger.info(LogMsg.success("changed name"));
-//                return true;
-//            } else {
-//                throw new SQLException();
-//            }
-//        } catch (SQLException e) {
-//            logger.error(LogMsg.fail("change name"), e);
-//            return false;
-//        }
-        return false;
+    public static boolean updateProfile(int userId, String newFirstName, String newLastName, LocalDate newDateOfBirth, String newAddress) {
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("update profile"));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+
+        if (userId != currentUser.getId()) {
+            if (currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
+                logger.info(LogMsg.userNotAllowTo("change others' profile"));
+                return false;
+            }
+
+            User other = getUserById(userId);
+            if (other == null) {
+                logger.info(LogMsg.userNotFound);
+                return false;
+            } else {
+                if (other.getRole() == Role.ADMIN) {
+                    logger.info(LogMsg.userCant("change other Admins' profile"));
+                    return false;
+                }
+            }
+        }
+
+        String query = "update user set firstName = ?, lastName = ?, dateOfBirth = ?, address = ? where id = ?";
+        try {
+            int updates = DBManager.executeUpdate(query,
+                    newFirstName, newLastName,
+                    Date.valueOf(newDateOfBirth), newAddress, userId);
+            if (updates >= 1) {
+                logger.info(LogMsg.success("updated profile"));
+                return true;
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            logger.error(LogMsg.fail("update profile"), e);
+            return false;
+        }
     }
 
     /**
@@ -307,6 +318,15 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changeEmail(int userId, String newEmail) {
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("update profile"));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
         return true;
     }
 
@@ -317,8 +337,51 @@ public class UserService {
      * @param role   Chức vụ mới.
      * @return true nếu thay đổi thành công.
      */
-    public static boolean changeRole(int userId, Role role) {
-        return true;
+    public static boolean changeOthersRole(int userId, Role role) {
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("change role"));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ROLE)) {
+            logger.info(LogMsg.userNotAllowTo("change others' role"));
+            return false;
+        }
+
+        if (userId == currentUser.getId()) {
+            logger.info(LogMsg.userCant("change their own role"));
+            return false;
+        }
+
+        User other = getUserById(userId);
+        if (other == null) {
+            logger.info(LogMsg.userNotFound);
+            return false;
+        }
+
+        if (other.getRole() == Role.ADMIN) {
+            logger.info(LogMsg.userCant("change others' Admin role"));
+            return false;
+        }
+
+        String query = "update user set role = ? where id = ?";
+        try {
+            int updates = DBManager.executeUpdate(query, role.name(), userId);
+            if (updates >= 1) {
+                logger.info(LogMsg.success("changed role"));
+                return true;
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            logger.error(LogMsg.fail("change role"), e);
+            return false;
+        }
     }
 
     /**
@@ -339,7 +402,7 @@ public class UserService {
             return false;
         }
 
-        if (currentUser.getRole() != Role.ADMIN) {
+        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ACCOUNT_STATUS)) {
             logger.info(LogMsg.userNotAllowTo("change others' account status"));
             return false;
         }
@@ -531,7 +594,7 @@ public class UserService {
         return null;
     }
 
-    public static int getNumberOfUsers() {
+    private static int getNumberOfUsers() {
         if (!DBManager.isConnected()) {
             logger.info(LogMsg.noDBConnection("get number of users"));
             return -1;

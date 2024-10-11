@@ -1,6 +1,9 @@
 package com.hxngxd.libraryManager;
 
 import com.hxngxd.database.DBManager;
+import com.hxngxd.entities.User;
+import com.hxngxd.enums.AccountStatus;
+import com.hxngxd.enums.Role;
 import com.hxngxd.service.UserService;
 
 import javafx.application.Application;
@@ -33,6 +36,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         UserService.loginByUsername("23020078", "Hung@07112005");
+        UserService.changeOthersRole(2, Role.ADMIN);
     }
 
     @Override
