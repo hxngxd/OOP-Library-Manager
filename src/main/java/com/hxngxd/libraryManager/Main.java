@@ -36,7 +36,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         UserService.loginByUsername("23020078", "Hung@07112005");
-        UserService.deleteAccount(2);
+        UserService.deleteOwnAccount("Hung@07112005");
     }
 
     @Override

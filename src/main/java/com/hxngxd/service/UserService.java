@@ -28,10 +28,6 @@ public class UserService {
     private static User currentUser;
     private static String passwordHash;
 
-    public static User getCurrentUser() {
-        return currentUser;
-    }
-
     /**
      * Kiểm tra xem người dùng hiện tại đã đăng nhập hay chưa.
      *
@@ -499,11 +495,32 @@ public class UserService {
      * Xoá tài khoản của mình.
      *
      * @param password Mật khẩu.
-     * @param OTP      Mã xác minh.
      * @return true nếu xoá thành công.
      */
-    public static boolean deleteAccount(String password, String OTP) {
-        return true;
+    public static boolean deleteOwnAccount(String password) {
+        if (!isLogInAndConnectedToTheDB("delete account")) {
+            return false;
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.DELETE_OWN_ACCOUNT)) {
+            logger.info(LogMsg.userNotAllowTo("delete their own account"));
+            return false;
+        }
+
+        if (!PasswordEncoder.compare(password, passwordHash)) {
+            logger.info(LogMsg.wrongPW);
+            return false;
+        }
+
+        String query = "delete from user where id = ?";
+        if (executeUserQuery("delete account", query, currentUser.getId())) {
+            currentUser = null;
+            passwordHash = "";
+            logger.info("Logging out");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -512,7 +529,7 @@ public class UserService {
      * @param userId ID của tài khoản cần xoá.
      * @return true nếu xoá thành công.
      */
-    public static boolean deleteAccount(int userId) {
+    public static boolean deleteOthersAccount(int userId) {
         if (!isLogInAndConnectedToTheDB("delete account")) {
             return false;
         }
