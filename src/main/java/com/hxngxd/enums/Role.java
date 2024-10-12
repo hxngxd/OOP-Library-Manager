@@ -22,7 +22,8 @@ public enum Role {
             Permission.EDIT_OTHERS_PROFILE,
             Permission.MANAGE_BOOKS,
             Permission.SEND_NOTIFICATIONS,
-            Permission.MANAGE_SYSTEM
+            Permission.MANAGE_SYSTEM,
+            Permission.CHANGE_OTHER_PASSWORD_EMAIL
     ));
 
     private final Set<Permission> permissions;

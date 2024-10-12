@@ -70,13 +70,13 @@ public class UserService {
      * - Có lỗi trong quá trình tạo tài khoản trong cơ sở dữ liệu.
      */
     public static boolean register(String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, String password, String confirmedPassword) {
-        if (isLoggedIn()) {
-            logger.info(LogMsg.userNotLogOut);
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection("register"));
             return false;
         }
 
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("register"));
+        if (isLoggedIn()) {
+            logger.info(LogMsg.userNotLogOut);
             return false;
         }
 
@@ -238,18 +238,12 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean updateProfile(int userId, String newFirstName, String newLastName, LocalDate newDateOfBirth, String newAddress) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("update profile"));
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (!isLogInAndConnectedToTheDB("update profile")) {
             return false;
         }
 
         if (userId != currentUser.getId()) {
-            if (currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
+            if (!currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
                 logger.info(LogMsg.userNotAllowTo("change others' profile"));
                 return false;
             }
@@ -279,16 +273,40 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changeEmail(int userId, String newEmail) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("update profile"));
+        if (!isLogInAndConnectedToTheDB("change email")) {
             return false;
         }
 
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (userId != currentUser.getId()) {
+            if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
+                logger.info(LogMsg.userNotAllowTo("change others' email"));
+                return false;
+            }
+
+            User other = getUserById(userId);
+            if (other == null) {
+                logger.info(LogMsg.userNotFound);
+                return false;
+            } else {
+                if (other.getRole() == Role.ADMIN) {
+                    logger.info(LogMsg.userCant("change other Admins' email"));
+                    return false;
+                }
+            }
+        }
+
+        if (!EmailValidator.validate(newEmail)) {
+            logger.info("Email is not valid");
             return false;
         }
-        return true;
+
+        if (getUserByEmail(newEmail) != null) {
+            logger.info("Email is already used by other users");
+            return false;
+        }
+
+        String query = "update user set email = ? where id = ?";
+        return executeUserQuery("change email", query, newEmail, userId);
     }
 
     /**
@@ -299,13 +317,7 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changeOthersRole(int userId, Role role) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("change role"));
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (!isLogInAndConnectedToTheDB("change role")) {
             return false;
         }
 
@@ -342,13 +354,7 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changeOthersAccountStatus(int userId, AccountStatus status) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("change account status"));
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (!isLogInAndConnectedToTheDB("change account status")) {
             return false;
         }
 
@@ -400,13 +406,7 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changePassword(String oldPassword, String newPassword) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("change password"));
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (!isLogInAndConnectedToTheDB("change password")) {
             return false;
         }
 
@@ -434,7 +434,34 @@ public class UserService {
      * @return true nếu thay đổi thành công.
      */
     public static boolean changePassword(int userId, String newPassword) {
-        return true;
+        if (!isLogInAndConnectedToTheDB("change password")) {
+            return false;
+        }
+
+        if (userId == currentUser.getId()) {
+            logger.info("Old password is required to change it");
+            return false;
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
+            logger.info(LogMsg.userNotAllowTo("change others' password"));
+            return false;
+        }
+
+        User user = getUserById(userId);
+        if (user == null) {
+            logger.info(LogMsg.userNotFound);
+            return false;
+        }
+
+        if (user.getRole() == Role.ADMIN) {
+            logger.info(LogMsg.userCant("change other Admin's password"));
+            return false;
+        }
+
+        String newPasswordHash = PasswordEncoder.encode(newPassword);
+        String query = "update user set passwordHash = ? where id = ?";
+        return executeUserQuery("change password", query, newPasswordHash, user.getId());
     }
 
     /**
@@ -486,7 +513,33 @@ public class UserService {
      * @return true nếu xoá thành công.
      */
     public static boolean deleteAccount(int userId) {
-        return true;
+        if (!isLogInAndConnectedToTheDB("delete account")) {
+            return false;
+        }
+
+        if (userId == currentUser.getId()) {
+            logger.info("Password is required to delete your own password");
+            return false;
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
+            logger.info(LogMsg.userNotAllowTo("delete others' account"));
+            return false;
+        }
+
+        User user = getUserById(userId);
+        if (user == null) {
+            logger.info(LogMsg.userNotFound);
+            return false;
+        }
+
+        if (user.getRole() == Role.ADMIN) {
+            logger.info(LogMsg.userCant("delete other Admin's account"));
+            return false;
+        }
+
+        String query = "delete from user where id = ?";
+        return executeUserQuery("delete account", query, userId);
     }
 
     /**
@@ -574,7 +627,7 @@ public class UserService {
         return -1;
     }
 
-    public static boolean executeUserQuery(String work, String query, Object... params) {
+    private static boolean executeUserQuery(String work, String query, Object... params) {
         try {
             int updates = DBManager.executeUpdate(query, params);
             if (updates >= 1) {
@@ -587,5 +640,19 @@ public class UserService {
             logger.error(LogMsg.fail(work), e);
             return false;
         }
+    }
+
+    private static boolean isLogInAndConnectedToTheDB(String work) {
+        if (!DBManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection(work));
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+
+        return true;
     }
 }

@@ -20,7 +20,7 @@ public class LogMsg {
     }
 
     public static String userCant(String work) {
-        return "The current user can't " + work;
+        return "You can't " + work;
     }
 
     public static String success(String work) {

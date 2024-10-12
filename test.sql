@@ -22,6 +22,8 @@ create table user
     passwordHash   varchar(255)                                       not null
 );
 
+alter table user auto_increment = 1;
+
 create index idxUserRole on user (role);
 
 create index idxUserAccountStatus on user (accountStatus);
@@ -160,7 +162,7 @@ create index idxNotificationType on notification (notificationType);
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
 values ('Hung', 'Nguyen Tuong', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'ADMIN',
         '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK'),
-       ('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'Phường', 'USER',
+       ('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'Phường', 'MODERATOR',
         '$2a$11$EQFy4/NKDPQ0y1DBql9UtuCQmDOEQO/iY8LjLEhTRQcKz4X.OST9u');
 
 select *
