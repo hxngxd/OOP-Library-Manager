@@ -36,6 +36,7 @@ public class DatabaseManager {
         try {
             if (!isConnected()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
+                loadDatabaseConfig();
                 connection = DriverManager.getConnection(databaseUrl, username, password);
                 logger.info("Successfully connected to the database");
                 return true;
@@ -68,7 +69,7 @@ public class DatabaseManager {
         try {
             return connection != null && !connection.isClosed();
         } catch (SQLException e) {
-            logger.error(LogMsg.smthwr("checking database connection"), e);
+            logger.error(LogMsg.sthwr("checking database connection"), e);
             return false;
         }
     }
