@@ -16,6 +16,9 @@ public class EmailValidator {
 
     private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
+    private EmailValidator() {
+    }
+
     /**
      * Kiểm tra tính hợp lệ của địa chỉ email dựa trên biểu thức chính quy đã định nghĩa.
      * <p>

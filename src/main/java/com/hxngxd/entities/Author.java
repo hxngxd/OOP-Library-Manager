@@ -11,9 +11,19 @@ public class Author extends Person {
     private String biography;
     private LocalDate dayOfDeath;
 
-    public Author(int id, String firstName, String lastName, LocalDate dateOfBirth, String biography, LocalDate dayOfDeath) {
-        super(id, firstName, lastName, dateOfBirth);
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public LocalDate getDayOfDeath() {
+        return dayOfDeath;
+    }
+
+    public void setDayOfDeath(LocalDate dayOfDeath) {
         this.dayOfDeath = dayOfDeath;
     }
 

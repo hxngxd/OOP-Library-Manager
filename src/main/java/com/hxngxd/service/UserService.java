@@ -1,6 +1,6 @@
 package com.hxngxd.service;
 
-import com.hxngxd.database.DBManager;
+import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
@@ -9,65 +9,44 @@ import com.hxngxd.utils.EmailValidator;
 import com.hxngxd.utils.PasswordEncoder;
 import com.hxngxd.utils.LogMsg;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Lớp UserService cung cấp các chức năng quản lý người dùng bao gồm đăng ký, đăng nhập, chỉnh sửa thông tin và quản lý xác thực.
- */
 public class UserService {
 
-    private static final Logger logger = LogManager.getLogger(UserService.class);
-    private static User currentUser;
-    private static String passwordHash;
+    private final Logger logger = LogManager.getLogger(UserService.class);
+    private final DatabaseManager db = DatabaseManager.getInstance();
+    private User currentUser;
 
-    /**
-     * Kiểm tra xem người dùng hiện tại đã đăng nhập hay chưa.
-     *
-     * @return true nếu người dùng hiện tại đã đăng nhập, false nếu không.
-     */
-    public static boolean isLoggedIn() {
+    private UserService() {
+    }
+
+    private static class SingletonHolder {
+        private static final UserService instance = new UserService();
+    }
+
+    public static UserService getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public boolean isLoggedIn() {
         return currentUser != null;
     }
 
-    /**
-     * Phương thức đăng ký người dùng mới.
-     * <p>
-     * Phương thức này sẽ thực hiện đăng ký tài khoản mới cho người dùng nếu như
-     * các điều kiện được đáp ứng và không có lỗi xảy ra. Trước khi đăng ký,
-     * phương thức sẽ kiểm tra các điều kiện như: người dùng đã đăng nhập hay chưa,
-     * kết nối cơ sở dữ liệu có sẵn hay không, thông tin người dùng có hợp lệ không,
-     * tài khoản đã tồn tại chưa, mật khẩu có khớp hay không.
-     *
-     * @param firstName         Tên người dùng.
-     * @param lastName          Họ của người dùng.
-     * @param dateOfBirth       Ngày sinh của người dùng.
-     * @param username          Tên đăng nhập của người dùng.
-     * @param email             Địa chỉ email của người dùng.
-     * @param address           Địa chỉ nhà của người dùng.
-     * @param password          Mật khẩu mà người dùng chọn.
-     * @param confirmedPassword Mật khẩu xác nhận lại.
-     * @return {@code true} nếu đăng ký thành công, ngược lại {@code false}.
-     * <p>
-     * Các điều kiện trả về {@code false}:
-     * - Người dùng hiện tại đã đăng nhập.
-     * - Kết nối cơ sở dữ liệu không khả dụng.
-     * - Một số thông tin như họ, tên, tên đăng nhập, email hoặc địa chỉ quá dài.
-     * - Địa chỉ email không hợp lệ.
-     * - Người dùng đã tồn tại trong hệ thống với tên đăng nhập hoặc email đã cho.
-     * - Mật khẩu và mật khẩu xác nhận không khớp.
-     * - Có lỗi trong quá trình tạo tài khoản trong cơ sở dữ liệu.
-     */
-    public static boolean register(String firstName, String lastName, LocalDate dateOfBirth, String username, String email, String address, String password, String confirmedPassword) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("register"));
+    public boolean register(String firstName, String lastName, String username,
+                            String email, LocalDate dateOfBirth, String password,
+                            String confirmedPassword) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
             return false;
         }
 
@@ -78,15 +57,15 @@ public class UserService {
 
         if (firstName.isEmpty() || lastName.isEmpty() ||
                 username.isEmpty() || email.isEmpty() ||
-                address.isEmpty()) {
+                password.isEmpty() || confirmedPassword.isEmpty()) {
             logger.info("Some information is missing");
             return false;
         }
 
         if (firstName.length() > 127 || lastName.length() > 127 ||
                 username.length() > 127 || email.length() > 127 ||
-                address.length() > 255) {
-            logger.info("Some information is too long");
+                password.length() > 127 || confirmedPassword.length() > 127) {
+            logger.info(LogMsg.infoTooLong);
             return false;
         }
 
@@ -95,8 +74,13 @@ public class UserService {
             return false;
         }
 
-        if (getUserByUsername(username) != null || getUserByEmail(email) != null) {
+        if (getUserByUsernameOrEmail(false, username, email) != null) {
             logger.info(LogMsg.userExist);
+            return false;
+        }
+
+        if (password.length() < 6) {
+            logger.info("Length of password must be more than 6");
             return false;
         }
 
@@ -105,76 +89,66 @@ public class UserService {
             return false;
         }
 
-        passwordHash = PasswordEncoder.encode(confirmedPassword);
+        String passwordHash = PasswordEncoder.encode(confirmedPassword);
+        boolean insert = db.insert("user",
+                List.of("firstName", "lastName", "dateOfBirth", "username", "email",
+                        "passwordHash", "accountStatus"),
+                firstName, lastName, Date.valueOf(dateOfBirth), username, email,
+                passwordHash, AccountStatus.ACTIVE.name());
 
-        String query = "insert into user(firstName, lastName, dateOfBirth, " +
-                " username, email, address, role, passwordHash, accountStatus) " +
-                "value (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        if (!executeUserQuery("register", query, firstName, lastName,
-                Date.valueOf(dateOfBirth), username, email,
-                address, Role.USER.name(), passwordHash, AccountStatus.ACTIVE.name())) {
+        if (insert) {
+            currentUser = new User();
+            currentUser.setId(db.getGeneratedId());
+            currentUser.setFirstName(firstName);
+            currentUser.setLastName(lastName);
+            currentUser.setDateOfBirth(dateOfBirth);
+            currentUser.setUsername(username);
+            currentUser.setEmail(email);
+            currentUser.setPasswordHash(passwordHash);
+            currentUser.setRole(Role.USER);
+            currentUser.setAccountStatus(AccountStatus.ACTIVE);
+            currentUser.setViolationCount(0);
+            logger.info(LogMsg.success("create account"));
+            return true;
+        } else {
+            logger.debug(LogMsg.sthwr("creating account"));
+            return false;
+        }
+    }
+
+    public boolean login(String username, String email, String password) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
             return false;
         }
 
-        currentUser = new User(getNumberOfUsers(), firstName, lastName,
-                dateOfBirth, username, email,
-                address, Role.USER, AccountStatus.ACTIVE, 0);
-
-        logger.info(LogMsg.success("created account"));
-        return true;
-    }
-
-    /**
-     * Đăng nhập vào hệ thống.
-     *
-     * @param username Tên đăng nhập.
-     * @param password Mật khẩu.
-     * @return true nếu đăng nhập thành công, false nếu thất bại.
-     */
-    public static boolean loginByUsername(String username, String password) {
         if (isLoggedIn()) {
             logger.info(LogMsg.userNotLogOut);
             return false;
         }
-        logger.info("Try logging in by username: {}...", username);
-        return login(getUserByUsername(username), password);
-    }
 
-    /**
-     * Đăng nhập vào hệ thống.
-     *
-     * @param email    Địa chỉ email.
-     * @param password Mật khẩu.
-     * @return true nếu đăng nhập thành công, false nếu thất bại.
-     */
-    public static boolean loginByEmail(String email, String password) {
-        if (isLoggedIn()) {
-            logger.info(LogMsg.userNotLogOut);
-            return false;
-        }
-        logger.info("Try logging in by email: {}...", email);
-        return login(getUserByEmail(email), password);
-    }
-
-    /**
-     * Đăng nhập cho người dùng với mật khẩu được cung cấp.
-     *
-     * @param user     Đối tượng người dùng cần đăng nhập.
-     * @param password Mật khẩu của người dùng.
-     * @return true nếu đăng nhập thành công, false nếu tài khoản không tồn tại hoặc mật khẩu sai.
-     */
-    private static boolean login(User user, String password) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("log in"));
+        if (username.isEmpty() || email.isEmpty()) {
+            logger.info("Username or email is missing");
             return false;
         }
 
+        if (password.isEmpty()) {
+            logger.info("Please enter password");
+            return false;
+        }
+
+        if (username.length() > 127 || email.length() > 127 || password.length() > 127) {
+            logger.info(LogMsg.infoTooLong);
+            return false;
+        }
+
+        User user = getUserByUsernameOrEmail(false, username, email);
         if (user == null) {
             logger.info(LogMsg.userNotFound);
             return false;
         }
 
-        if (!PasswordEncoder.compare(password, passwordHash)) {
+        if (!PasswordEncoder.compare(password, user.getPasswordHash())) {
             logger.info(LogMsg.wrongPW);
             return false;
         }
@@ -189,25 +163,24 @@ public class UserService {
             return false;
         }
 
-        String query = "update user set accountStatus = ? where id = ?";
-        if (executeUserQuery("log in", query, AccountStatus.ACTIVE.name(), user.getId())) {
+        user = getUserByUsernameOrEmail(true, username, email);
+        boolean update = db.update("user",
+                "accountStatus", AccountStatus.ACTIVE.name(),
+                "id", user.getId());
+        if (update) {
             currentUser = user;
+            logger.info(LogMsg.success("log in"));
             return true;
         } else {
             currentUser = null;
-            passwordHash = null;
+            logger.error(LogMsg.fail("log in"));
             return false;
         }
     }
 
-    /**
-     * Đăng xuất khỏi hệ thống.
-     *
-     * @return true nếu đăng xuất thành công.
-     */
-    public static boolean logout() {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("log out"));
+    public boolean logout() {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
             return false;
         }
 
@@ -216,25 +189,30 @@ public class UserService {
             return false;
         }
 
-        String query = "update user set lastActive = ?, accountStatus = ? where id = ?";
-        if (executeUserQuery("log out", query, Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name(), currentUser.getId())) {
+        boolean update = db.update("user",
+                List.of("lastActive", "accountStatus"),
+                List.of(Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name()),
+                List.of("id"),
+                List.of(currentUser.getId()));
+        if (update) {
             currentUser = null;
-            passwordHash = "";
+            logger.info(LogMsg.success("log out"));
             return true;
         } else {
+            logger.error(LogMsg.fail("log out"));
             return false;
         }
     }
 
-    /**
-     * Thay đổi tên của người dùng.
-     *
-     * @param userId       ID của người dùng.
-     * @param newFirstName Tên mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean updateProfile(int userId, String newFirstName, String newLastName, LocalDate newDateOfBirth, String newAddress) {
-        if (!isLogInAndConnectedToTheDB("update profile")) {
+    public boolean updateProfile(int userId, String newFirstName, String newLastName,
+                                 LocalDate newDateOfBirth, String newAddress) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -244,32 +222,52 @@ public class UserService {
                 return false;
             }
 
-            User other = getUserById(userId);
-            if (other == null) {
+            User user = getUserbyId(false, userId);
+            if (user == null) {
                 logger.info(LogMsg.userNotFound);
                 return false;
             } else {
-                if (other.getRole() == Role.ADMIN) {
+                if (user.getRole() == Role.ADMIN) {
                     logger.info(LogMsg.userCant("change other Admins' profile"));
                     return false;
                 }
             }
         }
 
-        String query = "update user set firstName = ?, lastName = ?, dateOfBirth = ?, address = ? where id = ?";
-        return executeUserQuery("update profile", query, newFirstName, newLastName,
-                Date.valueOf(newDateOfBirth), newAddress, userId);
+        if (newFirstName.isEmpty() || newLastName.isEmpty() ||
+                newAddress.isEmpty()) {
+            logger.info("Some information is missing");
+            return false;
+        }
+
+        if (newFirstName.length() > 127 || newLastName.length() > 127 ||
+                newAddress.length() > 127) {
+            logger.info(LogMsg.infoTooLong);
+            return false;
+        }
+
+        boolean update = db.update("user",
+                List.of("firstName", "lastName", "dateOfBirth", "address"),
+                List.of(newFirstName, newLastName,
+                        Date.valueOf(newDateOfBirth), newAddress),
+                List.of("id"), List.of(userId));
+        if (update) {
+            logger.info(LogMsg.success("update profile"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("update profile"));
+            return false;
+        }
     }
 
-    /**
-     * Thay đổi email của người dùng.
-     *
-     * @param userId   ID của người dùng.
-     * @param newEmail Email mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeEmail(int userId, String newEmail) {
-        if (!isLogInAndConnectedToTheDB("change email")) {
+    public boolean changeEmail(int userId, String newEmail) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -279,7 +277,7 @@ public class UserService {
                 return false;
             }
 
-            User other = getUserById(userId);
+            User other = getUserbyId(false, userId);
             if (other == null) {
                 logger.info(LogMsg.userNotFound);
                 return false;
@@ -289,6 +287,11 @@ public class UserService {
                     return false;
                 }
             }
+        } else {
+            if (newEmail.equals(currentUser.getEmail())) {
+                logger.info("New email is still the same");
+                return false;
+            }
         }
 
         if (!EmailValidator.validate(newEmail)) {
@@ -296,24 +299,30 @@ public class UserService {
             return false;
         }
 
-        if (getUserByEmail(newEmail) != null) {
+        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
             logger.info("Email is already used by other users");
             return false;
         }
 
-        String query = "update user set email = ? where id = ?";
-        return executeUserQuery("change email", query, newEmail, userId);
+        boolean update = db.update("user", "email", newEmail,
+                "id", userId);
+        if (update) {
+            logger.info(LogMsg.success("change email"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("change email"));
+            return false;
+        }
     }
 
-    /**
-     * Thay đổi chức vụ của người dùng (trừ Admin).
-     *
-     * @param userId ID của người dùng.
-     * @param role   Chức vụ mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeOthersRole(int userId, Role role) {
-        if (!isLogInAndConnectedToTheDB("change role")) {
+    public boolean changeOthersRole(int userId, Role role) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -327,30 +336,36 @@ public class UserService {
             return false;
         }
 
-        User other = getUserById(userId);
-        if (other == null) {
+        User user = getUserbyId(false, userId);
+        if (user == null) {
             logger.info(LogMsg.userNotFound);
             return false;
         }
 
-        if (other.getRole() == Role.ADMIN) {
+        if (user.getRole() == Role.ADMIN) {
             logger.info(LogMsg.userCant("change others' Admin role"));
             return false;
         }
 
-        String query = "update user set role = ? where id = ?";
-        return executeUserQuery("change role", query, role.name(), userId);
+        boolean update = db.update("user", "role", role.name(),
+                "id", userId);
+        if (update) {
+            logger.info(LogMsg.success("change others' role"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("change others' role"));
+            return false;
+        }
     }
 
-    /**
-     * Thay đổi trạng thái tài khoản của người dùng (trừ Admin).
-     *
-     * @param userId ID của người dùng.
-     * @param status Trạng thái tài khoản mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changeOthersAccountStatus(int userId, AccountStatus status) {
-        if (!isLogInAndConnectedToTheDB("change account status")) {
+    public boolean changeOthersAccountStatus(int userId, AccountStatus status) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -365,77 +380,69 @@ public class UserService {
         }
 
         if (userId == currentUser.getId()) {
-            logger.info(LogMsg.userCant("set their own account status to SUSPENDED or BANNED"));
+            logger.info(LogMsg.userCant(
+                    "set their own account status to SUSPENDED or BANNED"));
             return false;
         }
 
-        User other = getUserById(userId);
-        if (other == null) {
+        User user = getUserbyId(false, userId);
+        if (user == null) {
             logger.info(LogMsg.userNotFound);
             return false;
         }
 
-        if (other.getRole() == Role.ADMIN) {
+        if (user.getRole() == Role.ADMIN) {
             logger.info(LogMsg.userCant("change others' Admin account status"));
             return false;
         }
 
-        String query = "update user set accountStatus = ? where id = ?";
-        return executeUserQuery("change account status", query, status.name(), userId);
+        boolean update = db.update("user", "accountStatus", status.name(),
+                "id", userId);
+        if (update) {
+            logger.info(LogMsg.success("change others' status"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("change others' status"));
+            return false;
+        }
     }
 
-    /**
-     * Xử lý khi người dùng vi phạm.
-     *
-     * @param userId ID của người dùng vi phạm.
-     * @return true nếu xử lý thành công.
-     */
-    public static boolean violate(int userId) {
-        return true;
-    }
-
-    /**
-     * Thay đổi mật khẩu của mình.
-     *
-     * @param oldPassword Mật khẩu cũ.
-     * @param newPassword Mật khẩu mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changePassword(String oldPassword, String newPassword) {
-        if (!isLogInAndConnectedToTheDB("change password")) {
+    public boolean changePassword(String oldPassword, String newPassword) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
             return false;
         }
 
-        if (newPassword.equals(oldPassword)) {
-            logger.info("New password is the same");
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
-        if (!PasswordEncoder.compare(oldPassword, passwordHash)) {
+        if (!PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash())) {
             logger.info(LogMsg.wrongPW);
             return false;
         }
 
-        passwordHash = PasswordEncoder.encode(newPassword);
-
-        String query = "update user set passwordHash = ? where id = ?";
-        return executeUserQuery("change password", query, passwordHash, currentUser.getId());
+        boolean update = db.update("user", "passwordHash",
+                PasswordEncoder.encode(currentUser.getPasswordHash()),
+                "id", currentUser.getId());
+        if (update) {
+            logger.info(LogMsg.success("change password"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("change password"));
+            return false;
+        }
     }
 
-    /**
-     * Thay đổi mật khẩu của tài khoản người dùng khác (trừ Admin).
-     *
-     * @param userId      ID của người dùng.
-     * @param newPassword Mật khẩu mới.
-     * @return true nếu thay đổi thành công.
-     */
-    public static boolean changePassword(int userId, String newPassword) {
-        if (!isLogInAndConnectedToTheDB("change password")) {
+    public boolean changePassword(int userId, String newPassword) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
             return false;
         }
 
-        if (userId == currentUser.getId()) {
-            logger.info("Old password is required to change it");
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -444,7 +451,7 @@ public class UserService {
             return false;
         }
 
-        User user = getUserById(userId);
+        User user = getUserbyId(false, userId);
         if (user == null) {
             logger.info(LogMsg.userNotFound);
             return false;
@@ -455,50 +462,37 @@ public class UserService {
             return false;
         }
 
-        String newPasswordHash = PasswordEncoder.encode(newPassword);
-        String query = "update user set passwordHash = ? where id = ?";
-        return executeUserQuery("change password", query, newPasswordHash, user.getId());
+        boolean update = db.update("user", "passwordHash",
+                PasswordEncoder.encode(newPassword), "id", userId);
+        if (update) {
+            logger.info(LogMsg.success("change others' password"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("change others' password"));
+            return false;
+        }
     }
 
-    /**
-     * Yêu cầu phục hồi mật khẩu qua email.
-     *
-     * @param email Địa chỉ email cần khôi phục.
-     * @return true nếu yêu cầu thành công.
-     */
-    public static boolean resetPasswordRequest(String email) {
-        return true;
-    }
+//    public static boolean resetPasswordRequest(String email) {
+//        return true;
+//    }
+//
+//    public static boolean emailOTPRequest(String email) {
+//        return true;
+//    }
+//
+//    public static boolean verifyEmail(String email, String OTP) {
+//        return true;
+//    }
 
-    /**
-     * Yêu cầu mã xác minh qua địa chỉ email.
-     *
-     * @param email Địa chỉ email.
-     * @return true nếu yêu cầu thành công.
-     */
-    public static boolean emailOTPRequest(String email) {
-        return true;
-    }
+    public boolean deleteOwnAccount(String password) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
 
-    /**
-     * Xác minh địa chỉ email bằng mã OTP.
-     *
-     * @param email Địa chỉ email cần xác minh.
-     * @param OTP   Mã xác minh.
-     * @return true nếu xác minh thành công.
-     */
-    public static boolean verifyEmail(String email, String OTP) {
-        return true;
-    }
-
-    /**
-     * Xoá tài khoản của mình.
-     *
-     * @param password Mật khẩu.
-     * @return true nếu xoá thành công.
-     */
-    public static boolean deleteOwnAccount(String password) {
-        if (!isLogInAndConnectedToTheDB("delete account")) {
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -507,30 +501,31 @@ public class UserService {
             return false;
         }
 
-        if (!PasswordEncoder.compare(password, passwordHash)) {
+        if (!PasswordEncoder.compare(password, currentUser.getPasswordHash())) {
             logger.info(LogMsg.wrongPW);
             return false;
         }
 
-        String query = "delete from user where id = ?";
-        if (executeUserQuery("delete account", query, currentUser.getId())) {
+        boolean delete = db.delete("user", "id", currentUser.getId());
+        if (delete) {
             currentUser = null;
-            passwordHash = "";
+            logger.info(LogMsg.success("delete your account"));
             logger.info("Logging out");
             return true;
         } else {
+            logger.error(LogMsg.fail("delete your account"));
             return false;
         }
     }
 
-    /**
-     * Xoá tài khoản (Admin).
-     *
-     * @param userId ID của tài khoản cần xoá.
-     * @return true nếu xoá thành công.
-     */
-    public static boolean deleteOthersAccount(int userId) {
-        if (!isLogInAndConnectedToTheDB("delete account")) {
+    public boolean deleteOthersAccount(int userId) {
+        if (!db.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+
+        if (!isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
             return false;
         }
 
@@ -544,7 +539,7 @@ public class UserService {
             return false;
         }
 
-        User user = getUserById(userId);
+        User user = getUserbyId(false, userId);
         if (user == null) {
             logger.info(LogMsg.userNotFound);
             return false;
@@ -555,121 +550,53 @@ public class UserService {
             return false;
         }
 
-        String query = "delete from user where id = ?";
-        return executeUserQuery("delete account", query, userId);
-    }
-
-    /**
-     * Lấy thông tin người dùng bằng ID.
-     *
-     * @param id ID của người dùng.
-     * @return Thông tin người dùng.
-     */
-    public static User getUserById(int id) {
-        return getUserByUniqueField("id", String.valueOf(id));
-    }
-
-    /**
-     * Lấy thông tin người dùng bằng tên đăng nhập.
-     *
-     * @param username Tên đăng nhập của người dùng.
-     * @return Thông tin người dùng.
-     */
-    public static User getUserByUsername(String username) {
-        return getUserByUniqueField("username", username);
-    }
-
-    /**
-     * Lấy thông tin người dùng bằng địa chỉ email.
-     *
-     * @param email Địa chỉ email của người dùng.
-     * @return Thông tin người dùng.
-     */
-    public static User getUserByEmail(String email) {
-        return getUserByUniqueField("email", email);
-    }
-
-    /**
-     * Lấy thông tin người dùng bằng một trường duy nhất.
-     *
-     * @param field Trường duy nhất cần truy vấn.
-     * @param info  Giá trị của trường cần tìm.
-     * @return Thông tin người dùng nếu tìm thấy, null nếu không tìm thấy.
-     */
-    private static User getUserByUniqueField(String field, String info) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("find user"));
-            return null;
+        boolean delete = db.delete("user", "id", userId);
+        if (delete) {
+            logger.info(LogMsg.success("delete account"));
+            return true;
+        } else {
+            logger.error(LogMsg.fail("delete account"));
+            return false;
         }
+    }
 
-        String query = "select * from user where " + field + " = ?";
-        try (ResultSet resultSet = DBManager.executeQuery(query, info)) {
-            if (resultSet != null && resultSet.next()) {
-                passwordHash = resultSet.getString("passwordHash");
-                logger.info("Found user by {}: {}", field, info);
-                return new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),
-                        resultSet.getDate("dateOfBirth").toLocalDate(),
-                        resultSet.getString("username"),
-                        resultSet.getString("email"),
-                        resultSet.getString("address"),
-                        Role.valueOf(resultSet.getString("role")),
-                        AccountStatus.valueOf(resultSet.getString("accountStatus")),
-                        resultSet.getInt("violationCount")
-                );
+    private User getUserbyId(Boolean inDetail, int id) {
+        return getUser(inDetail, id, "", "");
+    }
+
+    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email) {
+        return getUser(inDetail, -1, username, email);
+    }
+
+    private User getUser(Boolean inDetail, Object... params) {
+        String query = "select * from user where id = ? or username = ? or email = ?";
+        try (PreparedStatement pStatement = db.getConnection().prepareStatement(query)) {
+            db.setParameters(pStatement, params);
+            try (ResultSet resultSet = pStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setUsername(resultSet.getString("username"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setPasswordHash(resultSet.getString("passwordHash"));
+                    user.setAccountStatus(
+                            AccountStatus.valueOf(
+                                    resultSet.getString("accountStatus")));
+                    if (inDetail) {
+                        user.setFirstName(resultSet.getString("firstName"));
+                        user.setLastName(resultSet.getString("lastName"));
+                        user.setAddress(resultSet.getString("address"));
+                        user.setDateOfBirth(
+                                resultSet.getDate("dateOfBirth").toLocalDate());
+                        user.setRole(Role.valueOf(resultSet.getString("role")));
+                        user.setViolationCount(resultSet.getInt("violationCount"));
+                    }
+                    return user;
+                }
             }
-        } catch (SQLException e) {
-            logger.error(LogMsg.smthwr("finding user"));
+        } catch (SQLException | NullPointerException e) {
+            logger.error(LogMsg.sthwr("getting user"), e);
         }
         return null;
-    }
-
-    private static int getNumberOfUsers() {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection("get number of users"));
-            return -1;
-        }
-
-        String query = "select count(*) as total from user";
-        try (ResultSet resultSet = DBManager.executeQuery(query)) {
-            if (resultSet != null && resultSet.next()) {
-                return resultSet.getInt("total");
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.smthwr("getting number of users"));
-        }
-
-        return -1;
-    }
-
-    private static boolean executeUserQuery(String work, String query, Object... params) {
-        try {
-            int updates = DBManager.executeUpdate(query, params);
-            if (updates >= 1) {
-                logger.info(LogMsg.success(work));
-                return true;
-            } else {
-                throw new SQLException();
-            }
-        } catch (SQLException e) {
-            logger.error(LogMsg.fail(work), e);
-            return false;
-        }
-    }
-
-    private static boolean isLogInAndConnectedToTheDB(String work) {
-        if (!DBManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection(work));
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
-            return false;
-        }
-
-        return true;
     }
 }

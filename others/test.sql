@@ -14,7 +14,7 @@ create table user
     username       varchar(127)                                       not null unique,
     email          varchar(127)                                       not null unique,
     address        varchar(255),
-    role           enum ('USER', 'MODERATOR', 'ADMIN')                not null,
+    role           enum ('USER', 'MODERATOR', 'ADMIN')                not null default 'USER',
     accountStatus  enum ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'BANNED') not null default 'INACTIVE',
     dateCreated    datetime                                                    default current_timestamp,
     lastActive     datetime,
@@ -22,7 +22,8 @@ create table user
     passwordHash   varchar(255)                                       not null
 );
 
-alter table user auto_increment = 1;
+alter table user
+    auto_increment = 1;
 
 create index idxUserRole on user (role);
 
@@ -46,7 +47,7 @@ create table author
 create table book
 (
     id                int auto_increment primary key,
-    title             varchar(255) not null,
+    title             text not null,
     yearOfPublication int,
     shortDescription  text,
     coverImage        mediumblob,
@@ -150,20 +151,20 @@ create index idxViolationUser on violation (userId);
 create table notification
 (
     id               int auto_increment primary key,
-    recipient        int                                                           default -1,
+    recipient        int                                                           default null,
     content          text,
     notificationType enum ('REMINDER', 'WARNING', 'INFORMATION', 'ALERT') not null,
     timestamp        datetime                                                      default current_timestamp,
-    isRead           bool                                                 not null default false
+    isRead           bool                                                 not null default false,
+    foreign key (recipient) references user (id) on delete cascade
 );
 
 create index idxNotificationType on notification (notificationType);
 
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
-values ('Hung', 'Nguyen Tuong', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'USER',
+values ('Hung', 'Nguyen Tuong', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'ADMIN',
         '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK'),
        ('Minh', 'Hoang Le Minh', '2005-09-07', '23020111', '23020111@vnu.edu.vn', 'Phường', 'MODERATOR',
         '$2a$11$EQFy4/NKDPQ0y1DBql9UtuCQmDOEQO/iY8LjLEhTRQcKz4X.OST9u');
 
-select *
-from user;
+select * from user;

@@ -3,14 +3,17 @@ package com.hxngxd.utils;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
- * Lớp PasswordEncoder cung cấp các phương thức để mã hóa và so sánh mật khẩu bằng thuật toán bcrypt.
+ * Lớp PasswordEncoder cung cấp các phương thức để mã hóa và
+ * so sánh mật khẩu bằng thuật toán bcrypt.
  * Lớp này sử dụng cost factor là 11 để điều chỉnh số lần lặp trong quá trình mã hóa.
  * <p>
- * Đây là một lớp tiện ích không thể khởi tạo đối tượng trực tiếp, chỉ cung cấp các phương thức tĩnh.
+ * Đây là một lớp tiện ích không thể khởi tạo đối tượng trực tiếp,
+ * chỉ cung cấp các phương thức tĩnh.
  * <p>
  * Sử dụng:
  * - Phương thức encode(String originalPassword) để mã hóa mật khẩu.
- * - Phương thức compare(String originalPassword, String encodedPassword) để so sánh mật khẩu gốc với mật khẩu đã mã hóa.
+ * - Phương thức compare(String originalPassword, String encodedPassword) để so sánh mật khẩu gốc
+ * với mật khẩu đã mã hóa.
  * <p>
  * Sử dụng thư viện jBCrypt để thực hiện mã hóa và so sánh mật khẩu.
  */
@@ -18,7 +21,8 @@ public class PasswordEncoder {
 
     /**
      * cost_factor xác định số lần lặp của thuật toán bcrypt.
-     * Giá trị mặc định là 11. Tăng giá trị này sẽ tăng độ phức tạp và bảo mật, nhưng cũng làm tăng thời gian xử lý.
+     * Giá trị mặc định là 11. Tăng giá trị này sẽ tăng độ phức tạp và bảo mật,
+     * nhưng cũng làm tăng thời gian xử lý.
      */
     private static final int cost_factor = 11;
 
@@ -42,10 +46,11 @@ public class PasswordEncoder {
 
     /**
      * So sánh mật khẩu gốc với mật khẩu đã mã hóa.
-     * Phương thức này kiểm tra xem mật khẩu gốc khi được mã hóa lại có trùng với mật khẩu đã mã hóa hay không.
+     * Phương thức này kiểm tra xem mật khẩu gốc khi được mã hóa lại có trùng
+     * với mật khẩu đã mã hóa hay không.
      *
      * @param originalPassword Mật khẩu gốc cần kiểm tra.
-     * @param encodedPassword Mật khẩu đã mã hóa để so sánh.
+     * @param encodedPassword  Mật khẩu đã mã hóa để so sánh.
      * @return true nếu mật khẩu khớp, false nếu không khớp hoặc có lỗi trong quá trình kiểm tra.
      */
     public static boolean compare(String originalPassword, String encodedPassword) {
