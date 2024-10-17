@@ -57,7 +57,7 @@ public class UserService {
         }
 
         if (!EmailValidator.validate(email)) {
-            logger.info("The provided email is not valid");
+            logger.info(LogMsg.emailNotValid);
             return false;
         }
 
@@ -231,7 +231,7 @@ public class UserService {
         }
 
         if (!EmailValidator.validate(newEmail)) {
-            logger.info("Email is not valid");
+            logger.info(LogMsg.emailNotValid);
             return false;
         }
 

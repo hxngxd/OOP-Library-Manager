@@ -1,8 +1,10 @@
 package com.hxngxd.libraryManager;
 
+import com.hxngxd.controller.StageManager;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
+import com.hxngxd.enums.SceneType;
 import com.hxngxd.service.UserService;
 
 import com.hxngxd.utils.LogMsg;
@@ -25,13 +27,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Main extends Application {
-
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private final Logger logger = LogManager.getLogger(Main.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
-    private final UserService us = UserService.getInstance();
-    private Stage mainStage;
+    private final UserService userService = UserService.getInstance();
+    private final StageManager stageManager = StageManager.getInstance();
     private final double widthRatio = 0.5;
-    private final double heightRatio = 0.65;
+    private final double heightRatio = 0.7;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -40,33 +41,16 @@ public class Main extends Application {
             Platform.exit();
             return;
         }
-        this.mainStage = stage;
-        stage.setTitle("Library Manangement");
-        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
-
-        stage.setWidth(screenSize.getWidth() * widthRatio);
-        stage.setHeight(screenSize.getHeight() * heightRatio);
-        stage.setMinWidth(screenSize.getWidth() * widthRatio);
-        stage.setMinHeight(screenSize.getHeight() * heightRatio);
-
-        changeScene("login");
-    }
-
-    public void changeScene(String name) {
-        try {
-            Scene scene = new Scene(FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(name + ".fxml"))
-            ));
-            this.mainStage.setScene(scene);
-            this.mainStage.show();
-        } catch (IOException e) {
-            logger.error(LogMsg.sthwr("changing scene"), e);
-        }
+        stageManager.init(stage);
+        stageManager.setTitle("Library Management");
+        stageManager.setWidth(widthRatio, widthRatio);
+        stageManager.setHeight(heightRatio, heightRatio);
+        stageManager.setScene(SceneType.LOGIN);
     }
 
     @Override
     public void stop() {
-        us.logout();
+        userService.logout();
         boolean disconnect = db.disconnect();
     }
 

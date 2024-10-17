@@ -14,7 +14,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.controller.WelcomeController">
     <children>
-        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="25.0">
+        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="25.0">
             <children>
                 <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="QUẢN LÝ THƯ VIỆN" textAlignment="CENTER">
                     <font>
@@ -82,7 +82,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" text="ĐĂNG KÝ" HBox.hgrow="ALWAYS">
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToRegister" prefHeight="40.0" text="ĐĂNG KÝ" HBox.hgrow="ALWAYS">
                             <font>
                                 <Font size="14.0" />
                             </font>

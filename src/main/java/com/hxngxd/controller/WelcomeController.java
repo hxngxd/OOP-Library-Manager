@@ -1,6 +1,7 @@
 package com.hxngxd.controller;
 
 import com.hxngxd.entities.User;
+import com.hxngxd.enums.SceneType;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,6 +18,7 @@ public class WelcomeController {
     private TextField passwordField;
 
     private final UserService us = UserService.getInstance();
+    private final StageManager stageManager = StageManager.getInstance();
 
     @FXML
     void logIn(ActionEvent event) {
@@ -25,7 +27,7 @@ public class WelcomeController {
 
     @FXML
     void goToRegister(ActionEvent event) {
-
+        stageManager.setScene(SceneType.REGISTER);
     }
 
     @FXML

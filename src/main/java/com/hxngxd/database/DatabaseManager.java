@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class DatabaseManager {
-    public static final Logger logger = LogManager.getLogger(DatabaseManager.class);
+    private final Logger logger = LogManager.getLogger(DatabaseManager.class);
     private Connection connection = null;
     private String databaseUrl = null;
     private String username = null;
