@@ -20,6 +20,10 @@ public class User extends Person {
     public User() {
     }
 
+    public User(int id) {
+        this.id = id;
+    }
+
     public User(int id, String firstName, String lastName, LocalDate dateOfBirth,
                 String username, String email, String passwordHash,
                 String address, int violationCount) {

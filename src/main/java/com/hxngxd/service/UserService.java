@@ -84,8 +84,7 @@ public class UserService {
                 firstName, lastName, Date.valueOf(dateOfBirth), username, email,
                 passwordHash, AccountStatus.ACTIVE.name());
         if (insert) {
-            currentUser = new User();
-            currentUser.setId(db.getGeneratedId());
+            currentUser = new User(db.getGeneratedId());
             currentUser.setFirstName(firstName);
             currentUser.setLastName(lastName);
             currentUser.setDateOfBirth(dateOfBirth);
@@ -434,8 +433,7 @@ public class UserService {
             db.setParameters(pStatement, params);
             try (ResultSet resultSet = pStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    User user = new User();
-                    user.setId(resultSet.getInt("id"));
+                    User user = new User(resultSet.getInt("id"));
                     user.setUsername(resultSet.getString("username"));
                     user.setEmail(resultSet.getString("email"));
                     user.setPasswordHash(resultSet.getString("passwordHash"));

@@ -7,73 +7,8 @@ import com.hxngxd.entities.User;
 
 import java.util.List;
 
-/**
- * Lớp BookService quản lý các thao tác liên quan đến sách như thay đổi thông tin sách, quản lý tác giả, thể loại, và tìm kiếm sách.
- */
 public class BookService {
 
-    /**
-     * Thay đổi tên sách.
-     *
-     * @param bookId   ID của sách.
-     * @param newTitle Tên sách mới.
-     * @return true nếu thay đổi thành công, false nếu thất bại.
-     */
-    public boolean changeTitle(int bookId, String newTitle) {
-        return true;
-    }
-
-    /**
-     * Thay đổi năm sáng tác của sách.
-     *
-     * @param bookId  ID của sách.
-     * @param newYear Năm sáng tác mới.
-     * @return true nếu thay đổi thành công, false nếu thất bại.
-     */
-    public boolean changeYear(int bookId, short newYear) {
-        return true;
-    }
-
-    /**
-     * Thay đổi mô tả của sách.
-     *
-     * @param bookId         ID của sách.
-     * @param newDescription Mô tả mới.
-     * @return true nếu thay đổi thành công, false nếu thất bại.
-     */
-    public boolean changeDescription(int bookId, String newDescription) {
-        return true;
-    }
-
-    /**
-     * Thay đổi ảnh bìa của sách.
-     *
-     * @param bookId   ID của sách.
-     * @param imageURL URL ảnh bìa mới.
-     * @return true nếu thay đổi thành công, false nếu thất bại.
-     */
-    public boolean changeCoverImage(int bookId, String imageURL) {
-        return true;
-    }
-
-    /**
-     * Thay đổi số trang của sách.
-     *
-     * @param bookId ID của sách.
-     * @param num    Số trang mới.
-     * @return true nếu thay đổi thành công, false nếu thất bại.
-     */
-    public boolean changeNumberOfPages(int bookId, int num) {
-        return true;
-    }
-
-    /**
-     * Cập nhật số bản sao có sẵn của sách.
-     *
-     * @param bookId     ID của sách.
-     * @param difference Sự thay đổi số lượng bản sao có sẵn (có thể là số âm hoặc dương).
-     * @return true nếu cập nhật thành công, false nếu thất bại.
-     */
     public boolean updateAvailableCopies(int bookId, int difference) {
         return true;
     }
