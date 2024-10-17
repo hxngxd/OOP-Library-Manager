@@ -11,6 +11,7 @@ public class LogMsg {
     public static final String noDBConnection = "The database is not connected";
     public static final String emailNotValid = "Email is not valid";
     public static final String infoTooLong = "Some information is too long";
+    public static final String infoIsMissing = "Some information is missing";
 
     private LogMsg() {
     }
