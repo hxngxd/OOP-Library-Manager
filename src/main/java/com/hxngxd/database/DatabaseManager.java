@@ -1,8 +1,5 @@
 package com.hxngxd.database;
 
-import com.hxngxd.entities.User;
-import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.Role;
 import com.hxngxd.utils.LogMsg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 
 public class DatabaseManager {
-
     public static final Logger logger = LogManager.getLogger(DatabaseManager.class);
     private Connection connection = null;
     private String databaseUrl = null;

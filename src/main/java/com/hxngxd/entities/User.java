@@ -9,7 +9,6 @@ import java.time.LocalDate;
  * Lớp User kế thừa từ Person, đại diện cho người dùng trong hệ thống.
  */
 public class User extends Person {
-
     private String username;
     private String email;
     private String passwordHash;
@@ -19,6 +18,17 @@ public class User extends Person {
     private int violationCount;
 
     public User() {
+    }
+
+    public User(int id, String firstName, String lastName, LocalDate dateOfBirth,
+                String username, String email, String passwordHash,
+                String address, int violationCount) {
+        super(id, firstName, lastName, dateOfBirth);
+        this.username = username;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.address = address;
+        this.violationCount = violationCount;
     }
 
     public String getUsername() {
@@ -76,5 +86,4 @@ public class User extends Person {
     public void setViolationCount(int violationCount) {
         this.violationCount = violationCount;
     }
-
 }

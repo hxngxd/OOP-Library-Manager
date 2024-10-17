@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 public class UIController {
-
     @FXML
     private Label welcomeText;
 
@@ -13,5 +12,4 @@ public class UIController {
     void onHelloButtonClick(ActionEvent event) {
         welcomeText.setText("O QUY");
     }
-    
 }

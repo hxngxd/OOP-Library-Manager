@@ -1,7 +1,6 @@
 package com.hxngxd.utils;
 
 public class LogMsg {
-
     public static final String tryAgain = "Please try again";
     public static final String userExist = "User already exists";
     public static final String userNotFound = "User does not exist";

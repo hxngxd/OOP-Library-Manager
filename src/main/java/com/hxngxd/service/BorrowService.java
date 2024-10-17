@@ -1,6 +1,6 @@
 package com.hxngxd.service;
 
-import com.hxngxd.entities.Borrowing;
+import com.hxngxd.actions.Borrowing;
 
 import java.util.List;
 

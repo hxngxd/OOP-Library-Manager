@@ -35,7 +35,7 @@
                   <Insets bottom="10.0" />
                </padding>
                 </Label>
-                <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Tên đăng nhập/Email" text="23020078">
+                <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Tên đăng nhập/Email">
                     <font>
                         <Font size="18.0" />
                     </font>
@@ -46,7 +46,7 @@
                         <Insets left="25.0" />
                     </padding>
                 </TextField>
-                <PasswordField fx:id="passwordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Mật khẩu" text="Hung@07112005">
+                <PasswordField fx:id="passwordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Mật khẩu">
                     <font>
                         <Font size="18.0" />
                     </font>

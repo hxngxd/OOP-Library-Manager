@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class WelcomeController {
-
     @FXML
     private Label loginStatusLabel;
     @FXML
@@ -25,8 +24,12 @@ public class WelcomeController {
     }
 
     @FXML
+    void goToRegister(ActionEvent event) {
+
+    }
+
+    @FXML
     void exit(ActionEvent event) {
         Platform.exit();
     }
-
 }
