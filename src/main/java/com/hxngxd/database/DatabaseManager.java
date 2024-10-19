@@ -12,6 +12,7 @@ import java.util.Properties;
 
 public class DatabaseManager {
     private final Logger logger = LogManager.getLogger(DatabaseManager.class);
+
     private Connection connection = null;
     private String databaseUrl = null;
     private String username = null;
@@ -70,16 +71,16 @@ public class DatabaseManager {
         }
     }
 
-    public boolean isConnected() {
+    public static boolean isConnected() {
         try {
-            return connection != null && !connection.isClosed();
+            return DatabaseManager.getInstance().connection != null &&
+                    !DatabaseManager.getInstance().connection.isClosed();
         } catch (SQLException e) {
-            logger.error(LogMsg.sthwr("checking database connection"), e);
             return false;
         }
     }
 
-    public void setParameters(PreparedStatement pStatement, Object... params) throws SQLException {
+    private void setParameters(PreparedStatement pStatement, Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             pStatement.setObject(i + 1, params[i]);
         }
@@ -216,5 +217,18 @@ public class DatabaseManager {
             logger.error(e);
         }
         return false;
+    }
+
+    public <T> T select(String work, String query,
+                        ResultSetMapper<T> mapper, Object... params) {
+        try (PreparedStatement pStatement = connection.prepareStatement(query)) {
+            setParameters(pStatement, params);
+            try (ResultSet resultSet = pStatement.executeQuery()) {
+                return mapper.map(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error(LogMsg.sthwr(work), e);
+        }
+        return null;
     }
 }

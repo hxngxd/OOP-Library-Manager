@@ -5,7 +5,7 @@ import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
-import com.hxngxd.utils.EmailValidator;
+import com.hxngxd.utils.InputValidator;
 import com.hxngxd.utils.PasswordEncoder;
 import com.hxngxd.utils.LogMsg;
 
@@ -18,9 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UserService {
-    private final Logger logger = LogManager.getLogger(UserService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
-    private User currentUser;
+    private static final Logger logger = LogManager.getLogger(UserService.class);
+    private User currentUser = null;
 
     private UserService() {
     }
@@ -37,18 +37,42 @@ public class UserService {
         return currentUser;
     }
 
-    public boolean isLoggedIn() {
-        return currentUser != null;
+    public static boolean isLoggedIn() {
+        return UserService.getInstance().getCurrentUser() != null;
+    }
+
+    public static boolean checkLoggedInAndConnected() {
+        if (!DatabaseManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+        if (!UserService.isLoggedIn()) {
+            logger.info(LogMsg.userNotLogIn);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkLoggedOutAndConnected() {
+        if (!DatabaseManager.isConnected()) {
+            logger.info(LogMsg.noDBConnection);
+            return false;
+        }
+        if (UserService.isLoggedIn()) {
+            logger.info(LogMsg.userNotLogOut);
+            return false;
+        }
+        return true;
     }
 
     public boolean register(String firstName, String lastName, String username,
                             String email, LocalDate dateOfBirth, String password,
                             String confirmedPassword) {
-        if (!checkLoggedInAndConnected()) {
+        if (!checkLoggedOutAndConnected()) {
             return false;
         }
 
-        if (!isValidInput(
+        if (!InputValidator.validateInput(
                 firstName, lastName,
                 username, email,
                 password, confirmedPassword
@@ -56,7 +80,7 @@ public class UserService {
             return false;
         }
 
-        if (!EmailValidator.validate(email)) {
+        if (!InputValidator.validateEmail(email)) {
             logger.info(LogMsg.emailNotValid);
             return false;
         }
@@ -95,15 +119,15 @@ public class UserService {
             currentUser.setAccountStatus(AccountStatus.ACTIVE);
             currentUser.setViolationCount(0);
         }
-        return logResult(insert, "create account");
+        return LogMsg.logResult(insert, "create account");
     }
 
     public boolean login(String username, String email, String password) {
-        if (!checkLoggedInAndConnected()) {
+        if (!checkLoggedOutAndConnected()) {
             return false;
         }
 
-        if (!isValidInput(
+        if (!InputValidator.validateInput(
                 username, email, password
         )) {
             return false;
@@ -139,17 +163,11 @@ public class UserService {
         } else {
             currentUser = null;
         }
-        return logResult(update, "log in");
+        return LogMsg.logResult(update, "log in");
     }
 
     public boolean logout() {
-        if (!db.isConnected()) {
-            logger.info(LogMsg.noDBConnection);
-            return false;
-        }
-
-        if (!isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
+        if (!checkLoggedInAndConnected()) {
             return false;
         }
 
@@ -161,7 +179,7 @@ public class UserService {
         if (update) {
             currentUser = null;
         }
-        return logResult(update, "log out");
+        return LogMsg.logResult(update, "log out");
     }
 
     public boolean updateProfile(int userId, String newFirstName, String newLastName,
@@ -188,7 +206,7 @@ public class UserService {
             }
         }
 
-        if (!isValidInput(
+        if (!InputValidator.validateInput(
                 newFirstName, newLastName, newAddress
         )) {
             return false;
@@ -199,7 +217,7 @@ public class UserService {
                 List.of(newFirstName, newLastName,
                         Date.valueOf(newDateOfBirth), newAddress),
                 List.of("id"), List.of(userId));
-        return logResult(update, "update profile");
+        return LogMsg.logResult(update, "update profile");
     }
 
     public boolean changeEmail(int userId, String newEmail) {
@@ -230,7 +248,7 @@ public class UserService {
             }
         }
 
-        if (!EmailValidator.validate(newEmail)) {
+        if (!InputValidator.validateEmail(newEmail)) {
             logger.info(LogMsg.emailNotValid);
             return false;
         }
@@ -242,7 +260,7 @@ public class UserService {
 
         boolean update = db.update("user", "email", newEmail,
                 "id", userId);
-        return logResult(update, "change email");
+        return LogMsg.logResult(update, "change email");
     }
 
     public boolean changeOthersRole(int userId, Role role) {
@@ -273,7 +291,7 @@ public class UserService {
 
         boolean update = db.update("user", "role", role.name(),
                 "id", userId);
-        return logResult(update, "change others' role");
+        return LogMsg.logResult(update, "change others' role");
     }
 
     public boolean changeOthersAccountStatus(int userId, AccountStatus status) {
@@ -310,7 +328,7 @@ public class UserService {
 
         boolean update = db.update("user", "accountStatus", status.name(),
                 "id", userId);
-        return logResult(update, "change others' status");
+        return LogMsg.logResult(update, "change others' status");
     }
 
     public boolean changePassword(String oldPassword, String newPassword) {
@@ -326,7 +344,7 @@ public class UserService {
         boolean update = db.update("user", "passwordHash",
                 PasswordEncoder.encode(currentUser.getPasswordHash()),
                 "id", currentUser.getId());
-        return logResult(update, "change password");
+        return LogMsg.logResult(update, "change password");
     }
 
     public boolean changePassword(int userId, String newPassword) {
@@ -352,7 +370,7 @@ public class UserService {
 
         boolean update = db.update("user", "passwordHash",
                 PasswordEncoder.encode(newPassword), "id", userId);
-        return logResult(update, "change others' password");
+        return LogMsg.logResult(update, "change others' password");
     }
 
 //    public static boolean resetPasswordRequest(String email) {
@@ -386,7 +404,7 @@ public class UserService {
         if (delete) {
             currentUser = null;
         }
-        return logResult(delete, "delete your account and log out");
+        return LogMsg.logResult(delete, "delete your account and log out");
     }
 
     public boolean deleteOthersAccount(int userId) {
@@ -416,7 +434,7 @@ public class UserService {
         }
 
         boolean delete = db.delete("user", "id", userId);
-        return logResult(delete, "delete account");
+        return LogMsg.logResult(delete, "delete account");
     }
 
     private User getUserbyId(Boolean inDetail, int id) {
@@ -429,67 +447,24 @@ public class UserService {
 
     private User getUser(Boolean inDetail, Object... params) {
         String query = "select * from user where id = ? or username = ? or email = ?";
-        try (PreparedStatement pStatement = db.getConnection().prepareStatement(query)) {
-            db.setParameters(pStatement, params);
-            try (ResultSet resultSet = pStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    User user = new User(resultSet.getInt("id"));
-                    user.setUsername(resultSet.getString("username"));
-                    user.setEmail(resultSet.getString("email"));
-                    user.setPasswordHash(resultSet.getString("passwordHash"));
-                    user.setAccountStatus(
-                            AccountStatus.valueOf(
-                                    resultSet.getString("accountStatus")));
-                    if (inDetail) {
-                        user.setFirstName(resultSet.getString("firstName"));
-                        user.setLastName(resultSet.getString("lastName"));
-                        user.setAddress(resultSet.getString("address"));
-                        user.setDateOfBirth(
-                                resultSet.getDate("dateOfBirth").toLocalDate());
-                        user.setRole(Role.valueOf(resultSet.getString("role")));
-                        user.setViolationCount(resultSet.getInt("violationCount"));
-                    }
-                    return user;
+        return db.select("getting user", query, resultSet -> {
+            if (resultSet.next()) {
+                User user = new User(resultSet.getInt("id"));
+                user.setUsername(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPasswordHash(resultSet.getString("passwordHash"));
+                user.setAccountStatus(AccountStatus.valueOf(resultSet.getString("accountStatus")));
+                if (inDetail) {
+                    user.setFirstName(resultSet.getString("firstName"));
+                    user.setLastName(resultSet.getString("lastName"));
+                    user.setAddress(resultSet.getString("address"));
+                    user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
+                    user.setRole(Role.valueOf(resultSet.getString("role")));
+                    user.setViolationCount(resultSet.getInt("violationCount"));
                 }
+                return user;
             }
-        } catch (SQLException | NullPointerException e) {
-            logger.error(LogMsg.sthwr("getting user"), e);
-        }
-        return null;
-    }
-
-    private boolean checkLoggedInAndConnected() {
-        if (!db.isConnected()) {
-            logger.info(LogMsg.noDBConnection);
-            return false;
-        }
-        if (isLoggedIn()) {
-            logger.info(LogMsg.userNotLogOut);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean logResult(boolean result, String action) {
-        if (result) {
-            logger.info(LogMsg.success(action));
-        } else {
-            logger.error(LogMsg.fail(action));
-        }
-        return result;
-    }
-
-    private boolean isValidInput(String... inputs) {
-        for (String input : inputs) {
-            if (input.isEmpty()) {
-                logger.info(LogMsg.infoIsMissing);
-                return false;
-            }
-            if (input.length() > 127) {
-                logger.info(LogMsg.infoTooLong);
-                return false;
-            }
-        }
-        return true;
+            return null;
+        }, params);
     }
 }

@@ -2,7 +2,7 @@ package com.hxngxd.actions;
 
 import java.time.LocalDateTime;
 
-abstract class Action {
+public abstract class Action {
     protected int id;
     protected int userId;
     protected LocalDateTime timestamp;

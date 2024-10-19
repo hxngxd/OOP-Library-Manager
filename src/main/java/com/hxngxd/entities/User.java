@@ -90,4 +90,21 @@ public class User extends Person {
     public void setViolationCount(int violationCount) {
         this.violationCount = violationCount;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", address='" + address + '\'' +
+                ", role=" + role +
+                ", accountStatus=" + accountStatus +
+                ", violationCount=" + violationCount +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                '}';
+    }
 }

@@ -2,7 +2,7 @@ package com.hxngxd.entities;
 
 import java.time.LocalDate;
 
-abstract class Person {
+public abstract class Person {
     protected int id;
     protected String firstName;
     protected String lastName;
