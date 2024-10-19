@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -15,7 +14,7 @@
     <children>
         <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="25.0">
             <children>
-                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ" textAlignment="CENTER">
+                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ TÀI KHOẢN" textAlignment="CENTER">
                     <font>
                         <Font name="System Bold" size="36.0" />
                     </font>
@@ -81,12 +80,7 @@
                   <Insets left="25.0" />
                </padding>
             </PasswordField>
-            <DatePicker maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Ngày sinh" showWeekNumbers="true">
-               <padding>
-                  <Insets left="25.0" />
-               </padding>
-            </DatePicker>
-                  <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" text="TẠO TÀI KHOẢN">
+                  <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#register" prefHeight="40.0" text="TẠO TÀI KHOẢN">
                       <font>
                           <Font size="14.0" />
                       </font>
@@ -98,18 +92,23 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" text="ĐĂNG NHẬP" HBox.hgrow="ALWAYS">
+                  <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToLogin" prefHeight="40.0" text="ĐĂNG NHẬP" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <Button alignment="CENTER" layoutX="10.0" layoutY="420.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" text="THOÁT">
+            <Button alignment="CENTER" layoutX="10.0" layoutY="420.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefHeight="40.0" text="THOÁT">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
+            <Label fx:id="registerStatusLabel" alignment="CENTER" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
             </children>
         </VBox>
     </children>

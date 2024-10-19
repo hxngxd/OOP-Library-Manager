@@ -1,6 +1,5 @@
 package com.hxngxd.controller;
 
-import com.hxngxd.entities.User;
 import com.hxngxd.enums.SceneType;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
@@ -13,21 +12,33 @@ public class WelcomeController {
     @FXML
     private Label loginStatusLabel;
     @FXML
+    private Label registerStatusLabel;
+    @FXML
     private TextField usernameField;
     @FXML
     private TextField passwordField;
 
-    private final UserService us = UserService.getInstance();
+    private final UserService userService = UserService.getInstance();
     private final StageManager stageManager = StageManager.getInstance();
 
     @FXML
-    void logIn(ActionEvent event) {
-        us.login(usernameField.getText(), usernameField.getText(), passwordField.getText());
+    void goToLogin(ActionEvent event) {
+        stageManager.setScene(SceneType.LOGIN);
     }
 
     @FXML
     void goToRegister(ActionEvent event) {
         stageManager.setScene(SceneType.REGISTER);
+    }
+
+    @FXML
+    void logIn(ActionEvent event) {
+        userService.login(usernameField.getText(), usernameField.getText(), passwordField.getText());
+    }
+
+    @FXML
+    void register(ActionEvent event) {
+
     }
 
     @FXML
