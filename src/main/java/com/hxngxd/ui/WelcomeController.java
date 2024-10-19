@@ -1,6 +1,6 @@
-package com.hxngxd.controller;
+package com.hxngxd.ui;
 
-import com.hxngxd.enums.SceneType;
+import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,17 +23,18 @@ public class WelcomeController {
 
     @FXML
     void goToLogin(ActionEvent event) {
-        stageManager.setScene(SceneType.LOGIN);
+        stageManager.setScene(UI.LOGIN);
     }
 
     @FXML
     void goToRegister(ActionEvent event) {
-        stageManager.setScene(SceneType.REGISTER);
+        stageManager.setScene(UI.REGISTER);
     }
 
     @FXML
     void logIn(ActionEvent event) {
-        userService.login(usernameField.getText(), usernameField.getText(), passwordField.getText());
+        userService.login(
+                usernameField.getText(), usernameField.getText(), passwordField.getText());
     }
 
     @FXML

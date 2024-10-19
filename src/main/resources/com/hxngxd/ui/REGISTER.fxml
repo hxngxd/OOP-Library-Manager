@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.WelcomeController">
+    <children>
+        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308"
+              maxWidth="1.7976931348623157E308" spacing="15.0" AnchorPane.bottomAnchor="25.0"
+              AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0"
+              AnchorPane.topAnchor="25.0">
+            <children>
+                <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+                       maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ TÀI KHOẢN"
+                       textAlignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="36.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="-10.0"/>
+                    </VBox.margin>
+                </Label>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="354.0"
+                      maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                      spacing="20.0">
+                    <children>
+                        <TextField maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" prefHeight="50.0"
+                                   promptText="Tên" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="18.0"/>
+                            </font>
+                            <padding>
+                                <Insets left="25.0"/>
+                            </padding>
+                        </TextField>
+                        <TextField maxHeight="1.7976931348623157E308"
+                                   maxWidth="1.7976931348623157E308" prefHeight="50.0"
+                                   promptText="Họ và tên đệm" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="18.0"/>
+                            </font>
+                            <padding>
+                                <Insets left="25.0"/>
+                            </padding>
+                        </TextField>
+                    </children>
+                </HBox>
+                <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                           prefHeight="50.0" promptText="Tên đăng nhập">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets left="25.0"/>
+                    </padding>
+                </TextField>
+                <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                           prefHeight="50.0" promptText="Email">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                    <padding>
+                        <Insets left="25.0"/>
+                    </padding>
+                </TextField>
+                <PasswordField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               prefHeight="50.0" promptText="Mật khẩu">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets left="25.0"/>
+                    </padding>
+                </PasswordField>
+                <PasswordField layoutX="10.0" layoutY="317.0" maxHeight="1.7976931348623157E308"
+                               maxWidth="1.7976931348623157E308" prefHeight="50.0"
+                               promptText="Xác nhận lại mật khẩu">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                    <padding>
+                        <Insets left="25.0"/>
+                    </padding>
+                </PasswordField>
+                <Button alignment="CENTER" maxHeight="1.7976931348623157E308"
+                        maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        onAction="#register" prefHeight="40.0" text="TẠO TÀI KHOẢN">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Button>
+                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308">
+                    <children>
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
+                               maxWidth="1.7976931348623157E308" text="Đã có tài khoản?"
+                               textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308"
+                                maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                onAction="#goToLogin" prefHeight="40.0" text="ĐĂNG NHẬP"
+                                HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+                <Button alignment="CENTER" layoutX="10.0" layoutY="420.0"
+                        maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                        mnemonicParsing="false" onAction="#exit" prefHeight="40.0" text="THOÁT">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Button>
+                <Label fx:id="registerStatusLabel" alignment="CENTER" layoutX="10.0" layoutY="10.0"
+                       maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                       textAlignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

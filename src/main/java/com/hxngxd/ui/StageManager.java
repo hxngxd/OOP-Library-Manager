@@ -1,14 +1,22 @@
-package com.hxngxd.controller;
+package com.hxngxd.ui;
 
-import com.hxngxd.enums.SceneType;
+import com.hxngxd.enums.UI;
+import com.hxngxd.utils.LogMsg;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 public class StageManager {
-    private static final SceneManager sceneManager = SceneManager.getInstance();
     private static final Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+    private static final Logger logger = LogManager.getLogger(StageManager.class);
+
     private Stage mainStage;
 
     private StageManager() {
@@ -28,11 +36,14 @@ public class StageManager {
         }
     }
 
-    public void setScene(SceneType sceneType) {
-        Scene currentScene = sceneManager.loadScene(sceneType);
-        if (currentScene != null) {
+    public void setScene(UI ui) {
+        try {
+            UIManager.load(ui);
+            Scene currentScene = new Scene(UIManager.Loaders.get(ui).load());
             this.mainStage.setScene(currentScene);
             this.mainStage.show();
+        } catch (IOException e) {
+            logger.info(LogMsg.fail("load scene"), e);
         }
     }
 

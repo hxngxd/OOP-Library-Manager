@@ -1,201 +1,135 @@
 package com.hxngxd.service;
 
+import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
+import com.hxngxd.utils.ImageHandler;
+import javafx.scene.image.Image;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
+    private final Logger logger = LogManager.getLogger(UserService.class);
+    private final DatabaseManager db = DatabaseManager.getInstance();
+    public static final List<Book> currentBooks = new ArrayList<>();
+
+    private BookService() {
+    }
+
+    private static class SingletonHolder {
+        private static final BookService instance = new BookService();
+    }
+
+    public static BookService getInstance() {
+        return BookService.SingletonHolder.instance;
+    }
 
     public boolean updateAvailableCopies(int bookId, int difference) {
         return true;
     }
 
-    /**
-     * Cập nhật tổng số bản sao của sách.
-     *
-     * @param bookId     ID của sách.
-     * @param difference Sự thay đổi tổng số bản sao (có thể là số âm hoặc dương).
-     * @return true nếu cập nhật thành công, false nếu thất bại.
-     */
     public boolean updateTotalCopies(int bookId, int difference) {
         return true;
     }
 
-    /**
-     * Thêm tác giả cho sách.
-     *
-     * @param bookId   ID của sách.
-     * @param authorId ID của tác giả.
-     * @return true nếu thêm thành công, false nếu thất bại.
-     */
     public boolean addAuthor(int bookId, int authorId) {
         return true;
     }
 
-    /**
-     * Xóa tác giả khỏi sách.
-     *
-     * @param bookId   ID của sách.
-     * @param authorId ID của tác giả.
-     * @return true nếu xóa thành công, false nếu thất bại.
-     */
     public boolean removeAuthor(int bookId, int authorId) {
         return true;
     }
 
-    /**
-     * Lấy danh sách tác giả của sách.
-     *
-     * @param bookId ID của sách.
-     * @return Danh sách tác giả của sách.
-     */
     public List<Author> getBooksAuthor(int bookId) {
         return null;
     }
 
-    /**
-     * Thêm thể loại cho sách.
-     *
-     * @param bookId  ID của sách.
-     * @param genreId ID của thể loại.
-     * @return true nếu thêm thành công, false nếu thất bại.
-     */
     public boolean addGenre(int bookId, int genreId) {
         return true;
     }
 
-    /**
-     * Xóa thể loại khỏi sách.
-     *
-     * @param bookId  ID của sách.
-     * @param genreId ID của thể loại.
-     * @return true nếu xóa thành công, false nếu thất bại.
-     */
     public boolean removeGenre(int bookId, int genreId) {
         return true;
     }
 
-    /**
-     * Lấy danh sách thể loại của sách.
-     *
-     * @param bookId ID của sách.
-     * @return Danh sách thể loại của sách.
-     */
     public List<Genre> getBooksGenre(int bookId) {
         return null;
     }
 
-    /**
-     * Tìm kiếm sách theo tiêu đề.
-     *
-     * @param title Tiêu đề sách cần tìm.
-     * @return Danh sách các sách có tiêu đề khớp với từ khóa tìm kiếm.
-     */
     public List<Book> searchBooksByTitle(String title) {
         return null;
     }
 
-    /**
-     * Tìm kiếm sách theo năm xuất bản.
-     *
-     * @param yearOfPublication Năm xuất bản cần tìm.
-     * @return Danh sách các sách xuất bản trong năm cụ thể.
-     */
     public List<Book> searchBooksByYear(short yearOfPublication) {
         return null;
     }
 
-    /**
-     * Tìm kiếm sách theo mô tả ngắn.
-     *
-     * @param shortDescription Mô tả ngắn của sách.
-     * @return Danh sách các sách có mô tả ngắn khớp với từ khóa tìm kiếm.
-     */
     public List<Book> searchBooksByDescription(String shortDescription) {
         return null;
     }
 
-    /**
-     * Tìm kiếm sách theo đánh giá trung bình.
-     *
-     * @param averageRating Đánh giá trung bình của sách.
-     * @return Danh sách các sách có đánh giá trung bình lớn hơn hoặc bằng giá trị đưa ra.
-     */
     public List<Book> searchBooksByRating(double averageRating) {
         return null;
     }
 
-    /**
-     * Thêm sách mới vào hệ thống.
-     *
-     * @param book Thông tin sách mới.
-     * @return true nếu thêm thành công, false nếu thất bại.
-     */
     public boolean addBook(Book book) {
-        return true;
+        return false;
     }
 
-    /**
-     * Xóa sách theo ID.
-     *
-     * @param id ID của sách.
-     * @return true nếu xóa thành công, false nếu thất bại.
-     */
     public boolean deleteBook(int id) {
         return true;
     }
 
-    /**
-     * Lấy thông tin sách theo ID.
-     *
-     * @param id ID của sách.
-     * @return Thông tin của sách.
-     */
     public Book getBookById(int id) {
         return null;
     }
 
-    /**
-     * Lưu sách vào danh sách yêu thích.
-     *
-     * @param bookId ID của sách.
-     * @return true nếu lưu thành công, false nếu thất bại.
-     */
     public boolean saveBook(int bookId) {
         return true;
     }
 
-    /**
-     * Xóa sách khỏi danh sách yêu thích.
-     *
-     * @param bookId ID của sách.
-     * @return true nếu xóa thành công, false nếu thất bại.
-     */
     public boolean removeSavedBook(int bookId) {
         return true;
     }
 
-    /**
-     * Lấy danh sách người dùng đã lưu sách nào đó vào danh sách yêu thích.
-     *
-     * @param bookId ID của sách.
-     * @return Danh sách người dùng đã lưu sách.
-     */
     public List<User> getSavingUsers(int bookId) {
         return null;
     }
 
-    /**
-     * Lấy danh sách sách mà người dùng đã lưu vào danh sách yêu thích.
-     *
-     * @param userId ID của người dùng.
-     * @return Danh sách sách đã lưu.
-     */
     public List<Book> getUsersSavedBooks(int userId) {
         return null;
     }
 
+    public void getAllBooks() {
+        currentBooks.clear();
+        String query = "select * from book";
+        db.select("getting books", query, resultSet -> {
+            while (resultSet.next()) {
+                Book book = new Book(
+                        resultSet.getInt("id"),
+                        resultSet.getTimestamp("dateAdded").toLocalDateTime(),
+                        resultSet.getTimestamp("lastUpdated").toLocalDateTime(),
+                        resultSet.getDouble("averageRating")
+                );
+                book.setTitle(resultSet.getString("title"));
+                book.setYearOfPublication(resultSet.getShort("yearOfPublication"));
+                book.setShortDescription(resultSet.getString("shortDescription"));
+                book.setNumberOfPages(resultSet.getInt("numberOfPages"));
+                book.setAvailableCopies(resultSet.getInt("availableCopies"));
+                book.setTotalCopies(resultSet.getInt("totalCopies"));
+                book.setCoverImage(ImageHandler.toImage(
+                        resultSet.getBytes("coverImage")
+                ));
+                currentBooks.add(book);
+            }
+            return null;
+        });
+    }
 }

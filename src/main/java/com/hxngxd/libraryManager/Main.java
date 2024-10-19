@@ -1,27 +1,18 @@
 package com.hxngxd.libraryManager;
 
-import com.hxngxd.controller.StageManager;
+import com.hxngxd.ui.HomeController;
+import com.hxngxd.ui.StageManager;
 import com.hxngxd.database.DatabaseManager;
-import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.Role;
-import com.hxngxd.enums.SceneType;
+import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 
-import com.hxngxd.utils.LogMsg;
+import com.hxngxd.ui.UIManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.application.Platform;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,9 +21,10 @@ public class Main extends Application {
     private final Logger logger = LogManager.getLogger(Main.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
     private final UserService userService = UserService.getInstance();
+    private final BookService bookService = BookService.getInstance();
     private final StageManager stageManager = StageManager.getInstance();
-    private final double widthRatio = 0.5;
-    private final double heightRatio = 0.7;
+    private final double widthRatio = 0.85;
+    private final double heightRatio = 0.8;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -43,9 +35,14 @@ public class Main extends Application {
         }
         stageManager.init(stage);
         stageManager.setTitle("Library Management");
+        stageManager.setScene(UI.HOME);
         stageManager.setWidth(widthRatio, widthRatio);
         stageManager.setHeight(heightRatio, heightRatio);
-        stageManager.setScene(SceneType.LOGIN);
+
+        userService.login("23020078", "23020078", "Hung@07112005");
+        bookService.getAllBooks();
+        HomeController homeController = UIManager.Loaders.get(UI.HOME).getController();
+        homeController.displayBooks();
     }
 
     @Override

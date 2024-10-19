@@ -1,5 +1,8 @@
 package com.hxngxd.entities;
 
+import javafx.scene.image.Image;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Book {
@@ -13,6 +16,18 @@ public class Book {
     private int availableCopies;
     private int totalCopies;
     private double averageRating;
+    private Image coverImage;
+
+    public Book() {
+    }
+
+    public Book(int id, LocalDateTime dateAdded,
+                LocalDateTime lastUpdated, double averageRating) {
+        this.id = id;
+        this.dateAdded = dateAdded;
+        this.lastUpdated = lastUpdated;
+        this.averageRating = averageRating;
+    }
 
     public Book(int id, String title, short yearOfPublication, String shortDescription,
                 int numberOfPages, int availableCopies, int totalCopies) {
@@ -91,5 +106,29 @@ public class Book {
 
     public double getAverageRating() {
         return averageRating;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", yearOfPublication=" + yearOfPublication +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", numberOfPages=" + numberOfPages +
+                ", dateAdded=" + dateAdded +
+                ", lastUpdated=" + lastUpdated +
+                ", availableCopies=" + availableCopies +
+                ", totalCopies=" + totalCopies +
+                ", averageRating=" + averageRating +
+                '}';
+    }
+
+    public Image getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(Image coverImage) {
+        this.coverImage = coverImage;
     }
 }
