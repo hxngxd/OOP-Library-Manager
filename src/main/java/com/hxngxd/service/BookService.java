@@ -6,12 +6,9 @@ import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
 import com.hxngxd.utils.ImageHandler;
-import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +121,7 @@ public class BookService {
                 book.setNumberOfPages(resultSet.getInt("numberOfPages"));
                 book.setAvailableCopies(resultSet.getInt("availableCopies"));
                 book.setTotalCopies(resultSet.getInt("totalCopies"));
-                book.setCoverImage(ImageHandler.toImage(
+                book.setCoverImage(ImageHandler.byteToImage(
                         resultSet.getBytes("coverImage")
                 ));
                 currentBooks.add(book);

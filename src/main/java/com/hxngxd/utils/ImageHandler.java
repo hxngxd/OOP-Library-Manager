@@ -1,53 +1,52 @@
 package com.hxngxd.utils;
 
+import com.hxngxd.ui.StageManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.stage.FileChooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 
 public class ImageHandler {
+    private static final Logger logger = LogManager.getLogger(ImageHandler.class);
 
     private ImageHandler() {
     }
 
-    // Hàm chuyển đổi byte array thành Image
-    public static Image toImage(byte[] imageBytes) {
+    public static Image byteToImage(byte[] imageBytes) {
         ByteArrayInputStream bits = new ByteArrayInputStream(imageBytes);
         return new Image(bits);
     }
 
-    // Hàm crop ảnh theo tỷ lệ (widthRatio / heightRatio)
-    public static Image cropImageByRatio(Image image, double widthRatio, double heightRatio) {
-        // Lấy chiều rộng và chiều cao gốc của ảnh
+    public static Image cropImageByRatio(Image image,
+                                         double widthRatio, double heightRatio) {
         double originalWidth = image.getWidth();
         double originalHeight = image.getHeight();
 
-        // Tính tỷ lệ gốc của ảnh
         double originalRatio = originalWidth / originalHeight;
 
-        // Tính toán cropWidth và cropHeight dựa trên tỷ lệ mong muốn
         double cropWidth, cropHeight;
         double targetRatio = widthRatio / heightRatio;
 
         if (originalRatio > targetRatio) {
-            // Nếu ảnh gốc có tỷ lệ rộng hơn, giảm chiều rộng để khớp với tỷ lệ mong muốn
             cropHeight = originalHeight;
             cropWidth = cropHeight * targetRatio;
         } else {
-            // Nếu ảnh gốc có tỷ lệ cao hơn, giảm chiều cao để khớp với tỷ lệ mong muốn
             cropWidth = originalWidth;
             cropHeight = cropWidth / targetRatio;
         }
 
-        // Tính toán crop từ trung tâm ảnh
         double centerX = (originalWidth - cropWidth) / 2;
         double centerY = (originalHeight - cropHeight) / 2;
 
-        // Lấy PixelReader từ ảnh gốc
         PixelReader reader = image.getPixelReader();
-
-        // Tạo ảnh mới đã được crop
 
         return new WritableImage(reader,
                 (int) centerX,
@@ -56,12 +55,41 @@ public class ImageHandler {
                 (int) cropHeight);
     }
 
-    // Nạp chồng hàm crop ảnh từ byte[] và theo tỷ lệ (widthRatio / heightRatio)
-    public static Image cropImageByRatio(byte[] imageBytes, double widthRatio, double heightRatio) {
-        // Chuyển byte[] thành Image
-        Image image = toImage(imageBytes);
-
-        // Crop ảnh dựa theo tỷ lệ mong muốn
+    public static Image cropImageByRatio(byte[] imageBytes,
+                                         double widthRatio, double heightRatio) {
+        Image image = byteToImage(imageBytes);
         return cropImageByRatio(image, widthRatio, heightRatio);
+    }
+
+    public static Image loadImageFromPath(String path) {
+        try {
+            URL url = Paths.get(path).toUri().toURL();
+            InputStream inputStream = url.openStream();
+            Image image = new Image(inputStream);
+            inputStream.close();
+            return image;
+        } catch (Exception e) {
+            logger.error(LogMsg.fail("loadOnce image: " + path), e);
+        }
+        return null;
+    }
+
+    public static File chooseImage(String title) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(
+                        "Tất cả file ảnh", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp"),
+                new FileChooser.ExtensionFilter(
+                        "File JPG", "*.jpg", "*.jpeg"),
+                new FileChooser.ExtensionFilter(
+                        "File PNG", "*.png"),
+                new FileChooser.ExtensionFilter(
+                        "File GIF", "*.gif"),
+                new FileChooser.ExtensionFilter(
+                        "File BMP", "*.bmp")
+        );
+        return fileChooser.showOpenDialog(StageManager.getInstance().getMainStage());
     }
 }
