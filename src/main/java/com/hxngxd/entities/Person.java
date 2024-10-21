@@ -38,6 +38,14 @@ public abstract class Person {
         this.lastName = lastName;
     }
 
+    public String getFullNameFirstThenLast() {
+        return this.firstName + " " + this.lastName;
+    }
+
+    public String getFullNameLastThenFirst() {
+        return this.lastName + " " + this.firstName;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
