@@ -1,5 +1,6 @@
 package com.hxngxd.utils;
 
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.ui.StageManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -8,25 +9,38 @@ import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Paths;
+import java.io.*;
 
 public class ImageHandler {
-    private static final Logger logger = LogManager.getLogger(ImageHandler.class);
+    private static final Logger log = LogManager.getLogger(ImageHandler.class);
 
     private ImageHandler() {
     }
 
-    public static Image byteToImage(byte[] imageBytes) {
+    public static Image byteArrayToImage(byte[] imageBytes) {
         ByteArrayInputStream bits = new ByteArrayInputStream(imageBytes);
         return new Image(bits);
     }
 
+    public static byte[] fileToByteArray(File file) {
+        byte[] result = null;
+        try (InputStream inputStream = new FileInputStream(file)) {
+            result = inputStream.readAllBytes();
+        } catch (FileNotFoundException e) {
+            log.error(LogMessages.File.FILE_NOT_FOUND.getMessage(file.getAbsolutePath()));
+        } catch (IOException e) {
+            log.error(LogMessages.File.FILE_IO_ERROR.getMessage(file.getAbsolutePath()));
+        }
+        return result;
+    }
+
     public static Image cropImageByRatio(Image image,
                                          double widthRatio, double heightRatio) {
+        if (image == null) {
+            log.info(LogMessages.General.IS_NULL.getMessage("Image"));
+            return null;
+        }
+
         double originalWidth = image.getWidth();
         double originalHeight = image.getHeight();
 
@@ -49,27 +63,35 @@ public class ImageHandler {
         PixelReader reader = image.getPixelReader();
 
         return new WritableImage(reader,
-                (int) centerX,
-                (int) centerY,
-                (int) cropWidth,
-                (int) cropHeight);
+                (int) centerX, (int) centerY,
+                (int) cropWidth, (int) cropHeight);
     }
 
     public static Image cropImageByRatio(byte[] imageBytes,
                                          double widthRatio, double heightRatio) {
-        Image image = byteToImage(imageBytes);
+        Image image = byteArrayToImage(imageBytes);
         return cropImageByRatio(image, widthRatio, heightRatio);
     }
 
-    public static Image loadImageFromPath(String path) {
-        try {
-            URL url = Paths.get(path).toUri().toURL();
-            InputStream inputStream = url.openStream();
-            Image image = new Image(inputStream);
-            inputStream.close();
-            return image;
+    public static Image loadImageFromFile(File file) {
+        if (file == null) {
+            log.info(LogMessages.General.IS_NULL.getMessage("File"));
+            return null;
+        }
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return new Image(inputStream);
+        } catch (FileNotFoundException e) {
+            log.error(
+                    LogMessages.File.FILE_NOT_FOUND.getMessage(
+                            file.getAbsolutePath()), e);
+        } catch (IOException e) {
+            log.error(
+                    LogMessages.File.FILE_IO_ERROR.getMessage(
+                            file.getAbsolutePath()), e);
         } catch (Exception e) {
-            logger.error(LogMsg.fail("loadOnce image: " + path), e);
+            log.error(
+                    LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                            file.getAbsolutePath()), e);
         }
         return null;
     }
@@ -77,10 +99,10 @@ public class ImageHandler {
     public static File chooseImage(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
-
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
-                        "Tất cả file ảnh", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp"),
+                        "Tất cả file ảnh",
+                        "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp"),
                 new FileChooser.ExtensionFilter(
                         "File JPG", "*.jpg", "*.jpeg"),
                 new FileChooser.ExtensionFilter(

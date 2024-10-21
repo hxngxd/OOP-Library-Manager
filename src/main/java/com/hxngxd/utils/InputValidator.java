@@ -1,5 +1,6 @@
 package com.hxngxd.utils;
 
+import com.hxngxd.enums.LogMessages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +14,7 @@ public class InputValidator {
 
     private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
-    private static final Logger logger = LogManager.getLogger(InputValidator.class);
+    private static final Logger log = LogManager.getLogger(InputValidator.class);
 
     private InputValidator() {
     }
@@ -21,11 +22,11 @@ public class InputValidator {
     public static boolean validateInput(String... inputs) {
         for (String input : inputs) {
             if (input.isEmpty()) {
-                logger.info(LogMsg.infoIsMissing);
+                log.info(LogMessages.Validation.INFO_IS_MISSING.getMessage());
                 return false;
             }
             if (input.length() > 127) {
-                logger.info(LogMsg.infoTooLong);
+                log.info(LogMessages.Validation.INFO_TOO_LONG.getMessage());
                 return false;
             }
         }
@@ -33,10 +34,12 @@ public class InputValidator {
     }
 
     public static boolean validateEmail(String email) {
-        if (email == null) {
+        Matcher matcher = pattern.matcher(email);
+        if (matcher.matches()) {
+            return true;
+        } else {
+            log.info(LogMessages.Validation.EMAIL_NOT_VALID.getMessage());
             return false;
         }
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
     }
 }
