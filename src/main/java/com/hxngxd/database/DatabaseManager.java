@@ -1,6 +1,6 @@
 package com.hxngxd.database;
 
-import com.hxngxd.utils.LogMsg;
+import com.hxngxd.enums.LogMessages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class DatabaseManager {
-    private final Logger logger = LogManager.getLogger(DatabaseManager.class);
+    private final Logger log = LogManager.getLogger(DatabaseManager.class);
 
     private Connection connection = null;
     private String databaseUrl = null;
@@ -44,29 +44,29 @@ public class DatabaseManager {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 loadDatabaseConfig();
                 connection = DriverManager.getConnection(databaseUrl, username, password);
-                logger.info("Successfully connected to the database");
+                log.info(LogMessages.General.SUCCESS.getMessage("connect to the database"));
                 return true;
             } else {
-                logger.info("The database is already connected");
+                log.info("The database is already connected");
                 return false;
             }
         } catch (SQLException | ClassNotFoundException e) {
-            logger.info("Failed to connect to the database", e);
+            log.info(LogMessages.General.FAIL.getMessage("connect to the database"), e);
         }
         return false;
     }
 
     public boolean disconnect() {
         if (!isConnected()) {
-            logger.info("The database is not connected yet");
+            log.info(LogMessages.Database.NO_DB_CONNECTION);
             return false;
         }
         try {
             connection.close();
-            logger.info("Database disconnected");
+            log.info(LogMessages.General.SUCCESS.getMessage("disconnect from database"));
             return true;
         } catch (SQLException e) {
-            logger.error(LogMsg.fail("disconnect from the database"), e);
+            log.error(LogMessages.General.FAIL.getMessage("disconnect from database"), e);
             return false;
         }
     }
@@ -80,16 +80,18 @@ public class DatabaseManager {
         }
     }
 
-    private void setParameters(PreparedStatement pStatement, Object... params) throws SQLException {
+    private void setParameters(PreparedStatement pStatement,
+                               Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             pStatement.setObject(i + 1, params[i]);
         }
     }
 
     private void loadDatabaseConfig() {
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+        String config = "config.properties";
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(config)) {
             if (input == null) {
-                logger.error("Unable to find config.properties");
+                log.error("Unable to find config.properties");
                 return;
             }
 
@@ -100,10 +102,12 @@ public class DatabaseManager {
             username = prop.getProperty("database.username");
             password = prop.getProperty("database.password");
 
-            logger.info("Database configuration loaded successfully");
+            log.info(LogMessages.General.SUCCESS.getMessage(
+                    "load database configuration"));
 
         } catch (IOException e) {
-            logger.error("Error loading database configuration", e);
+            log.info(LogMessages.General.FAIL.getMessage(
+                    "load database configuration"), e);
         }
     }
 
@@ -148,7 +152,8 @@ public class DatabaseManager {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                    "updating database"), e);
         }
         return false;
     }
@@ -186,7 +191,8 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                    "inserting into database"), e);
         }
         return true;
     }
@@ -214,12 +220,13 @@ public class DatabaseManager {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                    "deleting from database"), e);
         }
         return false;
     }
 
-    public <T> T select(String work, String query,
+    public <T> T select(String action, String query,
                         ResultSetMapper<T> mapper, Object... params) {
         try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             setParameters(pStatement, params);
@@ -227,7 +234,8 @@ public class DatabaseManager {
                 return mapper.map(resultSet);
             }
         } catch (SQLException e) {
-            logger.error(LogMsg.sthwr(work), e);
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                    "executing query"), e);
         }
         return null;
     }
