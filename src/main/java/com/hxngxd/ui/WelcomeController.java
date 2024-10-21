@@ -1,6 +1,7 @@
 package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -19,22 +20,24 @@ public class WelcomeController {
     private TextField passwordField;
 
     private final UserService userService = UserService.getInstance();
-    private final StageManager stageManager = StageManager.getInstance();
 
     @FXML
     private void goToLogin(ActionEvent event) {
-        stageManager.setScene(UI.LOGIN);
+        StageManager.getInstance().setScene(UI.LOGIN);
     }
 
     @FXML
     private void goToRegister(ActionEvent event) {
-        stageManager.setScene(UI.REGISTER);
+        StageManager.getInstance().setScene(UI.REGISTER);
     }
 
     @FXML
     private void logIn(ActionEvent event) {
-        userService.login(
+        boolean login = userService.login(
                 usernameField.getText(), usernameField.getText(), passwordField.getText());
+        if (login) {
+            HomeController.init();
+        }
     }
 
     @FXML

@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -30,24 +31,35 @@ public class HomeController {
     @FXML
     private ImageView profilePicture;
 
+    public static void init() {
+        StageManager.getInstance().setScene(UI.HOME);
+        BookService.init();
+        HomeController homeController = UIManager.Loaders.get(UI.HOME).getController();
+        homeController.displayBooks();
+    }
+
     public void displayBooks() {
         Collections.shuffle(BookService.currentBooks);
         for (Book book : BookService.currentBooks) {
-            VBox bookBox = (VBox) UIManager.load(UI.BOOK_DISPLAY);
-            assert bookBox != null;
-            bookBox.setId(String.valueOf(book.getId()));
-            ((Label) bookBox.lookup("#bookDisplayTitle")).setText(book.getTitle());
-            ((Label) bookBox.lookup("#bookDisplayYear")).setText(
-                    String.valueOf(book.getYearOfPublication())
-            );
-            ((Label) bookBox.lookup("#bookDisplayReview")).setText(
-                    book.getAverageRating() == 0.0 ?
-                            "Chưa được đánh giá" : String.valueOf(book.getAverageRating())
-            );
-            ((ImageView) bookBox.lookup("#bookDisplayCoverImage")).setImage(
-                    ImageHandler.cropImageByRatio(book.getCoverImage(), 1, 1)
-            );
-            bookDisplayContainer.getChildren().add(bookBox);
+            try {
+                VBox bookBox = (VBox) (Objects.requireNonNull(
+                        UIManager.load(UI.BOOK_DISPLAY)).load());
+                bookBox.setId(String.valueOf(book.getId()));
+                ((Label) bookBox.lookup("#bookDisplayTitle")).setText(book.getTitle());
+                ((Label) bookBox.lookup("#bookDisplayYear")).setText(
+                        String.valueOf(book.getYearOfPublication())
+                );
+                ((Label) bookBox.lookup("#bookDisplayReview")).setText(
+                        book.getAverageRating() == 0.0 ?
+                                "Chưa được đánh giá" : String.valueOf(book.getAverageRating())
+                );
+                ((ImageView) bookBox.lookup("#bookDisplayCoverImage")).setImage(
+                        ImageHandler.cropImageByRatio(book.getCoverImage(), 1, 1)
+                );
+                bookDisplayContainer.getChildren().add(bookBox);
+            } catch (Exception e) {
+                logger.error(LogMsg.fail("display book"), e);
+            }
         }
     }
 

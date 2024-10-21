@@ -23,8 +23,7 @@ public class Main extends Application {
     private final UserService userService = UserService.getInstance();
     private final BookService bookService = BookService.getInstance();
     private final StageManager stageManager = StageManager.getInstance();
-    private final double widthRatio = 0.85;
-    private final double heightRatio = 0.85;
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -34,13 +33,6 @@ public class Main extends Application {
             return;
         }
         stageManager.init(stage);
-        stageManager.setTitle("Library Management");
-        stageManager.setScene(UI.LOGIN);
-        stageManager.setWidth(widthRatio, widthRatio);
-        stageManager.setHeight(heightRatio, heightRatio);
-
-        userService.login("23020078", "23020078", "Hung@07112005");
-//        bookService.getAllBooks();
 //        HomeController homeController = UIManager.fxmlCache.get(UI.HOME).getController();
 //        homeController.displayBooks();
     }

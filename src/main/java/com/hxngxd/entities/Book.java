@@ -2,7 +2,6 @@ package com.hxngxd.entities;
 
 import javafx.scene.image.Image;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Book {

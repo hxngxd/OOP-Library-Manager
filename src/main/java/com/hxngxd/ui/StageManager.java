@@ -2,7 +2,6 @@ package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 public class StageManager {
     private static final Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
     private static final Logger logger = LogManager.getLogger(StageManager.class);
+    private final double widthRatio = 0.85;
+    private final double heightRatio = 0.85;
 
     private Stage mainStage;
 
@@ -29,13 +30,14 @@ public class StageManager {
         if (this.mainStage == null) {
             this.mainStage = stage;
         }
+        setTitle("Library Management");
+        setScene(UI.LOGIN);
+        setWidth(widthRatio, widthRatio);
+        setHeight(heightRatio, heightRatio);
     }
 
     public void setScene(UI ui) {
-        UIManager.loadOnce(ui);
-        this.mainStage.setScene(
-                new Scene(UIManager.fxmlCache.get(ui))
-        );
+        this.mainStage.setScene(UIManager.loadScene(ui));
         this.mainStage.show();
     }
 

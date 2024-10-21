@@ -28,6 +28,11 @@ public class BookService {
         return BookService.SingletonHolder.instance;
     }
 
+    public static void init() {
+        BookService bookService = BookService.getInstance();
+        bookService.getAllBooks();
+    }
+
     public boolean updateAvailableCopies(int bookId, int difference) {
         return true;
     }
