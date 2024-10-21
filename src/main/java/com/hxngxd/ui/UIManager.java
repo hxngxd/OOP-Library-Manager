@@ -1,9 +1,8 @@
 package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
-import com.hxngxd.utils.LogMsg;
+import com.hxngxd.enums.LogMessages;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,10 +11,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class UIManager {
-    private static final Logger logger = LogManager.getLogger(UIManager.class);
+    private static final Logger log = LogManager.getLogger(UIManager.class);
     public static final HashMap<UI, Scene> Scenes = new HashMap<>();
     public static final HashMap<UI, FXMLLoader> Loaders = new HashMap<>();
-
 
     private UIManager() {
     }
@@ -25,7 +23,8 @@ public class UIManager {
             try {
                 Scenes.put(ui, new Scene(loadOnce(ui).load()));
             } catch (IOException e) {
-                logger.error(LogMsg.fail("load scene: " + ui.name()), e);
+                log.error(LogMessages.General.FAIL.getMessage(
+                        "load scene: " + ui.name()), e);
                 return null;
             }
         }
