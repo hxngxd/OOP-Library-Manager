@@ -31,9 +31,10 @@ public class StageManager {
             this.mainStage = stage;
         }
         setTitle("Library Management");
-        setScene(UI.LOGIN);
         setWidth(widthRatio, widthRatio);
         setHeight(heightRatio, heightRatio);
+        centerStage();
+        setScene(UI.LOGIN);
     }
 
     public void setScene(UI ui) {
@@ -57,5 +58,10 @@ public class StageManager {
 
     public Stage getMainStage() {
         return mainStage;
+    }
+
+    public void centerStage() {
+        this.mainStage.setX((screenSize.getWidth() - this.mainStage.getWidth()) / 2);
+        this.mainStage.setY((screenSize.getHeight() - this.mainStage.getHeight()) / 2);
     }
 }
