@@ -5,6 +5,7 @@ module com.hxngxd.libraryManager {
     requires java.sql;
     requires jbcrypt;
     requires org.apache.logging.log4j;
+    requires java.desktop;
 
     opens com.hxngxd.libraryManager to javafx.fxml;
     exports com.hxngxd.libraryManager;

@@ -22,7 +22,7 @@
             <children>
                 <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <ImageView fitHeight="175.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="profilePicture" fitHeight="175.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../../../../../../others/hehe.jpg" />
                             </image>
@@ -43,7 +43,7 @@
                                 <Insets bottom="10.0" top="5.0" />
                             </VBox.margin>
                         </Label>
-                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="HOME" VBox.vgrow="ALWAYS">
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#browseImage" text="HOME" VBox.vgrow="ALWAYS">
                             <font>
                                 <Font name="System Italic" size="16.0" />
                             </font>
@@ -77,7 +77,7 @@
                                 <Font name="System Italic" size="16.0" />
                             </font>
                         </MenuButton>
-                        <Button alignment="CENTER" layoutX="10.0" layoutY="630.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="THOÁT" VBox.vgrow="ALWAYS">
+                        <Button alignment="CENTER" layoutX="10.0" layoutY="630.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" text="THOÁT" VBox.vgrow="ALWAYS">
                             <font>
                                 <Font name="System Italic" size="16.0" />
                             </font>
