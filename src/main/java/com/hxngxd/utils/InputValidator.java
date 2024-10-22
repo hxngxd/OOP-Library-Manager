@@ -1,6 +1,7 @@
 package com.hxngxd.utils;
 
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.exceptions.ValidationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,27 +20,27 @@ public class InputValidator {
     private InputValidator() {
     }
 
-    public static boolean validateInput(String... inputs) {
+    public static void validateInput(String... inputs) throws ValidationException {
         for (String input : inputs) {
             if (input.isEmpty()) {
-                log.info(LogMessages.Validation.INFO_IS_MISSING.getMessage());
-                return false;
+                throw new ValidationException(
+                        LogMessages.Validation.INFO_IS_MISSING.getMessage()
+                );
             }
             if (input.length() > 127) {
-                log.info(LogMessages.Validation.INFO_TOO_LONG.getMessage());
-                return false;
+                throw new ValidationException(
+                        LogMessages.Validation.INFO_TOO_LONG.getMessage()
+                );
             }
         }
-        return true;
     }
 
-    public static boolean validateEmail(String email) {
+    public static void validateEmail(String email) throws ValidationException {
         Matcher matcher = pattern.matcher(email);
-        if (matcher.matches()) {
-            return true;
-        } else {
-            log.info(LogMessages.Validation.EMAIL_NOT_VALID.getMessage());
-            return false;
+        if (!matcher.matches()) {
+            throw new ValidationException(
+                    LogMessages.Validation.EMAIL_NOT_VALID.getMessage()
+            );
         }
     }
 }
