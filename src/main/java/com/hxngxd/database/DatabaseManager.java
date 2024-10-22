@@ -1,6 +1,7 @@
 package com.hxngxd.database;
 
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.exceptions.DatabaseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -111,14 +112,16 @@ public class DatabaseManager {
         }
     }
 
-    public boolean update(String table, String updateField, Object updateValue,
-                          String conditionField, Object conditionValue) {
-        return update(table, List.of(updateField), List.of(updateValue),
+    public void update(String table, String updateField, Object updateValue,
+                       String conditionField, Object conditionValue)
+            throws DatabaseException {
+        update(table, List.of(updateField), List.of(updateValue),
                 List.of(conditionField), List.of(conditionValue));
     }
 
-    public boolean update(String table, List<String> updateFields, List<Object> updateValues,
-                          List<String> conditionFields, List<Object> conditionValues) {
+    public void update(String table, List<String> updateFields, List<Object> updateValues,
+                       List<String> conditionFields, List<Object> conditionValues)
+            throws DatabaseException {
         StringBuilder query = new StringBuilder("update ");
         query.append(table).append(" set ");
         for (int i = 0; i < updateFields.size(); i++) {
@@ -134,7 +137,6 @@ public class DatabaseManager {
                 query.append(" and ");
             }
         }
-
         try (PreparedStatement pStatement = connection.prepareStatement(query.toString())) {
             int paramId = 1;
             for (Object value : updateValues) {
@@ -146,19 +148,19 @@ public class DatabaseManager {
                 paramId++;
             }
             int updates = pStatement.executeUpdate();
-            if (updates > 0) {
-                return true;
-            } else {
-                throw new SQLException();
+            if (updates < 1) {
+                throw new SQLException(
+                        LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                                "executing update query"
+                        )
+                );
             }
         } catch (SQLException e) {
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                    "updating database"), e);
+            throw new DatabaseException(e.getMessage());
         }
-        return false;
     }
 
-    public boolean insert(String table, List<String> conditionFields, Object... conditionValues) {
+    public void insert(String table, List<String> conditionFields, Object... conditionValues) {
         StringBuilder query = new StringBuilder("insert into ");
         query.append(table).append("(");
         for (int i = 0; i < conditionFields.size(); i++) {
@@ -186,23 +188,28 @@ public class DatabaseManager {
                 try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
                     if (resultSet.next()) {
                         generatedId = resultSet.getInt(1);
-                        return true;
+                    } else {
+                        throw new SQLException(
+                                LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                                        "executing insert query"
+                                )
+                        );
                     }
                 }
             }
         } catch (SQLException e) {
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                    "inserting into database"), e);
+            throw new DatabaseException(e.getMessage());
         }
-        return true;
     }
 
-    public boolean delete(String table, String conditionField, Object conditionValue) {
-        return delete(table, List.of(conditionField), conditionValue);
+    public void delete(String table, String conditionField, Object conditionValue)
+            throws DatabaseException {
+        delete(table, List.of(conditionField), conditionValue);
     }
 
-    public boolean delete(String table, List<String> conditionFields,
-                          Object... conditionValues) {
+    public void delete(String table, List<String> conditionFields,
+                       Object... conditionValues)
+            throws DatabaseException {
         StringBuilder query = new StringBuilder("delete from ");
         query.append(table).append(" where ");
         for (int i = 0; i < conditionFields.size(); i++) {
@@ -214,29 +221,32 @@ public class DatabaseManager {
         try (PreparedStatement pStatement = connection.prepareStatement(query.toString())) {
             setParameters(pStatement, conditionValues);
             int updates = pStatement.executeUpdate();
-            if (updates > 0) {
-                return true;
-            } else {
-                throw new SQLException();
+            if (updates < 1) {
+                throw new SQLException(
+                        LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                                "executing delete query"
+                        )
+                );
             }
         } catch (SQLException e) {
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                    "deleting from database"), e);
+            throw new DatabaseException(e.getMessage());
         }
-        return false;
     }
 
     public <T> T select(String action, String query,
-                        ResultSetMapper<T> mapper, Object... params) {
+                        ResultSetMapper<T> mapper, Object... params)
+            throws DatabaseException {
         try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             setParameters(pStatement, params);
             try (ResultSet resultSet = pStatement.executeQuery()) {
                 return mapper.map(resultSet);
             }
         } catch (SQLException e) {
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                    "executing query"), e);
+            throw new DatabaseException(
+                    LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                            "executing query"
+                    )
+            );
         }
-        return null;
     }
 }
