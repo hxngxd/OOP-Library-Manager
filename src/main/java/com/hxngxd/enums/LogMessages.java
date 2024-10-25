@@ -26,7 +26,9 @@ public class LogMessages {
         USER_DONT_HAVE_TO("The current user does not have to do this"),
         WRONG_PASSWORD("Wrong password"),
         USER_NOT_ALLOWED("The current user does not have permission to %s"),
-        USER_CANNOT("You can't %s");
+        USER_CANNOT("You can't %s"),
+        USER_SUSPENDED("User is suspended"),
+        USER_BANNED("User is banned");
 
         private final String message;
 

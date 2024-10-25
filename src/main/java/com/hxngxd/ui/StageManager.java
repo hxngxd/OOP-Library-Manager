@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 public class StageManager {
     private static final Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
     private static final Logger log = LogManager.getLogger(StageManager.class);
-    private final double widthRatio = 0.85;
-    private final double heightRatio = 0.85;
+    private final double widthRatio = 0.8;
+    private final double heightRatio = 0.75;
 
     private Stage mainStage;
 

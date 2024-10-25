@@ -1,7 +1,7 @@
 package com.hxngxd.utils;
 
 import com.hxngxd.enums.LogMessages;
-import com.hxngxd.exceptions.PasswordMismatchException;
+import com.hxngxd.exceptions.PasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordEncoder {
@@ -16,9 +16,9 @@ public class PasswordEncoder {
     }
 
     public static void compare(String originalPassword, String hashedPassword)
-            throws PasswordMismatchException {
+            throws PasswordException {
         if (!BCrypt.checkpw(originalPassword, hashedPassword)) {
-            throw new PasswordMismatchException(LogMessages.User.WRONG_PASSWORD.getMessage());
+            throw new PasswordException(LogMessages.User.WRONG_PASSWORD.getMessage());
         }
     }
 }

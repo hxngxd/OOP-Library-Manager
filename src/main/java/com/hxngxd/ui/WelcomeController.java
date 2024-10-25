@@ -1,15 +1,19 @@
 package com.hxngxd.ui;
 
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.BookService;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WelcomeController {
+    private static final Logger log = LogManager.getLogger(WelcomeController.class);
     @FXML
     private Label loginStatusLabel;
     @FXML
@@ -33,10 +37,20 @@ public class WelcomeController {
 
     @FXML
     private void logIn(ActionEvent event) {
-        boolean login = userService.login(
-                usernameField.getText(), usernameField.getText(), passwordField.getText());
-        if (login) {
+        try {
+//            userService.login(
+//                    usernameField.getText(), usernameField.getText(),
+//                    passwordField.getText()
+//            );
+            userService.login(
+                    "23020078", "23020078",
+                    "Hung@07112005"
+            );
+            loginStatusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
             HomeController.init();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            loginStatusLabel.setText(e.getMessage());
         }
     }
 

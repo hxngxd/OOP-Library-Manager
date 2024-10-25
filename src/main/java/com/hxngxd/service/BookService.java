@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
-    private final Logger logger = LogManager.getLogger(UserService.class);
+    private final Logger log = LogManager.getLogger(UserService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
     public static final List<Book> currentBooks = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class BookService {
                 book.setNumberOfPages(resultSet.getInt("numberOfPages"));
                 book.setAvailableCopies(resultSet.getInt("availableCopies"));
                 book.setTotalCopies(resultSet.getInt("totalCopies"));
-                book.setCoverImage(ImageHandler.byteToImage(
+                book.setCoverImage(ImageHandler.byteArrayToImage(
                         resultSet.getBytes("coverImage")
                 ));
                 currentBooks.add(book);
