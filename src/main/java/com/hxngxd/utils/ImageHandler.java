@@ -102,15 +102,11 @@ public class ImageHandler {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter(
                         "Tất cả file ảnh",
-                        "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp"),
+                        "*.jpg", "*.jpeg", "*.png"),
                 new FileChooser.ExtensionFilter(
                         "File JPG", "*.jpg", "*.jpeg"),
                 new FileChooser.ExtensionFilter(
-                        "File PNG", "*.png"),
-                new FileChooser.ExtensionFilter(
-                        "File GIF", "*.gif"),
-                new FileChooser.ExtensionFilter(
-                        "File BMP", "*.bmp")
+                        "File PNG", "*.png")
         );
         return fileChooser.showOpenDialog(StageManager.getInstance().getMainStage());
     }

@@ -3,23 +3,25 @@ package com.hxngxd.service;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.PasswordException;
+import com.hxngxd.exceptions.UserException;
+import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.utils.InputValidator;
 import com.hxngxd.utils.PasswordEncoder;
-import com.hxngxd.utils.LogMsg;
-
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.hxngxd.enums.LogMessages;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class UserService {
     private final DatabaseManager db = DatabaseManager.getInstance();
-    private static final Logger logger = LogManager.getLogger(UserService.class);
+    private static final Logger log = LogManager.getLogger(UserService.class);
     private User currentUser = null;
 
     private UserService() {
@@ -41,407 +43,373 @@ public class UserService {
         return UserService.getInstance().getCurrentUser() != null;
     }
 
-    public static boolean checkLoggedInAndConnected() {
+    public static void checkLoggedInAndConnected()
+            throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection);
-            return false;
+            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMessage());
         }
         if (!UserService.isLoggedIn()) {
-            logger.info(LogMsg.userNotLogIn);
-            return false;
+            throw new UserException(LogMessages.User.USER_NOT_LOGGED_IN.getMessage());
         }
-        return true;
     }
 
-    public static boolean checkLoggedOutAndConnected() {
+    public static void checkLoggedOutAndConnected()
+            throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            logger.info(LogMsg.noDBConnection);
-            return false;
+            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMessage());
         }
         if (UserService.isLoggedIn()) {
-            logger.info(LogMsg.userNotLogOut);
-            return false;
+            throw new UserException(LogMessages.User.USER_NOT_LOGGED_OUT.getMessage());
         }
-        return true;
     }
 
-    public boolean register(String firstName, String lastName, String username,
-                            String email, LocalDate dateOfBirth, String password,
-                            String confirmedPassword) {
-        if (!checkLoggedOutAndConnected()) {
-            return false;
-        }
+    public void register(String firstName, String lastName, String username,
+                         String email, String password, String confirmedPassword)
+            throws DatabaseException, UserException, ValidationException {
+        checkLoggedOutAndConnected();
 
-        if (!InputValidator.validateInput(
-                firstName, lastName,
-                username, email,
-                password, confirmedPassword
-        )) {
-            return false;
-        }
+        InputValidator.validateInput(firstName, lastName, username, email,
+                password, confirmedPassword);
 
-        if (!InputValidator.validateEmail(email)) {
-            logger.info(LogMsg.emailNotValid);
-            return false;
-        }
+        InputValidator.validateEmail(email);
 
         if (getUserByUsernameOrEmail(false, username, email) != null) {
-            logger.info(LogMsg.userExist);
-            return false;
+            throw new UserException(LogMessages.User.USER_EXIST.getMessage());
         }
 
-        if (password.length() < 6) {
-            logger.info("Length of password must be more than 6");
-            return false;
-        }
+        InputValidator.validatePassword(password);
 
         if (!confirmedPassword.equals(password)) {
-            logger.info("Reconfirm your password");
-            return false;
+            throw new PasswordException("Please reconfirm your password");
         }
 
         String passwordHash = PasswordEncoder.encode(confirmedPassword);
 
-        boolean insert = db.insert("user",
-                List.of("firstName", "lastName", "dateOfBirth", "username", "email",
+        db.insert("user",
+                List.of("firstName", "lastName", "username", "email",
                         "passwordHash", "accountStatus"),
-                firstName, lastName, Date.valueOf(dateOfBirth), username, email,
+                firstName, lastName, username, email,
                 passwordHash, AccountStatus.ACTIVE.name());
-        if (insert) {
-            currentUser = new User(db.getGeneratedId());
-            currentUser.setFirstName(firstName);
-            currentUser.setLastName(lastName);
-            currentUser.setDateOfBirth(dateOfBirth);
-            currentUser.setUsername(username);
-            currentUser.setEmail(email);
-            currentUser.setPasswordHash(passwordHash);
-            currentUser.setRole(Role.USER);
-            currentUser.setAccountStatus(AccountStatus.ACTIVE);
-            currentUser.setViolationCount(0);
-        }
-        return LogMsg.logResult(insert, "create account");
+
+        currentUser = new User(db.getGeneratedId());
+        currentUser.setFirstName(firstName);
+        currentUser.setLastName(lastName);
+        currentUser.setUsername(username);
+        currentUser.setEmail(email);
+        currentUser.setPasswordHash(passwordHash);
+        currentUser.setRole(Role.USER);
+        currentUser.setAccountStatus(AccountStatus.ACTIVE);
+        currentUser.setViolationCount(0);
+
+        log.info(LogMessages.General.SUCCESS.getMessage("create account"));
     }
 
-    public boolean login(String username, String email, String password) {
-        if (!checkLoggedOutAndConnected()) {
-            return false;
-        }
+    public void login(String username, String email, String password)
+            throws DatabaseException, UserException, ValidationException {
+        checkLoggedOutAndConnected();
 
-        if (!InputValidator.validateInput(
-                username, email, password
-        )) {
-            return false;
-        }
+        InputValidator.validateInput(username, email, password);
 
         User user = getUserByUsernameOrEmail(false, username, email);
         if (user == null) {
-            logger.info(LogMsg.userNotFound);
-            return false;
+            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMessage());
         }
 
-        if (!PasswordEncoder.compare(password, user.getPasswordHash())) {
-            logger.info(LogMsg.wrongPW);
-            return false;
-        }
+        PasswordEncoder.compare(password, user.getPasswordHash());
 
         if (user.getAccountStatus() == AccountStatus.SUSPENDED) {
-            logger.info("User is suspended");
-            return false;
+            throw new UserException(LogMessages.User.USER_SUSPENDED.getMessage());
         }
 
         if (user.getAccountStatus() == AccountStatus.BANNED) {
-            logger.info("User is banned");
-            return false;
+            throw new UserException(LogMessages.User.USER_BANNED.getMessage());
         }
 
         user = getUserByUsernameOrEmail(true, username, email);
-        boolean update = db.update("user",
+        db.update("user",
                 "accountStatus", AccountStatus.ACTIVE.name(),
                 "id", user.getId());
-        if (update) {
-            currentUser = user;
-        } else {
-            currentUser = null;
-        }
-        return LogMsg.logResult(update, "log in");
+        currentUser = user;
+
+        log.info(LogMessages.General.SUCCESS.getMessage("log in"));
     }
 
-    public boolean logout() {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
+    public void logout()
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
 
-        boolean update = db.update("user",
+        db.update("user",
                 List.of("lastActive", "accountStatus"),
                 List.of(Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name()),
                 List.of("id"),
                 List.of(currentUser.getId()));
-        if (update) {
-            currentUser = null;
-        }
-        return LogMsg.logResult(update, "log out");
+        currentUser = null;
+
+        log.info(LogMessages.General.SUCCESS.getMessage("log out"));
     }
 
-    public boolean updateProfile(int userId, String newFirstName, String newLastName,
-                                 LocalDate newDateOfBirth, String newAddress) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (userId != currentUser.getId()) {
-            if (!currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
-                logger.info(LogMsg.userNotAllowTo("change others' profile"));
-                return false;
-            }
-
-            User user = getUserbyId(false, userId);
-            if (user == null) {
-                logger.info(LogMsg.userNotFound);
-                return false;
-            } else {
-                if (user.getRole() == Role.ADMIN) {
-                    logger.info(LogMsg.userCant("change other Admins' profile"));
-                    return false;
-                }
-            }
-        }
-
-        if (!InputValidator.validateInput(
-                newFirstName, newLastName, newAddress
-        )) {
-            return false;
-        }
-
-        boolean update = db.update("user",
-                List.of("firstName", "lastName", "dateOfBirth", "address"),
-                List.of(newFirstName, newLastName,
-                        Date.valueOf(newDateOfBirth), newAddress),
-                List.of("id"), List.of(userId));
-        return LogMsg.logResult(update, "update profile");
-    }
-
-    public boolean changeEmail(int userId, String newEmail) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (userId != currentUser.getId()) {
-            if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
-                logger.info(LogMsg.userNotAllowTo("change others' email"));
-                return false;
-            }
-
-            User other = getUserbyId(false, userId);
-            if (other == null) {
-                logger.info(LogMsg.userNotFound);
-                return false;
-            } else {
-                if (other.getRole() == Role.ADMIN) {
-                    logger.info(LogMsg.userCant("change other Admins' email"));
-                    return false;
-                }
-            }
-        } else {
-            if (newEmail.equals(currentUser.getEmail())) {
-                logger.info("New email is still the same");
-                return false;
-            }
-        }
-
-        if (!InputValidator.validateEmail(newEmail)) {
-            logger.info(LogMsg.emailNotValid);
-            return false;
-        }
-
-        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
-            logger.info("Email is already used by other users");
-            return false;
-        }
-
-        boolean update = db.update("user", "email", newEmail,
-                "id", userId);
-        return LogMsg.logResult(update, "change email");
-    }
-
-    public boolean changeOthersRole(int userId, Role role) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ROLE)) {
-            logger.info(LogMsg.userNotAllowTo("change others' role"));
-            return false;
-        }
-
-        if (userId == currentUser.getId()) {
-            logger.info(LogMsg.userCant("change their own role"));
-            return false;
-        }
-
-        User user = getUserbyId(false, userId);
-        if (user == null) {
-            logger.info(LogMsg.userNotFound);
-            return false;
-        }
-
-        if (user.getRole() == Role.ADMIN) {
-            logger.info(LogMsg.userCant("change others' Admin role"));
-            return false;
-        }
-
-        boolean update = db.update("user", "role", role.name(),
-                "id", userId);
-        return LogMsg.logResult(update, "change others' role");
-    }
-
-    public boolean changeOthersAccountStatus(int userId, AccountStatus status) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ACCOUNT_STATUS)) {
-            logger.info(LogMsg.userNotAllowTo("change others' account status"));
-            return false;
-        }
-
-        if (status == AccountStatus.ACTIVE || status == AccountStatus.INACTIVE) {
-            logger.info(LogMsg.userDontHaveTo);
-            return false;
-        }
-
-        if (userId == currentUser.getId()) {
-            logger.info(LogMsg.userCant(
-                    "set their own account status to SUSPENDED or BANNED"));
-            return false;
-        }
-
-        User user = getUserbyId(false, userId);
-        if (user == null) {
-            logger.info(LogMsg.userNotFound);
-            return false;
-        }
-
-        if (user.getRole() == Role.ADMIN) {
-            logger.info(LogMsg.userCant("change others' Admin account status"));
-            return false;
-        }
-
-        boolean update = db.update("user", "accountStatus", status.name(),
-                "id", userId);
-        return LogMsg.logResult(update, "change others' status");
-    }
-
-    public boolean changePassword(String oldPassword, String newPassword) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (!PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash())) {
-            logger.info(LogMsg.wrongPW);
-            return false;
-        }
-
-        boolean update = db.update("user", "passwordHash",
-                PasswordEncoder.encode(currentUser.getPasswordHash()),
-                "id", currentUser.getId());
-        return LogMsg.logResult(update, "change password");
-    }
-
-    public boolean changePassword(int userId, String newPassword) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
-            logger.info(LogMsg.userNotAllowTo("change others' password"));
-            return false;
-        }
-
-        User user = getUserbyId(false, userId);
-        if (user == null) {
-            logger.info(LogMsg.userNotFound);
-            return false;
-        }
-
-        if (user.getRole() == Role.ADMIN) {
-            logger.info(LogMsg.userCant("change other Admin's password"));
-            return false;
-        }
-
-        boolean update = db.update("user", "passwordHash",
-                PasswordEncoder.encode(newPassword), "id", userId);
-        return LogMsg.logResult(update, "change others' password");
-    }
-
-//    public static boolean resetPasswordRequest(String email) {
-//        return true;
+//    public boolean updateProfile(int userId, String newFirstName, String newLastName,
+//                                 LocalDate newDateOfBirth, String newAddress) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (userId != currentUser.getId()) {
+//            if (!currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
+//                log.info(LogMessages.userNotAllowTo("change others' profile"));
+//                return false;
+//            }
+//
+//            User user = getUserbyId(false, userId);
+//            if (user == null) {
+//                log.info(LogMessages.userNotFound);
+//                return false;
+//            } else {
+//                if (user.getRole() == Role.ADMIN) {
+//                    log.info(LogMessages.userCant("change other Admins' profile"));
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        if (!InputValidator.validateInput(
+//                newFirstName, newLastName, newAddress
+//        )) {
+//            return false;
+//        }
+//
+//        boolean update = db.update("user",
+//                List.of("firstName", "lastName", "dateOfBirth", "address"),
+//                List.of(newFirstName, newLastName,
+//                        Date.valueOf(newDateOfBirth), newAddress),
+//                List.of("id"), List.of(userId));
+//        return LogMessages.logResult(update, "update profile");
 //    }
 //
-//    public static boolean emailOTPRequest(String email) {
-//        return true;
+//    public boolean changeEmail(int userId, String newEmail) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (userId != currentUser.getId()) {
+//            if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
+//                log.info(LogMessages.userNotAllowTo("change others' email"));
+//                return false;
+//            }
+//
+//            User other = getUserbyId(false, userId);
+//            if (other == null) {
+//                log.info(LogMessages.userNotFound);
+//                return false;
+//            } else {
+//                if (other.getRole() == Role.ADMIN) {
+//                    log.info(LogMessages.userCant("change other Admins' email"));
+//                    return false;
+//                }
+//            }
+//        } else {
+//            if (newEmail.equals(currentUser.getEmail())) {
+//                log.info("New email is still the same");
+//                return false;
+//            }
+//        }
+//
+//        if (!InputValidator.validateEmail(newEmail)) {
+//            log.info(LogMessages.emailNotValid);
+//            return false;
+//        }
+//
+//        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
+//            log.info("Email is already used by other users");
+//            return false;
+//        }
+//
+//        boolean update = db.update("user", "email", newEmail,
+//                "id", userId);
+//        return LogMessages.logResult(update, "change email");
 //    }
 //
-//    public static boolean verifyEmail(String email, String OTP) {
-//        return true;
+//    public boolean changeOthersRole(int userId, Role role) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ROLE)) {
+//            log.info(LogMessages.userNotAllowTo("change others' role"));
+//            return false;
+//        }
+//
+//        if (userId == currentUser.getId()) {
+//            log.info(LogMessages.userCant("change their own role"));
+//            return false;
+//        }
+//
+//        User user = getUserbyId(false, userId);
+//        if (user == null) {
+//            log.info(LogMessages.userNotFound);
+//            return false;
+//        }
+//
+//        if (user.getRole() == Role.ADMIN) {
+//            log.info(LogMessages.userCant("change others' Admin role"));
+//            return false;
+//        }
+//
+//        boolean update = db.update("user", "role", role.name(),
+//                "id", userId);
+//        return LogMessages.logResult(update, "change others' role");
+//    }
+//
+//    public boolean changeOthersAccountStatus(int userId, AccountStatus status) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ACCOUNT_STATUS)) {
+//            log.info(LogMessages.userNotAllowTo("change others' account status"));
+//            return false;
+//        }
+//
+//        if (status == AccountStatus.ACTIVE || status == AccountStatus.INACTIVE) {
+//            log.info(LogMessages.userDontHaveTo);
+//            return false;
+//        }
+//
+//        if (userId == currentUser.getId()) {
+//            log.info(LogMessages.userCant(
+//                    "set their own account status to SUSPENDED or BANNED"));
+//            return false;
+//        }
+//
+//        User user = getUserbyId(false, userId);
+//        if (user == null) {
+//            log.info(LogMessages.userNotFound);
+//            return false;
+//        }
+//
+//        if (user.getRole() == Role.ADMIN) {
+//            log.info(LogMessages.userCant("change others' Admin account status"));
+//            return false;
+//        }
+//
+//        boolean update = db.update("user", "accountStatus", status.name(),
+//                "id", userId);
+//        return LogMessages.logResult(update, "change others' status");
+//    }
+//
+//    public boolean changePassword(String oldPassword, String newPassword) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (!PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash())) {
+//            log.info(LogMessages.wrongPW);
+//            return false;
+//        }
+//
+//        boolean update = db.update("user", "passwordHash",
+//                PasswordEncoder.encode(currentUser.getPasswordHash()),
+//                "id", currentUser.getId());
+//        return LogMessages.logResult(update, "change password");
+//    }
+//
+//    public boolean changePassword(int userId, String newPassword) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
+//            log.info(LogMessages.userNotAllowTo("change others' password"));
+//            return false;
+//        }
+//
+//        User user = getUserbyId(false, userId);
+//        if (user == null) {
+//            log.info(LogMessages.userNotFound);
+//            return false;
+//        }
+//
+//        if (user.getRole() == Role.ADMIN) {
+//            log.info(LogMessages.userCant("change other Admin's password"));
+//            return false;
+//        }
+//
+//        boolean update = db.update("user", "passwordHash",
+//                PasswordEncoder.encode(newPassword), "id", userId);
+//        return LogMessages.logResult(update, "change others' password");
+//    }
+//
+////    public static boolean resetPasswordRequest(String email) {
+////        return true;
+////    }
+////
+////    public static boolean emailOTPRequest(String email) {
+////        return true;
+////    }
+////
+////    public static boolean verifyEmail(String email, String OTP) {
+////        return true;
+////    }
+//
+//    public boolean deleteOwnAccount(String password) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (!currentUser.getRole().hasPermission(Permission.DELETE_OWN_ACCOUNT)) {
+//            log.info(LogMessages.userNotAllowTo("delete their own account"));
+//            return false;
+//        }
+//
+//        if (!PasswordEncoder.compare(password, currentUser.getPasswordHash())) {
+//            log.info(LogMessages.wrongPW);
+//            return false;
+//        }
+//
+//        boolean delete = db.delete("user", "id", currentUser.getId());
+//        if (delete) {
+//            currentUser = null;
+//        }
+//        return LogMessages.logResult(delete, "delete your account and log out");
+//    }
+//
+//    public boolean deleteOthersAccount(int userId) {
+//        if (!checkLoggedInAndConnected()) {
+//            return false;
+//        }
+//
+//        if (userId == currentUser.getId()) {
+//            log.info("Password is required to delete your own password");
+//            return false;
+//        }
+//
+//        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
+//            log.info(LogMessages.userNotAllowTo("delete others' account"));
+//            return false;
+//        }
+//
+//        User user = getUserbyId(false, userId);
+//        if (user == null) {
+//            log.info(LogMessages.userNotFound);
+//            return false;
+//        }
+//
+//        if (user.getRole() == Role.ADMIN) {
+//            log.info(LogMessages.userCant("delete other Admin's account"));
+//            return false;
+//        }
+//
+//        boolean delete = db.delete("user", "id", userId);
+//        return LogMessages.logResult(delete, "delete account");
 //    }
 
-    public boolean deleteOwnAccount(String password) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (!currentUser.getRole().hasPermission(Permission.DELETE_OWN_ACCOUNT)) {
-            logger.info(LogMsg.userNotAllowTo("delete their own account"));
-            return false;
-        }
-
-        if (!PasswordEncoder.compare(password, currentUser.getPasswordHash())) {
-            logger.info(LogMsg.wrongPW);
-            return false;
-        }
-
-        boolean delete = db.delete("user", "id", currentUser.getId());
-        if (delete) {
-            currentUser = null;
-        }
-        return LogMsg.logResult(delete, "delete your account and log out");
-    }
-
-    public boolean deleteOthersAccount(int userId) {
-        if (!checkLoggedInAndConnected()) {
-            return false;
-        }
-
-        if (userId == currentUser.getId()) {
-            logger.info("Password is required to delete your own password");
-            return false;
-        }
-
-        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
-            logger.info(LogMsg.userNotAllowTo("delete others' account"));
-            return false;
-        }
-
-        User user = getUserbyId(false, userId);
-        if (user == null) {
-            logger.info(LogMsg.userNotFound);
-            return false;
-        }
-
-        if (user.getRole() == Role.ADMIN) {
-            logger.info(LogMsg.userCant("delete other Admin's account"));
-            return false;
-        }
-
-        boolean delete = db.delete("user", "id", userId);
-        return LogMsg.logResult(delete, "delete account");
-    }
-
-    private User getUserbyId(Boolean inDetail, int id) {
+    private User getUserbyId(Boolean inDetail, int id)
+            throws UserException {
         return getUser(inDetail, id, "", "");
     }
 
-    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email) {
+    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email)
+            throws UserException {
         return getUser(inDetail, -1, username, email);
     }
 

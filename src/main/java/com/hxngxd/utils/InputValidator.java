@@ -1,6 +1,7 @@
 package com.hxngxd.utils;
 
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.ValidationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,8 @@ public class InputValidator {
     private InputValidator() {
     }
 
-    public static void validateInput(String... inputs) throws ValidationException {
+    public static void validateInput(String... inputs)
+            throws ValidationException {
         for (String input : inputs) {
             if (input.isEmpty()) {
                 throw new ValidationException(
@@ -35,12 +37,20 @@ public class InputValidator {
         }
     }
 
-    public static void validateEmail(String email) throws ValidationException {
+    public static void validateEmail(String email)
+            throws ValidationException {
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) {
             throw new ValidationException(
                     LogMessages.Validation.EMAIL_NOT_VALID.getMessage()
             );
+        }
+    }
+
+    public static void validatePassword(String password)
+            throws PasswordException {
+        if (password.length() < 6) {
+            throw new PasswordException("Password size should not be less than 6");
         }
     }
 }

@@ -7,7 +7,7 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.utils.ImageHandler;
-import com.hxngxd.utils.LogMsg;
+import com.hxngxd.enums.LogMessages;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class HomeController {
 
-    private static final Logger logger = LogManager.getLogger(HomeController.class);
+    private static final Logger log = LogManager.getLogger(HomeController.class);
 
     @FXML
     private FlowPane bookDisplayContainer;
@@ -57,31 +57,6 @@ public class HomeController {
         controller.setIdLabel(user.getId());
     }
 
-    public void displayBooks() {
-        Collections.shuffle(BookService.currentBooks);
-        for (Book book : BookService.currentBooks) {
-            try {
-                VBox bookBox = (VBox) (Objects.requireNonNull(
-                        UIManager.load(UI.BOOK_DISPLAY)).load());
-                bookBox.setId(String.valueOf(book.getId()));
-                ((Label) bookBox.lookup("#bookDisplayTitle")).setText(book.getTitle());
-                ((Label) bookBox.lookup("#bookDisplayYear")).setText(
-                        String.valueOf(book.getYearOfPublication())
-                );
-                ((Label) bookBox.lookup("#bookDisplayReview")).setText(
-                        book.getAverageRating() == 0.0 ?
-                                "Chưa được đánh giá" : String.valueOf(book.getAverageRating())
-                );
-                ((ImageView) bookBox.lookup("#bookDisplayCoverImage")).setImage(
-                        ImageHandler.cropImageByRatio(book.getCoverImage(), 1, 1)
-                );
-                bookDisplayContainer.getChildren().add(bookBox);
-            } catch (Exception e) {
-                logger.error(LogMsg.fail("display book"), e);
-            }
-        }
-    }
-
     public void setProfilePicture(Image profilePicture) {
         this.profilePicture.setImage(profilePicture);
     }
@@ -104,19 +79,34 @@ public class HomeController {
 
     @FXML
     private void browseImage(ActionEvent event) {
-        try {
-            File file = ImageHandler.chooseImage("");
-            if (file == null) {
-                throw new Exception();
+        File file = ImageHandler.chooseImage("");
+        profilePicture.setImage(
+                ImageHandler.cropImageByRatio(
+                        ImageHandler.loadImageFromFile(file), 1, 1));
+    }
+
+    public void displayBooks() {
+        Collections.shuffle(BookService.currentBooks);
+        for (Book book : BookService.currentBooks) {
+            try {
+                VBox bookBox = (VBox) (Objects.requireNonNull(
+                        UIManager.load(UI.BOOK_DISPLAY)).load());
+                bookBox.setId(String.valueOf(book.getId()));
+                ((Label) bookBox.lookup("#bookDisplayTitle")).setText(book.getTitle());
+                ((Label) bookBox.lookup("#bookDisplayYear")).setText(
+                        String.valueOf(book.getYearOfPublication())
+                );
+                ((Label) bookBox.lookup("#bookDisplayReview")).setText(
+                        book.getAverageRating() == 0.0 ?
+                                "Chưa được đánh giá" : String.valueOf(book.getAverageRating())
+                );
+                ((ImageView) bookBox.lookup("#bookDisplayCoverImage")).setImage(
+                        ImageHandler.cropImageByRatio(book.getCoverImage(), 1, 1.5)
+                );
+                bookDisplayContainer.getChildren().add(bookBox);
+            } catch (Exception e) {
+//                log.error(LogMessages.fail("display book"), e);
             }
-            Image image = ImageHandler.cropImageByRatio(
-                    Objects.requireNonNull(
-                            ImageHandler.loadImageFromPath(file.getAbsolutePath())),
-                    1, 1
-            );
-            profilePicture.setImage(image);
-        } catch (Exception e) {
-            logger.info(LogMsg.fail("loadOnce image"));
         }
     }
 
