@@ -59,9 +59,11 @@ public class HomeController {
         HomeController controller = UIManager.Loaders.get(UI.HOME).getController();
         User user = UserService.getInstance().getCurrentUser();
         controller.displayBooks();
-        controller.setProfilePicture(
-                ImageHandler.cropImageByRatio(user.getPhoto(), 1, 1)
-        );
+        if (user.getRole() != null) {
+            controller.setProfilePicture(
+                    ImageHandler.cropImageByRatio(user.getPhoto(), 1, 1)
+            );
+        }
         controller.setFullNameLabel(user.getFullNameLastThenFirst());
         controller.setUsernameLabel(user.getUsername());
         controller.setRoleLabel(user.getRole());

@@ -24,6 +24,7 @@ public class User extends Person {
 
     public User(int id) {
         this.id = id;
+        this.photo = null;
     }
 
     public User(int id, String firstName, String lastName, LocalDate dateOfBirth,

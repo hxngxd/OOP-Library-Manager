@@ -448,9 +448,10 @@ public class UserService {
                     user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
                     user.setRole(Role.valueOf(resultSet.getString("role")));
                     user.setViolationCount(resultSet.getInt("violationCount"));
-                    user.setPhoto(
-                            ImageHandler.byteArrayToImage(resultSet.getBytes("photo"))
-                    );
+                    byte[] photoBytes = resultSet.getBytes("photo");
+                    if (photoBytes != null) {
+                        user.setPhoto(ImageHandler.byteArrayToImage(photoBytes));
+                    }
                 }
                 return user;
             }
