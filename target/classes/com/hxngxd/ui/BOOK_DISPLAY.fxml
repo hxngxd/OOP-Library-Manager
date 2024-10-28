@@ -6,37 +6,49 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="bookDisplay" alignment="CENTER" styleClass="box" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fx:id="bookDisplayCoverImage" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
-         <VBox.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </VBox.margin>
-      </ImageView>
-      <Label fx:id="bookDisplayTitle" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="TITLE" wrapText="true" VBox.vgrow="ALWAYS">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="bookDisplayYear" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="160.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Year" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="bookDisplayAuthor" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="185.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Author" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="bookDisplayGenre" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="210.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Genre" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="bookDisplayReview" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="400.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Reviews" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-   </children>
+<VBox fx:id="bookDisplay" alignment="CENTER" styleClass="box" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <ImageView fx:id="bookDisplayCoverImage" fitHeight="300.0" fitWidth="200.0"
+                   pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </VBox.margin>
+        </ImageView>
+        <Label fx:id="bookDisplayTitle" alignment="CENTER" contentDisplay="CENTER"
+               maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="TITLE" wrapText="true"
+               VBox.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+        <Label fx:id="bookDisplayYear" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0"
+               layoutY="160.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Year"
+               VBox.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+        <Label fx:id="bookDisplayAuthor" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0"
+               layoutY="185.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0"
+               text="Author" VBox.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+        <Label fx:id="bookDisplayGenre" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0"
+               layoutY="210.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0" text="Genre"
+               VBox.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+        <Label fx:id="bookDisplayReview" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0"
+               layoutY="400.0" maxHeight="-Infinity" maxWidth="200.0" prefHeight="30.0"
+               text="Reviews" VBox.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0"/>
+            </font>
+        </Label>
+    </children>
 </VBox>

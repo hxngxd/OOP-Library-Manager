@@ -16,6 +16,7 @@ public class BookService {
     private final Logger log = LogManager.getLogger(UserService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
     public static final List<Book> currentBooks = new ArrayList<>();
+    private Book currentBook = null;
 
     private BookService() {
     }
@@ -31,6 +32,14 @@ public class BookService {
     public static void init() {
         BookService bookService = BookService.getInstance();
         bookService.getAllBooks();
+    }
+
+    public Book getCurrentBook() {
+        return currentBook;
+    }
+
+    public void setCurrentBook(Book currentBook) {
+        this.currentBook = currentBook;
     }
 
     public boolean updateAvailableCopies(int bookId, int difference) {

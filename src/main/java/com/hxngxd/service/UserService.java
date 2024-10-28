@@ -8,6 +8,7 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
+import com.hxngxd.utils.ImageHandler;
 import com.hxngxd.utils.InputValidator;
 import com.hxngxd.utils.PasswordEncoder;
 import com.hxngxd.enums.LogMessages;
@@ -15,6 +16,7 @@ import com.hxngxd.enums.LogMessages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -148,6 +150,23 @@ public class UserService {
         log.info(LogMessages.General.SUCCESS.getMessage("log out"));
     }
 
+    public void updateProfilePicture(File imageFile)
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
+
+        if (imageFile == null) {
+            log.info(LogMessages.File.FILE_IS_NULL.getMessage());
+            return;
+        }
+
+        byte[] toByte = ImageHandler.fileToByteArray(imageFile);
+
+        db.update("user",
+                "photo", toByte,
+                "id", currentUser.getId());
+
+        log.info(LogMessages.General.SUCCESS.getMessage("change profile picture"));
+    }
 //    public boolean updateProfile(int userId, String newFirstName, String newLastName,
 //                                 LocalDate newDateOfBirth, String newAddress) {
 //        if (!checkLoggedInAndConnected()) {
@@ -429,6 +448,9 @@ public class UserService {
                     user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
                     user.setRole(Role.valueOf(resultSet.getString("role")));
                     user.setViolationCount(resultSet.getInt("violationCount"));
+                    user.setPhoto(
+                            ImageHandler.byteArrayToImage(resultSet.getBytes("photo"))
+                    );
                 }
                 return user;
             }

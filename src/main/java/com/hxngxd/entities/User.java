@@ -2,6 +2,7 @@ package com.hxngxd.entities;
 
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
+import javafx.scene.image.Image;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ public class User extends Person {
     private Role role;
     private AccountStatus accountStatus;
     private int violationCount;
+    private Image photo;
 
     public User() {
     }
@@ -89,6 +91,14 @@ public class User extends Person {
 
     public void setViolationCount(int violationCount) {
         this.violationCount = violationCount;
+    }
+
+    public Image getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Image photo) {
+        this.photo = photo;
     }
 
     @Override

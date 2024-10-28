@@ -3,6 +3,7 @@ package com.hxngxd.entities;
 import javafx.scene.image.Image;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Book {
     private int id;
@@ -129,5 +130,17 @@ public class Book {
 
     public void setCoverImage(Image coverImage) {
         this.coverImage = coverImage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+        return id == book.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
