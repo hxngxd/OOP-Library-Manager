@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
-    private final Logger log = LogManager.getLogger(UserService.class);
+    private final Logger log = LogManager.getLogger(BookService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
-    public static final List<Book> currentBooks = new ArrayList<>();
     private Book currentBook = null;
 
     private BookService() {
@@ -119,26 +118,44 @@ public class BookService {
     }
 
     public void getAllBooks() {
-        currentBooks.clear();
-        String query = "select * from book";
+        String query = "select book.*, bookauthor.authorId, bookgenre.genreId from book" +
+                " join bookauthor on bookauthor.bookId = book.id" +
+                " join bookgenre on bookgenre.bookId = book.id";
         db.select("getting books", query, resultSet -> {
             while (resultSet.next()) {
-                Book book = new Book(
-                        resultSet.getInt("id"),
-                        resultSet.getTimestamp("dateAdded").toLocalDateTime(),
-                        resultSet.getTimestamp("lastUpdated").toLocalDateTime(),
-                        resultSet.getDouble("averageRating")
+                int id = resultSet.getInt("id");
+                Book book = null;
+                if (!Book.bookMap.containsKey(id)) {
+                    book = new Book(
+                            resultSet.getInt("id"),
+                            resultSet.getTimestamp("dateAdded").toLocalDateTime(),
+                            resultSet.getTimestamp("lastUpdated").toLocalDateTime(),
+                            resultSet.getDouble("averageRating")
+                    );
+                    book.setTitle(resultSet.getString("title"));
+                    book.setYearOfPublication(resultSet.getShort("yearOfPublication"));
+                    book.setShortDescription(resultSet.getString("shortDescription"));
+                    book.setNumberOfPages(resultSet.getInt("numberOfPages"));
+                    book.setAvailableCopies(resultSet.getInt("availableCopies"));
+                    book.setTotalCopies(resultSet.getInt("totalCopies"));
+                    byte[] coverImage = resultSet.getBytes("coverImage");
+                    if (coverImage != null) {
+                        book.setImage(ImageHandler.byteArrayToImage(coverImage));
+                    }
+                    Book.bookMap.put(id, book);
+                } else {
+                    book = Book.bookMap.get(id);
+                }
+                Author author = Author.authorMap.get(
+                        resultSet.getInt("authorId")
                 );
-                book.setTitle(resultSet.getString("title"));
-                book.setYearOfPublication(resultSet.getShort("yearOfPublication"));
-                book.setShortDescription(resultSet.getString("shortDescription"));
-                book.setNumberOfPages(resultSet.getInt("numberOfPages"));
-                book.setAvailableCopies(resultSet.getInt("availableCopies"));
-                book.setTotalCopies(resultSet.getInt("totalCopies"));
-                book.setCoverImage(ImageHandler.byteArrayToImage(
-                        resultSet.getBytes("coverImage")
-                ));
-                currentBooks.add(book);
+                Genre genre = Genre.genreMap.get(
+                        resultSet.getInt("genreId")
+                );
+                book.addAuthor(author);
+                book.addGenre(genre);
+                author.addBook(book);
+                genre.addBook(book);
             }
             return null;
         });

@@ -49,6 +49,7 @@ public class WelcomeController {
             loginStatusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
             HomeController.init();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
             loginStatusLabel.setText(e.getMessage());
         }

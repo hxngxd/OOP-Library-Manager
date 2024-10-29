@@ -52,6 +52,7 @@ public class DatabaseManager {
                 return false;
             }
         } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
             log.info(LogMessages.General.FAIL.getMessage("connect to the database"), e);
         }
         return false;
@@ -67,6 +68,7 @@ public class DatabaseManager {
             log.info(LogMessages.General.SUCCESS.getMessage("disconnect from database"));
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
             log.error(LogMessages.General.FAIL.getMessage("disconnect from database"), e);
             return false;
         }
@@ -77,6 +79,7 @@ public class DatabaseManager {
             return DatabaseManager.getInstance().connection != null &&
                     !DatabaseManager.getInstance().connection.isClosed();
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -107,6 +110,7 @@ public class DatabaseManager {
                     "load database configuration"));
 
         } catch (IOException e) {
+            e.printStackTrace();
             log.info(LogMessages.General.FAIL.getMessage(
                     "load database configuration"), e);
         }
@@ -156,6 +160,7 @@ public class DatabaseManager {
                 );
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -198,6 +203,7 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -229,6 +235,7 @@ public class DatabaseManager {
                 );
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -242,6 +249,7 @@ public class DatabaseManager {
                 return mapper.map(resultSet);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException(
                     LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
                             "executing query"

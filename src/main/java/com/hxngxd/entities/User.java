@@ -6,9 +6,6 @@ import javafx.scene.image.Image;
 
 import java.time.LocalDate;
 
-/**
- * Lớp User kế thừa từ Person, đại diện cho người dùng trong hệ thống.
- */
 public class User extends Person {
     private String username;
     private String email;
@@ -17,14 +14,12 @@ public class User extends Person {
     private Role role;
     private AccountStatus accountStatus;
     private int violationCount;
-    private Image photo;
 
     public User() {
     }
 
     public User(int id) {
         this.id = id;
-        this.photo = null;
     }
 
     public User(int id, String firstName, String lastName, LocalDate dateOfBirth,
@@ -94,28 +89,14 @@ public class User extends Person {
         this.violationCount = violationCount;
     }
 
-    public Image getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Image photo) {
-        this.photo = photo;
-    }
-
     @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
-                ", address='" + address + '\'' +
-                ", role=" + role +
-                ", accountStatus=" + accountStatus +
-                ", violationCount=" + violationCount +
-                ", id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                '}';
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof User)) {
+            return false;
+        }
+        return this.id == ((User) other).getId();
     }
 }

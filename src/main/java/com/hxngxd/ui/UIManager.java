@@ -23,6 +23,7 @@ public class UIManager {
             try {
                 Scenes.put(ui, new Scene(loadOnce(ui).load()));
             } catch (IOException e) {
+                e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMessage(
                         "load scene: " + ui.name()), e);
                 return null;

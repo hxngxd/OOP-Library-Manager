@@ -34,6 +34,7 @@ public class Main extends Application {
         try {
             userService.logout();
         } catch (RuntimeException e) {
+            e.printStackTrace();
             log.error(e.getMessage());
         }
         db.disconnect();

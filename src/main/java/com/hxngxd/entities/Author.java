@@ -1,22 +1,60 @@
 package com.hxngxd.entities;
 
+import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.utils.ImageHandler;
+
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Author extends Person {
     private String biography;
     private LocalDate dayOfDeath;
-    private List<Book> books;
+    private final List<Book> books = new ArrayList<>();
+
+    public static final HashMap<Integer, Author> authorMap = new HashMap<>();
+
+    public static void init() {
+        String query = "select * from author";
+        DatabaseManager.getInstance().select("getting authors", query, resultSet -> {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                if (authorMap.containsKey(id)) {
+                    continue;
+                }
+                Author author = new Author(id);
+                author.setFirstName(resultSet.getString("firstName"));
+                author.setLastName(resultSet.getString("lastName"));
+                author.setDayOfDeath(resultSet.getDate("dateOfBirth").toLocalDate());
+                byte[] photo = resultSet.getBytes("photo");
+                if (photo != null) {
+                    author.setImage(ImageHandler.byteArrayToImage(photo));
+                }
+                author.setBiography(resultSet.getString("biography"));
+                Date dod = resultSet.getDate("dayOfDeath");
+                if (dod != null) {
+                    author.setDayOfDeath(dod.toLocalDate());
+                }
+                authorMap.put(id, author);
+            }
+            return null;
+        });
+    }
 
     public Author() {
     }
 
+    public Author(int id) {
+        this.id = id;
+    }
+
     public Author(int id, String firstName, String lastName, LocalDate dateOfBirth,
-                  String biography, LocalDate dayOfDeath, List<Book> books) {
+                  String biography, LocalDate dayOfDeath) {
         super(id, firstName, lastName, dateOfBirth);
         this.biography = biography;
         this.dayOfDeath = dayOfDeath;
-        this.books = books;
     }
 
     public String getBiography() {
@@ -35,15 +73,24 @@ public class Author extends Person {
         this.dayOfDeath = dayOfDeath;
     }
 
+    public void addBook(Book book) {
+        if (!this.books.contains(book)) {
+            this.books.add(book);
+        }
+    }
+
     public List<Book> getBooks() {
         return books;
     }
 
-    public boolean addBook(int bookId) {
-        return true;
-    }
-
-    public boolean removeBook(int bookId) {
-        return true;
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Author)) {
+            return false;
+        }
+        return this.id == ((Author) other).getId();
     }
 }

@@ -27,8 +27,10 @@ public class ImageHandler {
         try (InputStream inputStream = new FileInputStream(file)) {
             result = inputStream.readAllBytes();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             log.error(LogMessages.File.FILE_NOT_FOUND.getMessage(file.getAbsolutePath()));
         } catch (IOException e) {
+            e.printStackTrace();
             log.error(LogMessages.File.FILE_IO_ERROR.getMessage(file.getAbsolutePath()));
         }
         return result;
@@ -81,14 +83,17 @@ public class ImageHandler {
         try (InputStream inputStream = new FileInputStream(file)) {
             return new Image(inputStream);
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             log.error(
                     LogMessages.File.FILE_NOT_FOUND.getMessage(
                             file.getAbsolutePath()), e);
         } catch (IOException e) {
+            e.printStackTrace();
             log.error(
                     LogMessages.File.FILE_IO_ERROR.getMessage(
                             file.getAbsolutePath()), e);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(
                     LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
                             file.getAbsolutePath()), e);

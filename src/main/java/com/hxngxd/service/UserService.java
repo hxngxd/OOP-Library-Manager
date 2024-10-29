@@ -450,7 +450,7 @@ public class UserService {
                     user.setViolationCount(resultSet.getInt("violationCount"));
                     byte[] photoBytes = resultSet.getBytes("photo");
                     if (photoBytes != null) {
-                        user.setPhoto(ImageHandler.byteArrayToImage(photoBytes));
+                        user.setImage(ImageHandler.byteArrayToImage(photoBytes));
                     }
                 }
                 return user;

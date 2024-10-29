@@ -1,12 +1,11 @@
 package com.hxngxd.entities;
 
-import javafx.scene.image.Image;
-
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class Book {
-    private int id;
+public class Book extends EntityWithPhoto {
     private String title;
     private short yearOfPublication;
     private String shortDescription;
@@ -16,14 +15,20 @@ public class Book {
     private int availableCopies;
     private int totalCopies;
     private double averageRating;
-    private Image coverImage;
+    private final List<Author> authors = new ArrayList<>();
+    private final List<Genre> genres = new ArrayList<>();
+    public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
     public Book() {
     }
 
+    public Book(int id) {
+        super(id);
+    }
+
     public Book(int id, LocalDateTime dateAdded,
                 LocalDateTime lastUpdated, double averageRating) {
-        this.id = id;
+        super(id);
         this.dateAdded = dateAdded;
         this.lastUpdated = lastUpdated;
         this.averageRating = averageRating;
@@ -89,10 +94,6 @@ public class Book {
         this.totalCopies = totalCopies;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public LocalDateTime getDateAdded() {
         return dateAdded;
     }
@@ -108,39 +109,34 @@ public class Book {
         return averageRating;
     }
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", yearOfPublication=" + yearOfPublication +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", numberOfPages=" + numberOfPages +
-                ", dateAdded=" + dateAdded +
-                ", lastUpdated=" + lastUpdated +
-                ", availableCopies=" + availableCopies +
-                ", totalCopies=" + totalCopies +
-                ", averageRating=" + averageRating +
-                '}';
+    public void addAuthor(Author author) {
+        if (!this.authors.contains(author)) {
+            this.authors.add(author);
+        }
     }
 
-    public Image getCoverImage() {
-        return coverImage;
+    public void addGenre(Genre genre) {
+        if (!this.genres.contains(genre)) {
+            this.genres.add(genre);
+        }
     }
 
-    public void setCoverImage(Image coverImage) {
-        this.coverImage = coverImage;
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book book)) return false;
-        return id == book.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Book)) {
+            return false;
+        }
+        return this.id == ((Book) other).getId();
     }
 }
