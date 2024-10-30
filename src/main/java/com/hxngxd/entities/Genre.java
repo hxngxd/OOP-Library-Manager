@@ -13,7 +13,7 @@ public class Genre extends Entity {
 
     public static final HashMap<Integer, Genre> genreMap = new HashMap<>();
 
-    public static void init() {
+    public static void initialize() {
         String query = "select * from genre";
         DatabaseManager.getInstance().select("getting genres", query, resultSet -> {
             while (resultSet.next()) {

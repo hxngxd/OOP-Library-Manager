@@ -16,7 +16,7 @@ public class Author extends Person {
 
     public static final HashMap<Integer, Author> authorMap = new HashMap<>();
 
-    public static void init() {
+    public static void initialize() {
         String query = "select * from author";
         DatabaseManager.getInstance().select("getting authors", query, resultSet -> {
             while (resultSet.next()) {

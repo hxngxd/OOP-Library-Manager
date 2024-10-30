@@ -2,7 +2,6 @@ package com.hxngxd.ui;
 
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
-import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -28,17 +27,16 @@ public class WelcomeController {
     private final UserService userService = UserService.getInstance();
 
     private void handleEnterKey(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER) {
+        if (event.getCode() == KeyCode.ENTER) {
             logIn((null));
             event.consume();
         }
     }
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         passwordField.setOnKeyPressed(this::handleEnterKey);
     }
-
 
     @FXML
     private void goToLogin(ActionEvent event) {
@@ -53,16 +51,12 @@ public class WelcomeController {
     @FXML
     private void logIn(ActionEvent event) {
         try {
-//            userService.login(
-//                    usernameField.getText(), usernameField.getText(),
-//                    passwordField.getText()
-//            );
             userService.login(
                     "23020078", "23020078",
                     "Hung@07112005"
             );
             loginStatusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
-            HomeController.init();
+            StageManager.getInstance().setScene(UI.HOME);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());

@@ -26,7 +26,7 @@ public class StageManager {
         return SingletonHolder.instance;
     }
 
-    public void init(Stage stage) {
+    public void initialize(Stage stage) {
         if (this.mainStage == null) {
             this.mainStage = stage;
         }

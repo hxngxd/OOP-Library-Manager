@@ -21,16 +21,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,27 +59,23 @@ public class HomeController {
     @FXML
     private ScrollPane previewBookContainer;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            "hh:mm:ss, dd-MM-yyyy");
-
-    public static void init() {
-        StageManager.getInstance().setScene(UI.HOME);
-        Author.init();
-        Genre.init();
-        BookService.init();
-        HomeController controller = UIManager.Loaders.get(UI.HOME).getController();
+    @FXML
+    private void initialize() {
+        Author.initialize();
+        Genre.initialize();
+        BookService.initialize();
         User user = UserService.getInstance().getCurrentUser();
-        controller.displayBooks();
+        displayBooks();
         if (user.getRole() != null) {
-            controller.setProfilePicture(
+            setProfilePicture(
                     ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
             );
         }
-        controller.setFullNameLabel(user.getFullNameLastThenFirst());
-        controller.setUsernameLabel(user.getUsername());
-        controller.setRoleLabel(user.getRole());
-        controller.setIdLabel(user.getId());
-        controller.loadPreviewBookContainer();
+        setFullNameLabel(user.getFullNameLastThenFirst());
+        setUsernameLabel(user.getUsername());
+        setRoleLabel(user.getRole());
+        setIdLabel(user.getId());
+        loadPreviewBookContainer();
     }
 
     public void setProfilePicture(Image profilePicture) {
@@ -136,7 +127,14 @@ public class HomeController {
             try {
                 VBox bookBox = Objects.requireNonNull(
                         UIManager.load(UI.BOOK_DISPLAY)).load();
-                updatePreviewBox(bookBox, book, false);
+                ImageView image = (ImageView) bookBox.lookup("#bookCoverImage");
+                if (image != null) {
+                    image.setImage(
+                            ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5)
+                    );
+                }
+                ((Label) bookBox.lookup("#bookTitle")).setText(book.getTitle());
+                ((Label) bookBox.lookup("#bookInformation")).setText(book.toString());
                 bookBox.setOnMouseClicked(mouseEvent -> previewBook(book));
                 bookDisplayContainer.getChildren().add(bookBox);
             } catch (IOException e) {
@@ -155,80 +153,14 @@ public class HomeController {
             bookService.setCurrentBook(book);
             VBox previewBox = (VBox)
                     ((AnchorPane) previewBookContainer.getContent()).getChildren().getFirst();
-            updatePreviewBox(previewBox, book, true);
-        }
-    }
-
-    private void updatePreviewBox(VBox previewBox, Book book, boolean addBulletPoint) {
-        previewBox.setId(String.valueOf(book.getId()));
-
-        String bullet = addBulletPoint ? "• " : "";
-
-        ((Label) previewBox.lookup("#bookDisplayTitle")).setText(book.getTitle());
-
-        ((Label) previewBox.lookup("#bookDisplayYear")).setText(
-                bullet + (addBulletPoint ? "Năm xuất bản: " : "") + book.getYearOfPublication()
-        );
-
-        StringBuilder authors = new StringBuilder(bullet + (addBulletPoint ? "Tác giả: " : ""));
-        for (int i = 0; i < book.getAuthors().size(); i++) {
-            authors.append(book.getAuthors().get(i).getFullNameFirstThenLast());
-            if (i < book.getAuthors().size() - 1) {
-                authors.append(", ");
-            }
-        }
-        ((Label) previewBox.lookup("#bookDisplayAuthor")).setText(authors.toString());
-
-        StringBuilder genres = new StringBuilder(bullet + (addBulletPoint ? "Thể loại: " : ""));
-        for (int i = 0; i < book.getGenres().size(); i++) {
-            genres.append(book.getGenres().get(i).getName());
-            if (i < book.getGenres().size() - 1) {
-                genres.append(", ");
-            }
-        }
-        ((Label) previewBox.lookup("#bookDisplayGenre")).setText(genres.toString());
-
-        if (addBulletPoint) {
-            TextFlow description = ((TextFlow) previewBox.lookup("#bookDescription"));
-            if (description != null) {
-                description.getChildren().clear();
-                Text text = new Text(
-                        bullet + "Mô tả ngắn: " + book.getShortDescription()
+            ImageView image = (ImageView) previewBox.lookup("#bookCoverImage");
+            if (image != null) {
+                image.setImage(
+                        ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5)
                 );
-                text.setFont(Font.font("System", 14));
-                description.getChildren().add(text);
-                description.setTextAlignment(TextAlignment.LEFT);
             }
-
-            ((Label) previewBox.lookup("#bookDisplayPages")).setText(
-                    bullet + "Số trang: " + String.valueOf(book.getNumberOfPages()));
-
-            ((Label) previewBox.lookup("#bookDisplayDateAdded")).setText(
-                    bullet + "Ngày thêm: " + book.getDateAdded().format(formatter)
-            );
-
-            ((Label) previewBox.lookup("#bookDisplayLastUpdated")).setText(
-                    bullet + "Cập nhật gần nhất: " + book.getLastUpdated().format(formatter)
-            );
-
-            ((Label) previewBox.lookup("#bookDisplayCopies")).setText(
-                    bullet + "Có sẵn: " + String.valueOf(book.getAvailableCopies()) + "/"
-                            + String.valueOf(book.getTotalCopies()) + " bản"
-            );
-        }
-
-        ((Label) previewBox.lookup("#bookDisplayReview")).setText(
-                bullet + (addBulletPoint ? "Đánh giá: " : "") +
-                        (book.getAverageRating() == 0.0
-                                ? "Chưa được đánh giá"
-                                : String.valueOf(book.getAverageRating()))
-        );
-
-        ImageView image = (ImageView) previewBox.lookup("#bookDisplayCoverImage");
-        if (image != null) {
-            image.setImage(
-                    ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5)
-            );
+            ((Label) previewBox.lookup("#bookTitle")).setText(book.getTitle());
+            ((Label) previewBox.lookup("#bookInformation")).setText(book.toStringDetail());
         }
     }
 

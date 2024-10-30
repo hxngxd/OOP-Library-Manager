@@ -1,6 +1,7 @@
 package com.hxngxd.entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,9 @@ public class Book extends EntityWithPhoto {
     private final List<Author> authors = new ArrayList<>();
     private final List<Genre> genres = new ArrayList<>();
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+            "hh:mm:ss, dd-MM-yyyy");
 
     public Book() {
     }
@@ -138,5 +142,60 @@ public class Book extends EntityWithPhoto {
             return false;
         }
         return this.id == ((Book) other).getId();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder info = new StringBuilder();
+        info.append(this.yearOfPublication).append("\n");
+        authorsToString(info);
+        genresToString(info);
+        info.append(this.averageRating == 0.0
+                ? "Chưa được đánh giá"
+                : String.valueOf(this.averageRating));
+        return info.toString();
+    }
+
+    public String toStringDetail() {
+        String bullet = "• ";
+        StringBuilder info = new StringBuilder();
+        info.append(bullet).append("Năm phát hành: ").append(this.yearOfPublication).append("\n");
+        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
+        info.append(bullet).append("Tác giả: ");
+        authorsToString(info);
+        info.append(bullet).append("Thể loại: ");
+        genresToString(info);
+        info.append(bullet).append("Mô tả: ").append(this.shortDescription).append("\n");
+        info.append(bullet).append("Đánh giá: ").append(
+                this.averageRating == 0.0
+                        ? "Chưa được đánh giá"
+                        : String.valueOf(this.averageRating)).append("\n");
+        info.append(bullet).append("Thêm vào lúc: ").append(
+                this.dateAdded.format(formatter)).append("\n");
+        info.append(bullet).append("Cập nhật cuối cùng: ").append(
+                this.lastUpdated.format(formatter)).append("\n");
+        info.append(bullet).append("Số bản sao có sẵn: ").append(
+                this.availableCopies).append("/").append(this.totalCopies);
+        return info.toString();
+    }
+
+    private void genresToString(StringBuilder info) {
+        for (int i = 0; i < this.genres.size(); i++) {
+            info.append(this.genres.get(i).getName());
+            if (i < this.genres.size() - 1) {
+                info.append(", ");
+            }
+        }
+        info.append("\n");
+    }
+
+    private void authorsToString(StringBuilder info) {
+        for (int i = 0; i < this.authors.size(); i++) {
+            info.append(this.authors.get(i).getFullNameFirstThenLast());
+            if (i < this.authors.size() - 1) {
+                info.append(", ");
+            }
+        }
+        info.append("\n");
     }
 }

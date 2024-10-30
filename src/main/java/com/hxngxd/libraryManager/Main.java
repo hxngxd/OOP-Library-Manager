@@ -26,7 +26,7 @@ public class Main extends Application {
             Platform.exit();
             return;
         }
-        stageManager.init(stage);
+        stageManager.initialize(stage);
     }
 
     @Override
@@ -36,8 +36,9 @@ public class Main extends Application {
         } catch (RuntimeException e) {
             e.printStackTrace();
             log.error(e.getMessage());
+        } finally {
+            db.disconnect();
         }
-        db.disconnect();
     }
 
     public static void main(String[] args) {
