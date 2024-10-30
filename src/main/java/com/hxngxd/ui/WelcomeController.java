@@ -9,6 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +26,19 @@ public class WelcomeController {
     private TextField passwordField;
 
     private final UserService userService = UserService.getInstance();
+
+    private void handleEnterKey(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER) {
+            logIn((null));
+            event.consume();
+        }
+    }
+
+    @FXML
+    public void initialize() {
+        passwordField.setOnKeyPressed(this::handleEnterKey);
+    }
+
 
     @FXML
     private void goToLogin(ActionEvent event) {
