@@ -28,13 +28,14 @@ public class WelcomeController {
 
     private void handleEnterKey(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            logIn((null));
+            logIn(null);
             event.consume();
         }
     }
 
     @FXML
     private void initialize() {
+        usernameField.setOnKeyPressed(this::handleEnterKey);
         passwordField.setOnKeyPressed(this::handleEnterKey);
     }
 
