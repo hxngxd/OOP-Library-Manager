@@ -8,18 +8,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="previewBookContainer" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="350.0" minWidth="275.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="bookPreviewContainer" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="350.0" minWidth="275.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.BookPreviewController">
    <content>
       <AnchorPane>
           <children>
               <VBox fx:id="bookDisplay" alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                   <children>
-                      <ImageView fx:id="bookCoverImage" fitHeight="425.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                      <ImageView fx:id="image" fitHeight="425.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                           <VBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                           </VBox.margin>
                       </ImageView>
-                  <Label fx:id="bookTitle" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="60.0" text="TITLE" textAlignment="CENTER" wrapText="true">
+                  <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="60.0" text="TITLE" textAlignment="CENTER" wrapText="true">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
@@ -27,7 +27,7 @@
                         <Insets left="15.0" right="15.0" />
                      </VBox.margin>
                   </Label>
-                  <Label fx:id="bookInformation" alignment="TOP_LEFT" contentDisplay="CENTER" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" text="infomation" wrapText="true">
+                  <Label fx:id="informationLabel" alignment="TOP_LEFT" contentDisplay="CENTER" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" text="infomation" wrapText="true">
                      <font>
                         <Font size="14.0" />
                      </font>

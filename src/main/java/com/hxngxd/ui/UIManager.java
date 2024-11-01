@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UIManager {
     private static final Logger log = LogManager.getLogger(UIManager.class);
@@ -21,11 +22,11 @@ public class UIManager {
     public static Scene loadScene(UI ui) {
         if (!Scenes.containsKey(ui)) {
             try {
-                Scenes.put(ui, new Scene(loadOnce(ui).load()));
-            } catch (IOException e) {
+                Scenes.put(ui, new Scene(Objects.requireNonNull(loadOnce(ui)).getRoot()));
+            } catch (NullPointerException e) {
                 e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMessage(
-                        "load scene: " + ui.name()), e);
+                        "load scene: " + ui.name()), e.getMessage());
                 return null;
             }
         }
@@ -34,14 +35,27 @@ public class UIManager {
 
     public static FXMLLoader loadOnce(UI ui) {
         if (!Loaders.containsKey(ui)) {
-            Loaders.put(ui, load(ui));
+            FXMLLoader loader = load(ui);
+            if (loader == null) {
+                return null;
+            }
+            Loaders.put(ui, loader);
         }
         return Loaders.get(ui);
     }
 
     public static FXMLLoader load(UI ui) {
-        return new FXMLLoader(
+        FXMLLoader loader = new FXMLLoader(
                 UIManager.class.getResource(ui.getPath())
         );
+        try {
+            loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(LogMessages.General.FAIL.getMessage("load ui: " + ui.name()),
+                    e.getMessage());
+            return null;
+        }
+        return loader;
     }
 }

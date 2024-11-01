@@ -86,17 +86,17 @@ public class ImageHandler {
             e.printStackTrace();
             log.error(
                     LogMessages.File.FILE_NOT_FOUND.getMessage(
-                            file.getAbsolutePath()), e);
+                            file.getAbsolutePath()), e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             log.error(
                     LogMessages.File.FILE_IO_ERROR.getMessage(
-                            file.getAbsolutePath()), e);
+                            file.getAbsolutePath()), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             log.error(
                     LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                            file.getAbsolutePath()), e);
+                            file.getAbsolutePath()), e.getMessage());
         }
         return null;
     }

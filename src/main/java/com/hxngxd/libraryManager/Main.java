@@ -1,5 +1,8 @@
 package com.hxngxd.libraryManager;
 
+import com.hxngxd.entities.User;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.service.UserService;
@@ -34,7 +37,6 @@ public class Main extends Application {
         try {
             userService.logout();
         } catch (RuntimeException e) {
-            e.printStackTrace();
             log.error(e.getMessage());
         } finally {
             db.disconnect();

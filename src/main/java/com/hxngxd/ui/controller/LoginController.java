@@ -1,9 +1,9 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
-import javafx.application.Platform;
+import com.hxngxd.ui.StageManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -13,16 +13,14 @@ import javafx.scene.input.KeyEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WelcomeController {
-    private static final Logger log = LogManager.getLogger(WelcomeController.class);
-    @FXML
-    private Label loginStatusLabel;
-    @FXML
-    private Label registerStatusLabel;
+public class LoginController extends NavigateController {
+    private static final Logger log = LogManager.getLogger(LoginController.class);
     @FXML
     private TextField usernameField;
     @FXML
     private TextField passwordField;
+    @FXML
+    private Label statusLabel;
 
     private final UserService userService = UserService.getInstance();
 
@@ -40,38 +38,23 @@ public class WelcomeController {
     }
 
     @FXML
-    private void goToLogin(ActionEvent event) {
-        StageManager.getInstance().setScene(UI.LOGIN);
-    }
-
-    @FXML
-    private void goToRegister(ActionEvent event) {
-        StageManager.getInstance().setScene(UI.REGISTER);
-    }
-
-    @FXML
     private void logIn(ActionEvent event) {
         try {
             userService.login(
                     "23020078", "23020078",
                     "Hung@07112005"
             );
-            loginStatusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
-            StageManager.getInstance().setScene(UI.HOME);
+            statusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
+            StageManager.getInstance().setScene(UI.MAIN);
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            loginStatusLabel.setText(e.getMessage());
+            statusLabel.setText(e.getMessage());
         }
     }
 
     @FXML
-    private void register(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void exit(ActionEvent event) {
-        Platform.exit();
+    private void goToRegister(ActionEvent event) {
+        StageManager.getInstance().setScene(UI.REGISTER);
     }
 }

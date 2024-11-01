@@ -3,8 +3,9 @@ package com.hxngxd.enums;
 public enum UI {
     LOGIN,
     REGISTER,
-    HOME,
-    BOOK_DISPLAY,
+    MAIN,
+    BOOK_GALLERY,
+    BOOK_CARD,
     BOOK_PREVIEW;
 
     public String getPath() {

@@ -53,7 +53,8 @@ public class DatabaseManager {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            log.info(LogMessages.General.FAIL.getMessage("connect to the database"), e);
+            log.info(LogMessages.General.FAIL.getMessage(
+                    "connect to the database"), e.getMessage());
         }
         return false;
     }
@@ -69,7 +70,8 @@ public class DatabaseManager {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMessage("disconnect from database"), e);
+            log.error(LogMessages.General.FAIL.getMessage(
+                    "disconnect from database"), e.getMessage());
             return false;
         }
     }
@@ -112,7 +114,7 @@ public class DatabaseManager {
         } catch (IOException e) {
             e.printStackTrace();
             log.info(LogMessages.General.FAIL.getMessage(
-                    "load database configuration"), e);
+                    "load database configuration"), e.getMessage());
         }
     }
 
