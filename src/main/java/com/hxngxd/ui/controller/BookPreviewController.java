@@ -2,12 +2,9 @@ package com.hxngxd.ui.controller;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.utils.ImageHandler;
-import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 
 public class BookPreviewController extends PreviewController {
-    @FXML
-    private ScrollPane bookPreviewContainer;
+    private boolean isPreviewing = false;
 
     public void previewBook(Book book) {
         setImage(
@@ -15,9 +12,14 @@ public class BookPreviewController extends PreviewController {
         );
         setName(book.getTitle());
         setInformation(book.toStringDetail());
+        setPreviewing(true);
     }
 
-    public ScrollPane getBookPreviewContainer() {
-        return bookPreviewContainer;
+    public boolean isPreviewing() {
+        return isPreviewing;
+    }
+
+    public void setPreviewing(boolean previewing) {
+        isPreviewing = previewing;
     }
 }

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.controller.AccountController"/>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.AccountController">
+   <children>
+      <VBox alignment="TOP_CENTER" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label alignment="CENTER" text="CÀI ĐẶT TÀI KHOẢN">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#browseImage" text="THAY ĐỔI ẢNH ĐẠI DIỆN" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -7,7 +7,10 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
@@ -77,15 +80,27 @@ public class MainController extends NavigateController {
         this.idLabel.setText("ID Number: " + id);
     }
 
-    //    @FXML
-//    private void browseImage(ActionEvent event) {
-//        File file = ImageHandler.chooseImage("");
-//        if (file == null) {
-//            return;
-//        }
-//        this.image.setImage(
-//                ImageHandler.cropImageByRatio(
-//                        ImageHandler.loadImageFromFile(file), 1, 1));
-//        UserService.getInstance().updateProfilePicture(file);
-//    }
+    @FXML
+    private void showAccount(ActionEvent event) {
+        navigate(UIManager.loadOnce(UI.ACCOUNT).getRoot());
+    }
+
+    @FXML
+    private void showHome(ActionEvent event) {
+        navigate(UIManager.loadOnce(UI.BOOK_GALLERY).getRoot());
+        FXMLLoader loader = UIManager.loadOnce(UI.BOOK_PREVIEW);
+        BookPreviewController bpController = loader.getController();
+        if (bpController.isPreviewing()) {
+            root.getItems().add(loader.getRoot());
+        }
+    }
+
+    private void navigate(Parent tab) {
+        if (root.getItems().contains(tab)) {
+            return;
+        }
+        AnchorPane navigation = (AnchorPane) root.getItems().getFirst();
+        root.getItems().clear();
+        root.getItems().addAll(navigation, tab);
+    }
 }

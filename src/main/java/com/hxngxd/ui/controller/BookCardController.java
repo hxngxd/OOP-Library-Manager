@@ -6,6 +6,7 @@ import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 
@@ -29,8 +30,9 @@ public class BookCardController extends PreviewController {
             SplitPane mainRoot = UIManager.loadOnce(UI.MAIN).getRoot();
             FXMLLoader loader = UIManager.loadOnce(UI.BOOK_PREVIEW);
             BookPreviewController bookPreviewController = loader.getController();
-            if (!mainRoot.getItems().contains(bookPreviewController.getBookPreviewContainer())) {
-                mainRoot.getItems().add(bookPreviewController.getBookPreviewContainer());
+            ScrollPane bookPreviewRoot = loader.getRoot();
+            if (!mainRoot.getItems().contains(bookPreviewRoot)) {
+                mainRoot.getItems().add(bookPreviewRoot);
             }
             bookPreviewController.previewBook(this.book);
         } catch (NullPointerException e) {
