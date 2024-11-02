@@ -5,6 +5,7 @@ import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
+import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,11 @@ public class BookService {
 
     public static void initialize() {
         BookService bookService = BookService.getInstance();
-        bookService.getAllBooks();
+        try {
+            bookService.getAllBooks();
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
     }
 
     public Book getCurrentBook() {
@@ -116,7 +121,8 @@ public class BookService {
         return null;
     }
 
-    public void getAllBooks() {
+    public void getAllBooks()
+            throws DatabaseException {
         String query = "select book.*, bookauthor.authorId, bookgenre.genreId from book" +
                 " join bookauthor on bookauthor.bookId = book.id" +
                 " join bookgenre on bookgenre.bookId = book.id";
@@ -128,8 +134,7 @@ public class BookService {
                     book = new Book(
                             resultSet.getInt("id"),
                             resultSet.getTimestamp("dateAdded").toLocalDateTime(),
-                            resultSet.getTimestamp("lastUpdated").toLocalDateTime(),
-                            resultSet.getDouble("averageRating")
+                            resultSet.getTimestamp("lastUpdated").toLocalDateTime()
                     );
                     book.setTitle(resultSet.getString("title"));
                     book.setYearOfPublication(resultSet.getShort("yearOfPublication"));

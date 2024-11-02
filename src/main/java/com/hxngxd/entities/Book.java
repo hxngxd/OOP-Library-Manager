@@ -1,5 +1,8 @@
 package com.hxngxd.entities;
 
+import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.exceptions.DatabaseException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ public class Book extends EntityWithPhoto {
     private int availableCopies;
     private int totalCopies;
     private double averageRating;
+    private int numberOfReviews;
     private final List<Author> authors = new ArrayList<>();
     private final List<Genre> genres = new ArrayList<>();
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
@@ -31,11 +35,11 @@ public class Book extends EntityWithPhoto {
     }
 
     public Book(int id, LocalDateTime dateAdded,
-                LocalDateTime lastUpdated, double averageRating) {
+                LocalDateTime lastUpdated) {
         super(id);
         this.dateAdded = dateAdded;
         this.lastUpdated = lastUpdated;
-        this.averageRating = averageRating;
+        setReview();
     }
 
     public Book(int id, String title, short yearOfPublication, String shortDescription,
@@ -48,6 +52,7 @@ public class Book extends EntityWithPhoto {
         this.availableCopies = availableCopies;
         this.totalCopies = totalCopies;
         this.averageRating = 0.0;
+        setReview();
     }
 
     public String getTitle() {
@@ -106,11 +111,40 @@ public class Book extends EntityWithPhoto {
         return lastUpdated;
     }
 
-    public void calculateAverageRating() {
-    }
-
     public double getAverageRating() {
         return averageRating;
+    }
+
+    public void setReview() {
+        this.averageRating = this.numberOfReviews = 0;
+        DatabaseManager db = DatabaseManager.getInstance();
+        String query = String.format(
+                "select bookid, round(sum(rating) * 1.0 / count(rating), 2) as averagerating, " +
+                        "count(rating) as numberofreviews " +
+                        "from review where bookid = %d group by bookid;", this.id);
+
+        try {
+            db.select("calculating rating", query, resultSet -> {
+                if (resultSet.next()) {
+                    this.averageRating = resultSet.getDouble("averageRating");
+                    this.numberOfReviews = resultSet.getInt("numberOfReviews");
+                }
+                return null;
+            });
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getReview() {
+        int fullStars = (int) averageRating;
+        String ratingStars = "\u2605".repeat(fullStars) +
+                "\u2606".repeat(5 - fullStars);
+        return String.format("%.1f %s (%d)", averageRating, ratingStars, numberOfReviews);
+    }
+
+    public int getNumberOfReviews() {
+        return numberOfReviews;
     }
 
     public void addAuthor(Author author) {
@@ -152,24 +186,25 @@ public class Book extends EntityWithPhoto {
         genresToString(info);
         info.append(this.averageRating == 0.0
                 ? "Chưa được đánh giá"
-                : String.valueOf(this.averageRating));
+                : getReview());
         return info.toString();
     }
 
     public String toStringDetail() {
         String bullet = "• ";
         StringBuilder info = new StringBuilder();
+        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
         info.append(bullet).append("Năm phát hành: ").append(this.yearOfPublication).append("\n");
         info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
         info.append(bullet).append("Tác giả: ");
         authorsToString(info);
         info.append(bullet).append("Thể loại: ");
         genresToString(info);
-        info.append(bullet).append("Mô tả: ").append(this.shortDescription).append("\n");
+        info.append(bullet).append("Mô tả ngắn: ").append(this.shortDescription).append("\n");
         info.append(bullet).append("Đánh giá: ").append(
                 this.averageRating == 0.0
                         ? "Chưa được đánh giá"
-                        : String.valueOf(this.averageRating)).append("\n");
+                        : getReview()).append("\n");
         info.append(bullet).append("Thêm vào lúc: ").append(
                 this.dateAdded.format(formatter)).append("\n");
         info.append(bullet).append("Cập nhật cuối cùng: ").append(
