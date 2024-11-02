@@ -3,16 +3,15 @@ package com.hxngxd.service;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.utils.ImageHandler;
-import com.hxngxd.utils.InputValidator;
+import com.hxngxd.utils.InputHandler;
 import com.hxngxd.utils.PasswordEncoder;
-import com.hxngxd.enums.LogMessages;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,16 +69,16 @@ public class UserService {
             throws DatabaseException, UserException, ValidationException {
         checkLoggedOutAndConnected();
 
-        InputValidator.validateInput(firstName, lastName, username, email,
+        InputHandler.validateInput(firstName, lastName, username, email,
                 password, confirmedPassword);
 
-        InputValidator.validateEmail(email);
+        InputHandler.validateEmail(email);
 
         if (getUserByUsernameOrEmail(false, username, email) != null) {
             throw new UserException(LogMessages.User.USER_EXIST.getMessage());
         }
 
-        InputValidator.validatePassword(password);
+        InputHandler.validatePassword(password);
 
         if (!confirmedPassword.equals(password)) {
             throw new PasswordException("Please reconfirm your password");
@@ -110,7 +109,7 @@ public class UserService {
             throws DatabaseException, UserException, ValidationException {
         checkLoggedOutAndConnected();
 
-        InputValidator.validateInput(username, email, password);
+        InputHandler.validateInput(username, email, password);
 
         User user = getUserByUsernameOrEmail(false, username, email);
         if (user == null) {
@@ -191,7 +190,7 @@ public class UserService {
 //            }
 //        }
 //
-//        if (!InputValidator.validateInput(
+//        if (!InputHandler.validateInput(
 //                newFirstName, newLastName, newAddress
 //        )) {
 //            return false;
@@ -233,7 +232,7 @@ public class UserService {
 //            }
 //        }
 //
-//        if (!InputValidator.validateEmail(newEmail)) {
+//        if (!InputHandler.validateEmail(newEmail)) {
 //            log.info(LogMessages.emailNotValid);
 //            return false;
 //        }

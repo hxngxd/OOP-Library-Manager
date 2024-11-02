@@ -335,3 +335,9 @@ INSERT INTO review (userId, bookId, rating, comment)
 VALUES (10, 8, 4, 'Sách này thật sự rất hay và bổ ích.');
 INSERT INTO review (userId, bookId, rating, comment)
 VALUES (10, 9, 5, 'Tôi rất thích cuốn sách này, đọc mãi không chán.');
+
+INSERT INTO userSavedBook (userId, bookId) VALUES (1, 1);
+INSERT INTO userSavedBook (userId, bookId) VALUES (1, 3);
+INSERT INTO userSavedBook (userId, bookId) VALUES (1, 5);
+INSERT INTO userSavedBook (userId, bookId) VALUES (1, 4);
+INSERT INTO userSavedBook (userId, bookId) VALUES (1, 9);

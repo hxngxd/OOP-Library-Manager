@@ -13,16 +13,11 @@
    <children>
       <HBox prefHeight="50.0" spacing="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
-            <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Tìm kiếm" HBox.hgrow="ALWAYS">
+            <TextField fx:id="searchField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Tìm kiếm" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="18.0" />
                </font>
             </TextField>
-            <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="TÌM">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
             <Button alignment="CENTER" layoutX="920.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="THÔNG BÁO" wrapText="true">
                <font>
                   <Font size="14.0" />

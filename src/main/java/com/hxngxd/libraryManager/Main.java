@@ -1,20 +1,15 @@
 package com.hxngxd.libraryManager;
 
-import com.hxngxd.entities.User;
-import com.hxngxd.exceptions.DatabaseException;
-import com.hxngxd.exceptions.UserException;
-import com.hxngxd.ui.StageManager;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.service.UserService;
-
+import com.hxngxd.ui.StageManager;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import javafx.application.Platform;
-
-import java.io.IOException;
-
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 public class Main extends Application {
     private final Logger log = LogManager.getLogger(Main.class);

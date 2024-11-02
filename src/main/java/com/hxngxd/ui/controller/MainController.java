@@ -23,6 +23,7 @@ import java.util.Objects;
 
 public class MainController extends NavigateController {
     private static final Logger log = LogManager.getLogger(MainController.class);
+    private UI currentTab;
     @FXML
     private ImageView image;
     @FXML
@@ -49,6 +50,7 @@ public class MainController extends NavigateController {
         setRoleLabel(user.getRole());
         setIdLabel(user.getId());
 
+        currentTab = UI.BOOK_GALLERY;
         try {
             AnchorPane bookGallery = (AnchorPane) Objects.requireNonNull(
                     UIManager.loadOnce(UI.BOOK_GALLERY)).getRoot();
@@ -82,11 +84,19 @@ public class MainController extends NavigateController {
 
     @FXML
     private void showAccount(ActionEvent event) {
+        if (currentTab == UI.ACCOUNT) {
+            return;
+        }
+        currentTab = UI.ACCOUNT;
         navigate(UIManager.loadOnce(UI.ACCOUNT).getRoot());
     }
 
     @FXML
     private void showHome(ActionEvent event) {
+        if (currentTab == UI.BOOK_GALLERY) {
+            return;
+        }
+        currentTab = UI.BOOK_GALLERY;
         navigate(UIManager.loadOnce(UI.BOOK_GALLERY).getRoot());
         FXMLLoader loader = UIManager.loadOnce(UI.BOOK_PREVIEW);
         BookPreviewController bpController = loader.getController();

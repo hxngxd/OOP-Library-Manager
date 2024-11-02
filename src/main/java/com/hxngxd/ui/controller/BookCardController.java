@@ -6,14 +6,18 @@ import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 public class BookCardController extends PreviewController {
     private Book book;
     @FXML
     private VBox cardContainer;
+
+    public Book getBook() {
+        return book;
+    }
 
     public void setBook(Book book) {
         this.book = book;
@@ -30,7 +34,7 @@ public class BookCardController extends PreviewController {
             SplitPane mainRoot = UIManager.loadOnce(UI.MAIN).getRoot();
             FXMLLoader loader = UIManager.loadOnce(UI.BOOK_PREVIEW);
             BookPreviewController bookPreviewController = loader.getController();
-            ScrollPane bookPreviewRoot = loader.getRoot();
+            AnchorPane bookPreviewRoot = loader.getRoot();
             if (!mainRoot.getItems().contains(bookPreviewRoot)) {
                 mainRoot.getItems().add(bookPreviewRoot);
             }
