@@ -18,7 +18,7 @@ public class InputHandler {
 
     private static final Logger log = LogManager.getLogger(InputHandler.class);
 
-    public static final int editDistanceThreshHold = 1;
+    public static final int editDistanceThreshHold = 2;
 
     private InputHandler() {
     }
