@@ -16,6 +16,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,11 +30,7 @@ public class MainController extends NavigateController {
     @FXML
     private Label fullNameLabel;
     @FXML
-    private Label usernameLabel;
-    @FXML
-    private Label roleLabel;
-    @FXML
-    private Label idLabel;
+    private Label userInfoLabel;
     @FXML
     private SplitPane root;
 
@@ -41,14 +38,17 @@ public class MainController extends NavigateController {
     private void initialize() {
         User user = UserService.getInstance().getCurrentUser();
         if (user.getImage() != null) {
+            image.setFitHeight(90);
+            image.setFitWidth(90);
+            image.setPreserveRatio(true);
+            Circle clip = new Circle(45, 45, 45);
+            image.setClip(clip);
             setImage(
                     ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
             );
         }
-        setFullNameLabel(user.getFullNameLastThenFirst());
-        setUsernameLabel(user.getUsername());
-        setRoleLabel(user.getRole());
-        setIdLabel(user.getId());
+        setFullNameLabel(user.getFullNameFirstThenLast());
+        setUserInfoLabel(user.toString());
 
         currentTab = UI.BOOK_GALLERY;
         try {
@@ -70,16 +70,8 @@ public class MainController extends NavigateController {
         this.fullNameLabel.setText(fullname);
     }
 
-    public void setUsernameLabel(String username) {
-        this.usernameLabel.setText("Username: " + username);
-    }
-
-    public void setRoleLabel(Role role) {
-        this.roleLabel.setText("Role: " + role.name());
-    }
-
-    public void setIdLabel(int id) {
-        this.idLabel.setText("ID Number: " + id);
+    public void setUserInfoLabel(String info) {
+        this.userInfoLabel.setText(info);
     }
 
     @FXML

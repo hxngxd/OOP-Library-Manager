@@ -99,4 +99,11 @@ public class User extends Person {
         }
         return this.id == ((User) other).getId();
     }
+
+    @Override
+    public String toString() {
+        return "Username: " + this.username + "\n" +
+                "ID: " + this.id + "\n" +
+                "Role: " + this.role.name() + "\n";
+    }
 }

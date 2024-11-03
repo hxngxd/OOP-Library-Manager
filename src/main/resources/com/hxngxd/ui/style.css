@@ -6,6 +6,8 @@
     -fx-background-radius: 0; /* Không bo góc */
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0); /* Drop shadow rộng hơn */
+    /*-fx-padding: 0 0 0 30px;*/
+    /*-fx-alignment: CENTER_LEFT;*/
 }
 
 /* Gray border and drop shadow on hover */

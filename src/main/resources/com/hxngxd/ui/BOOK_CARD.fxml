@@ -8,7 +8,7 @@
 
 <VBox fx:id="cardContainer" alignment="CENTER" spacing="5.0" styleClass="box" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.BookCardController">
     <children>
-        <ImageView fx:id="image" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+        <ImageView fx:id="image" fitHeight="290.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
             <VBox.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </VBox.margin>
