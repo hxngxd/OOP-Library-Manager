@@ -18,7 +18,7 @@
                 <children>
                     <VBox fx:id="bookDisplay" alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                         <children>
-                            <ImageView fx:id="image" fitHeight="425.0" fitWidth="275.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                            <ImageView fx:id="image" fitHeight="420.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                 <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                                 </VBox.margin>
@@ -51,10 +51,7 @@
                <graphic>
                   <FontAwesomeIconView glyphName="BOOKMARK_ALT" />
                </graphic></Button>
-            <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="XEM CHI TIẾT">
-               <graphic>
-                  <FontAwesomeIconView glyphName="INFO" />
-               </graphic></Button>
+            <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="XEM CHI TIẾT" />
          </children>
       </VBox>
    </children>

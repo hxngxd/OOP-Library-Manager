@@ -13,58 +13,45 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.LoginController">
     <children>
-        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308"
-              maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0"
-              AnchorPane.topAnchor="0.0">
+        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
-                       maxWidth="1.7976931348623157E308" text="QUẢN LÝ THƯ VIỆN"
-                       textAlignment="CENTER">
+                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="QUẢN LÝ THƯ VIỆN" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="36.0"/>
+                        <Font name="System Bold" size="36.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="-10.0"/>
+                        <Insets bottom="-10.0" />
                     </VBox.margin>
                 </Label>
-                <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
-                       maxWidth="1.7976931348623157E308"
-                       text="Chào mừng quay trở lại! Hãy đăng nhập tài khoản"
-                       textAlignment="CENTER">
+                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Chào mừng quay trở lại! Hãy đăng nhập tài khoản" textAlignment="CENTER">
                     <font>
-                        <Font size="18.0"/>
+                        <Font size="18.0" />
                     </font>
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                     <padding>
-                        <Insets bottom="10.0"/>
+                        <Insets bottom="10.0" />
                     </padding>
                 </Label>
                 <HBox alignment="CENTER_LEFT" spacing="15.0">
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                     <children>
                         <FontAwesomeIconView glyphName="USER" size="25">
                             <HBox.margin>
-                                <Insets/>
+                                <Insets />
                             </HBox.margin>
                         </FontAwesomeIconView>
-                        <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308"
-                                   maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                   promptText="Tên đăng nhập/Email" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Tên đăng nhập/Email" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                             <padding>
-                                <Insets left="25.0"/>
+                                <Insets left="25.0" />
                             </padding>
                         </TextField>
                     </children>
@@ -73,96 +60,70 @@
                     <children>
                         <FontAwesomeIconView glyphName="LOCK" size="25">
                             <HBox.margin>
-                                <Insets/>
+                                <Insets />
                             </HBox.margin>
                         </FontAwesomeIconView>
-                        <PasswordField fx:id="passwordField" maxHeight="1.7976931348623157E308"
-                                       maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                       promptText="Mật khẩu" HBox.hgrow="ALWAYS">
+                        <PasswordField fx:id="passwordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Mật khẩu" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                             <padding>
-                                <Insets left="25.0"/>
+                                <Insets left="25.0" />
                             </padding>
                         </PasswordField>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                mnemonicParsing="false" prefWidth="50.0">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="50.0">
                             <graphic>
-                                <FontAwesomeIconView glyphName="EYE_SLASH" size="20"/>
+                                <FontAwesomeIconView glyphName="EYE_SLASH" size="20" />
                             </graphic>
                         </Button>
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308" spacing="20.0">
+                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0">
                     <children>
-                        <CheckBox maxHeight="1.7976931348623157E308"
-                                  maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                  text="Nhớ mật khẩu cho lần sau" HBox.hgrow="ALWAYS"/>
-                        <Hyperlink alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308"
-                                   maxWidth="1.7976931348623157E308" text="Quên mật khẩu?"
-                                   underline="true" HBox.hgrow="ALWAYS">
+                        <CheckBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Nhớ mật khẩu cho lần sau" HBox.hgrow="ALWAYS" />
+                        <Hyperlink alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Quên mật khẩu?" underline="true" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                             <padding>
-                                <Insets right="1.0"/>
+                                <Insets right="1.0" />
                             </padding>
                         </Hyperlink>
                     </children>
                 </HBox>
-                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308"
-                        maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#logIn"
-                        prefHeight="40.0" stylesheets="@style.css" text="ĐĂNG NHẬP">
+                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#logIn" prefHeight="40.0" stylesheets="@style.css" text="ĐĂNG NHẬP">
                     <font>
-                        <Font size="14.0"/>
+                        <Font size="14.0" />
                     </font>
                     <graphic>
-                        <FontAwesomeIconView glyphName="SIGN_IN"/>
+                        <FontAwesomeIconView glyphName="SIGN_IN" />
                     </graphic>
                 </Button>
-                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308">
+                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                     <children>
-                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308" prefHeight="40.0"
-                               text="Chưa có tài khoản?" HBox.hgrow="ALWAYS">
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="40.0" text="Chưa có tài khoản?" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                         </Label>
-                        <Button alignment="CENTER" contentDisplay="RIGHT"
-                                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                mnemonicParsing="false" onAction="#goToRegister" prefHeight="40.0"
-                                stylesheets="@style.css" text="ĐĂNG KÝ" HBox.hgrow="ALWAYS">
+                        <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToRegister" prefHeight="40.0" stylesheets="@style.css" text="ĐĂNG KÝ" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
-                            <graphic>
-                                <FontAwesomeIconView glyphName="USER_PLUS"/>
-                            </graphic>
                         </Button>
                     </children>
                 </HBox>
-                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308"
-                        maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit"
-                        prefHeight="40.0" stylesheets="@style.css" text="THOÁT">
+                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefHeight="40.0" stylesheets="@style.css" text="THOÁT">
                     <font>
-                        <Font size="14.0"/>
+                        <Font size="14.0" />
                     </font>
-                    <graphic>
-                        <FontAwesomeIconView glyphName="CLOSE"/>
-                    </graphic>
                 </Button>
-                <Label fx:id="statusLabel" alignment="CENTER" layoutX="10.0" layoutY="127.0"
-                       maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                       textAlignment="CENTER">
+                <Label fx:id="statusLabel" alignment="CENTER" layoutX="10.0" layoutY="127.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" textAlignment="CENTER">
                     <font>
-                        <Font name="System Italic" size="18.0"/>
+                        <Font name="System Italic" size="18.0" />
                     </font>
                     <VBox.margin>
-                        <Insets top="5.0"/>
+                        <Insets top="5.0" />
                     </VBox.margin>
                 </Label>
             </children>

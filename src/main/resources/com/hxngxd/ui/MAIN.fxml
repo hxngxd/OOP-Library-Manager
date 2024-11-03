@@ -51,7 +51,7 @@
                         </HBox>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="25.0" />
+                        <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </AnchorPane>
                   <AnchorPane VBox.vgrow="ALWAYS">
@@ -63,7 +63,7 @@
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="HOME" />
+                                    <FontAwesomeIconView glyphName="HOME" size="20" />
                                  </graphic>
                                     </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAccount" stylesheets="@style.css" text="TÀI KHOẢN" VBox.vgrow="ALWAYS">
@@ -71,7 +71,7 @@
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="USER" />
+                                    <FontAwesomeIconView glyphName="USER" size="20" />
                                  </graphic>
                                     </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="SÁCH ĐÃ LƯU" VBox.vgrow="ALWAYS">
@@ -79,7 +79,7 @@
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="BOOKMARK" />
+                                    <FontAwesomeIconView glyphName="BOOKMARK" size="20" />
                                  </graphic>
                                     </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="MƯỢN SÁCH" VBox.vgrow="ALWAYS">
@@ -87,7 +87,7 @@
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="BOOK" />
+                                    <FontAwesomeIconView glyphName="BOOK" size="20" />
                                  </graphic>
                                     </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="VI PHẠM" VBox.vgrow="ALWAYS">
@@ -95,7 +95,7 @@
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="EJECT" />
+                                    <FontAwesomeIconView glyphName="EJECT" size="20" />
                                  </graphic>
                                     </Button>
                               <Button alignment="CENTER" layoutX="10.0" layoutY="296.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="QUẢN LÝ" VBox.vgrow="ALWAYS">
@@ -103,7 +103,7 @@
                                     <Font name="System Italic" size="16.0" />
                                  </font>
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="LIST" />
+                                    <FontAwesomeIconView glyphName="LIST" size="20" />
                                  </graphic>
                               </Button>
                            </children>

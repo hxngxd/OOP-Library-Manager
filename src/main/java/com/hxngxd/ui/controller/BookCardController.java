@@ -7,8 +7,11 @@ import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.SplitPane;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class BookCardController extends PreviewController {
     private Book book;
@@ -24,6 +27,14 @@ public class BookCardController extends PreviewController {
         setImage(
                 ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5)
         );
+        Rectangle clip = new Rectangle(this.image.getFitWidth(), this.image.getFitHeight());
+        clip.setArcWidth(15);
+        clip.setArcHeight(15);
+        this.image.setFitWidth(190);
+        this.image.setFitHeight(285);
+        this.image.setPreserveRatio(false);
+        this.image.setClip(clip);
+        
         setName(book.getTitle());
         setInformation(book.toString());
         cardContainer.setOnMouseClicked(mouseEvent -> previewBook());
