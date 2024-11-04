@@ -1,7 +1,10 @@
 package com.hxngxd.ui.controller;
 
+import com.hxngxd.entities.Author;
+import com.hxngxd.entities.Genre;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -73,6 +76,10 @@ public class LoginController extends NavigateController {
                     "Hung@07112005"
             );
             statusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
+            Author.initialize();
+            Genre.initialize();
+            BookService.initialize();
+            UserService.initialize();
             StageManager.getInstance().setScene(UI.MAIN);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,8 @@
 package com.hxngxd.ui.controller;
 
+import com.hxngxd.actions.Action;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
-import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
@@ -39,11 +39,6 @@ public class MainController extends NavigateController {
     private void initialize() {
         User user = UserService.getInstance().getCurrentUser();
         if (user.getImage() != null) {
-            image.setFitHeight(90);
-            image.setFitWidth(90);
-            image.setPreserveRatio(true);
-            Circle clip = new Circle(45, 45, 45);
-            image.setClip(clip);
             setImage(
                     ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
             );
@@ -64,6 +59,11 @@ public class MainController extends NavigateController {
     }
 
     public void setImage(Image image) {
+        this.image.setFitHeight(90);
+        this.image.setFitWidth(90);
+        this.image.setPreserveRatio(true);
+        Circle clip = new Circle(45, 45, 45);
+        this.image.setClip(clip);
         this.image.setImage(image);
     }
 
@@ -86,6 +86,23 @@ public class MainController extends NavigateController {
 
     @FXML
     private void showHome(ActionEvent event) {
+        BookGalleryController bookGalleryController = (BookGalleryController)
+                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
+        bookGalleryController.setIsShowingSavedBook(false);
+        bookGalleryController.showBookCards(null);
+        showBookGallery();
+    }
+
+    @FXML
+    private void showSavedBook(ActionEvent event) {
+        BookGalleryController bookGalleryController = (BookGalleryController)
+                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
+        bookGalleryController.setIsShowingSavedBook(true);
+        bookGalleryController.showBookCards(null);
+        showBookGallery();
+    }
+
+    private void showBookGallery() {
         if (currentTab == UI.BOOK_GALLERY) {
             return;
         }

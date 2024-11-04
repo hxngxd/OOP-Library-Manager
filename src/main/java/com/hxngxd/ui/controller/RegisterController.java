@@ -1,6 +1,14 @@
 package com.hxngxd.ui.controller;
 
+import com.hxngxd.entities.Author;
+import com.hxngxd.entities.Genre;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
+import com.hxngxd.exceptions.ValidationException;
+import com.hxngxd.service.BookService;
+import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,9 +34,27 @@ public class RegisterController extends NavigateController {
     @FXML
     private Label statusLabel;
 
+    private final UserService userService = UserService.getInstance();
+
     @FXML
     private void register(ActionEvent event) {
-        log.info(firstNameField.getText());
+        try {
+            userService.register(
+                    firstNameField.getText(), lastNameField.getText(),
+                    usernameField.getText(), emailField.getText(),
+                    passwordField.getText(), confirmPasswordField.getText()
+            );
+            statusLabel.setText(LogMessages.General.SUCCESS.getMessage("register"));
+            Author.initialize();
+            Genre.initialize();
+            BookService.initialize();
+            UserService.initialize();
+            StageManager.getInstance().setScene(UI.MAIN);
+        } catch (DatabaseException | UserException | ValidationException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            statusLabel.setText(e.getMessage());
+        }
     }
 
     @FXML

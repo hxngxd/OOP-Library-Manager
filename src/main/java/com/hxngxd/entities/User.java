@@ -1,12 +1,19 @@
 package com.hxngxd.entities;
 
+import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.enums.AccountStatus;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
-import javafx.scene.image.Image;
+import com.hxngxd.exceptions.DatabaseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User extends Person {
+    private static final Logger log = LogManager.getLogger(User.class);
     private String username;
     private String email;
     private String passwordHash;
@@ -14,6 +21,7 @@ public class User extends Person {
     private Role role;
     private AccountStatus accountStatus;
     private int violationCount;
+    private final List<Book> savedBooks = new ArrayList<>();
 
     public User() {
     }
@@ -105,5 +113,37 @@ public class User extends Person {
         return "Username: " + this.username + "\n" +
                 "ID: " + this.id + "\n" +
                 "Role: " + this.role.name() + "\n";
+    }
+
+    public List<Book> getSavedBooks() {
+        return savedBooks;
+    }
+
+    public void saveBook(Book book)
+            throws DatabaseException {
+        if (!savedBooks.contains(book)) {
+            savedBooks.add(book);
+            DatabaseManager db = DatabaseManager.getInstance();
+            db.insert("userSavedBook", false,
+                    List.of("userId", "bookId"),
+                    getId(), book.getId());
+            log.info(LogMessages.General.SUCCESS.getMessage("save book"));
+        } else {
+            throw new DatabaseException("This book is already saved");
+        }
+    }
+
+    public void unsaveBook(Book book)
+            throws DatabaseException {
+        if (savedBooks.contains(book)) {
+            savedBooks.remove(book);
+            DatabaseManager db = DatabaseManager.getInstance();
+            db.delete("userSavedBook",
+                    List.of("userId", "bookId"),
+                    getId(), book.getId());
+            log.info(LogMessages.General.SUCCESS.getMessage("unsave book"));
+        } else {
+            throw new DatabaseException("The book is not saved");
+        }
     }
 }

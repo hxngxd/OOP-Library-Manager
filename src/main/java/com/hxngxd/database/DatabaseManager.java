@@ -167,21 +167,21 @@ public class DatabaseManager {
         }
     }
 
-    public void insert(String table, List<String> conditionFields, Object... conditionValues) {
+    public void insert(String table, boolean getId, List<String> fields, Object... values) {
         StringBuilder query = new StringBuilder("insert into ");
         query.append(table).append("(");
-        for (int i = 0; i < conditionFields.size(); i++) {
-            query.append(conditionFields.get(i));
-            if (i != conditionFields.size() - 1) {
+        for (int i = 0; i < fields.size(); i++) {
+            query.append(fields.get(i));
+            if (i != fields.size() - 1) {
                 query.append(", ");
             } else {
                 query.append(")");
             }
         }
-        query.append(" value (");
-        for (int i = 0; i < conditionFields.size(); i++) {
+        query.append(" values (");
+        for (int i = 0; i < fields.size(); i++) {
             query.append("?");
-            if (i != conditionFields.size() - 1) {
+            if (i != fields.size() - 1) {
                 query.append(", ");
             } else {
                 query.append(")");
@@ -189,18 +189,20 @@ public class DatabaseManager {
         }
         try (PreparedStatement pStatement = connection.prepareStatement(query.toString(),
                 Statement.RETURN_GENERATED_KEYS)) {
-            setParameters(pStatement, conditionValues);
+            setParameters(pStatement, values);
             int updates = pStatement.executeUpdate();
-            if (updates > 0) {
-                try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) {
-                        generatedId = resultSet.getInt(1);
-                    } else {
-                        throw new SQLException(
-                                LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                                        "executing insert query"
-                                )
-                        );
+            if (updates < 1) {
+                throw new SQLException(
+                        LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
+                                "executing insert query"
+                        )
+                );
+            } else {
+                if (getId) {
+                    try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
+                        if (resultSet.next()) {
+                            generatedId = resultSet.getInt(1);
+                        }
                     }
                 }
             }

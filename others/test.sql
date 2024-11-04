@@ -161,7 +161,7 @@ create table notification
 create index idxNotificationType on notification (notificationType);
 
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
-values ('Hùng', 'Nguyễn Tường', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'ADMIN',
+values ('Hùng', 'Nguyễn Tường', '2005-11-07', '23020078', '23020078@vnu.edu.vn', null, 'ADMIN',
         '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK');
 
 INSERT INTO user (firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
@@ -337,7 +337,3 @@ INSERT INTO review (userId, bookId, rating, comment)
 VALUES (10, 9, 5, 'Tôi rất thích cuốn sách này, đọc mãi không chán.');
 
 INSERT INTO userSavedBook (userId, bookId) VALUES (1, 1);
-INSERT INTO userSavedBook (userId, bookId) VALUES (1, 3);
-INSERT INTO userSavedBook (userId, bookId) VALUES (1, 5);
-INSERT INTO userSavedBook (userId, bookId) VALUES (1, 4);
-INSERT INTO userSavedBook (userId, bookId) VALUES (1, 9);
