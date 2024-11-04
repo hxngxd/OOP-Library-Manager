@@ -161,7 +161,7 @@ create table notification
 create index idxNotificationType on notification (notificationType);
 
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
-values ('Hùng', 'Nguyễn Tường', '2005-11-07', '23020078', '23020078@vnu.edu.vn', 'Hà Nội', 'ADMIN',
+values ('Hùng', 'Nguyễn Tường', '2005-11-07', '23020078', '23020078@vnu.edu.vn', null, 'ADMIN',
         '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK');
 
 INSERT INTO user (firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)

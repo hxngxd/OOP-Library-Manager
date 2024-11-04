@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -16,7 +17,7 @@
             <children>
                 <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ TÀI KHOẢN" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="36.0" />
+                        <Font name="System Bold" size="32.0" />
                     </font>
                     <VBox.margin>
                         <Insets bottom="-10.0" />
@@ -80,10 +81,13 @@
                         <Insets left="25.0" />
                     </padding>
                 </PasswordField>
-                <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#register" prefHeight="40.0" stylesheets="@style.css" text="TẠO TÀI KHOẢN">
+                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#register" prefHeight="40.0" stylesheets="@style.css" text="TẠO TÀI KHOẢN">
                     <font>
                         <Font size="14.0" />
                     </font>
+               <graphic>
+                  <FontAwesomeIconView glyphName="USER_PLUS" />
+               </graphic>
                 </Button>
                 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                     <children>
