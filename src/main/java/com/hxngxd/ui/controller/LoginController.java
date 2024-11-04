@@ -4,6 +4,7 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -21,6 +22,30 @@ public class LoginController extends NavigateController {
     private TextField passwordField;
     @FXML
     private Label statusLabel;
+    @FXML
+    private TextField PasswordVisibleField;
+    @FXML
+    private FontAwesomeIconView icon;
+
+    private boolean passWordVisible = true;
+
+    @FXML
+    public void togglePasswordVisibility() {
+        if (passWordVisible) {
+            PasswordVisibleField.setText(passwordField.getText());
+            passwordField.setVisible(false);
+            PasswordVisibleField.setVisible(true);
+            passWordVisible = false;
+            icon.setGlyphName("EYE");
+        } else {
+            passwordField.setVisible(true);
+            PasswordVisibleField.setVisible(false);
+            passwordField.setText(PasswordVisibleField.getText());
+            icon.setGlyphName("EYE_SLASH");
+            passWordVisible = true;
+        }
+    }
+
 
     private final UserService userService = UserService.getInstance();
 
@@ -31,11 +56,14 @@ public class LoginController extends NavigateController {
         }
     }
 
+
     @FXML
     private void initialize() {
         usernameField.setOnKeyPressed(this::handleEnterKey);
         passwordField.setOnKeyPressed(this::handleEnterKey);
+        PasswordVisibleField.setOnKeyPressed(this::handleEnterKey);
     }
+
 
     @FXML
     private void logIn(ActionEvent event) {
