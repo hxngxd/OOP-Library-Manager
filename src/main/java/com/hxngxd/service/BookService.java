@@ -15,6 +15,7 @@ import java.util.List;
 public class BookService {
     private final Logger log = LogManager.getLogger(BookService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
+    private final UserService userService = UserService.getInstance();
     private Book currentBook = null;
 
     private BookService() {
@@ -43,82 +44,6 @@ public class BookService {
 
     public void setCurrentBook(Book currentBook) {
         this.currentBook = currentBook;
-    }
-
-    public boolean updateAvailableCopies(int bookId, int difference) {
-        return true;
-    }
-
-    public boolean updateTotalCopies(int bookId, int difference) {
-        return true;
-    }
-
-    public boolean addAuthor(int bookId, int authorId) {
-        return true;
-    }
-
-    public boolean removeAuthor(int bookId, int authorId) {
-        return true;
-    }
-
-    public List<Author> getBooksAuthor(int bookId) {
-        return null;
-    }
-
-    public boolean addGenre(int bookId, int genreId) {
-        return true;
-    }
-
-    public boolean removeGenre(int bookId, int genreId) {
-        return true;
-    }
-
-    public List<Genre> getBooksGenre(int bookId) {
-        return null;
-    }
-
-    public List<Book> searchBooksByTitle(String title) {
-        return null;
-    }
-
-    public List<Book> searchBooksByYear(short yearOfPublication) {
-        return null;
-    }
-
-    public List<Book> searchBooksByDescription(String shortDescription) {
-        return null;
-    }
-
-    public List<Book> searchBooksByRating(double averageRating) {
-        return null;
-    }
-
-    public boolean addBook(Book book) {
-        return false;
-    }
-
-    public boolean deleteBook(int id) {
-        return true;
-    }
-
-    public Book getBookById(int id) {
-        return null;
-    }
-
-    public boolean saveBook(int bookId) {
-        return true;
-    }
-
-    public boolean removeSavedBook(int bookId) {
-        return true;
-    }
-
-    public List<User> getSavingUsers(int bookId) {
-        return null;
-    }
-
-    public List<Book> getUsersSavedBooks(int userId) {
-        return null;
     }
 
     public void getAllBooks()

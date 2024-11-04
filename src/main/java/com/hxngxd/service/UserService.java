@@ -1,6 +1,7 @@
 package com.hxngxd.service;
 
 import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.LogMessages;
@@ -26,6 +27,13 @@ public class UserService {
     private User currentUser = null;
 
     private UserService() {
+    }
+
+    public static void initialize() {
+        UserService.getInstance().loadSavedBooks();
+        for (Book book : UserService.getInstance().currentUser.getSavedBooks()) {
+            System.out.println(book.toString());
+        }
     }
 
     private static class SingletonHolder {
@@ -86,7 +94,7 @@ public class UserService {
 
         String passwordHash = PasswordEncoder.encode(confirmedPassword);
 
-        db.insert("user",
+        db.insert("user", true,
                 List.of("firstName", "lastName", "username", "email",
                         "passwordHash", "accountStatus"),
                 firstName, lastName, username, email,
@@ -456,5 +464,18 @@ public class UserService {
             }
             return null;
         }, params);
+    }
+
+    private void loadSavedBooks()
+            throws DatabaseException, UserException {
+        String query = "select * from userSavedBook where userId = ?";
+        db.select("get saved books", query, resultSet -> {
+            while (resultSet.next()) {
+                this.currentUser.getSavedBooks().add(
+                        Book.bookMap.get(resultSet.getInt("bookId"))
+                );
+            }
+            return null;
+        }, this.currentUser.getId());
     }
 }

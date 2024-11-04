@@ -32,9 +32,6 @@ public class BookGalleryController {
 
     @FXML
     private void initialize() {
-        Author.initialize();
-        Genre.initialize();
-        BookService.initialize();
         loadBookCards();
         showBookCards(null);
         searchBook();

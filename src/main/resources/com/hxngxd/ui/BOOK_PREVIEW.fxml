@@ -47,9 +47,9 @@
       </ScrollPane>
       <VBox fx:id="bookDisplay1" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <Button contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="LƯU SÁCH">
+            <Button fx:id="saveBookButton" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#savedBook" prefHeight="45.0" stylesheets="@style.css" text="LƯU SÁCH">
                <graphic>
-                  <FontAwesomeIconView glyphName="BOOKMARK_ALT" />
+                  <FontAwesomeIconView fx:id="saveBookIcon" glyphName="BOOKMARK_ALT" />
                </graphic></Button>
             <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="XEM CHI TIẾT" />
          </children>
