@@ -3,8 +3,10 @@ package com.hxngxd.ui.controller;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
@@ -44,10 +46,13 @@ public class BookPreviewController extends PreviewController {
     @FXML
     private void savedBook(ActionEvent event) {
         User currentUser = UserService.getInstance().getCurrentUser();
+        BookGalleryController bookGalleryController = (BookGalleryController)
+                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
         if (!currentUser.getSavedBooks().contains(book)) {
             try {
                 currentUser.saveBook(book);
                 setSaveButtonState();
+                bookGalleryController.showBookCards(null);
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMessage("save book"), e.getMessage());
@@ -56,6 +61,7 @@ public class BookPreviewController extends PreviewController {
             try {
                 currentUser.unsaveBook(book);
                 setSaveButtonState();
+                bookGalleryController.showBookCards(null);
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMessage("unsave book"), e.getMessage());

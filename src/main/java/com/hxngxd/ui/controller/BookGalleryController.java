@@ -3,9 +3,10 @@ package com.hxngxd.ui.controller;
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
+import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.BookService;
+import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;
@@ -29,6 +30,8 @@ public class BookGalleryController {
     private FlowPane bookCardContainer;
     @FXML
     private TextField searchField;
+    public static boolean isShowingSavedBook = false;
+    private final User currentUser = UserService.getInstance().getCurrentUser();
 
     @FXML
     private void initialize() {
@@ -54,9 +57,17 @@ public class BookGalleryController {
         }
     }
 
-    private void showBookCards(String info) {
-        if (info == null) {
+    public void showBookCards(String info) {
+        if (info == null || info.isEmpty()) {
             for (FXMLLoader bookCard : bookCards) {
+                BookCardController bookCardController = bookCard.getController();
+                Book book = bookCardController.getBook();
+                if (isShowingSavedBook) {
+                    if (!currentUser.getSavedBooks().contains(book)) {
+                        bookCardContainer.getChildren().remove(bookCard.getRoot());
+                        continue;
+                    }
+                }
                 if (!bookCardContainer.getChildren().contains(bookCard.getRoot())) {
                     bookCardContainer.getChildren().add(bookCard.getRoot());
                 }
@@ -67,6 +78,12 @@ public class BookGalleryController {
         for (FXMLLoader bookCard : bookCards) {
             BookCardController bookCardController = bookCard.getController();
             Book book = bookCardController.getBook();
+            if (isShowingSavedBook) {
+                if (!currentUser.getSavedBooks().contains(book)) {
+                    bookCardContainer.getChildren().remove(bookCard.getRoot());
+                    continue;
+                }
+            }
             Parent card = bookCard.getRoot();
             boolean approxMatch = false;
             List<String> bookInfos = new ArrayList<>();
@@ -102,5 +119,9 @@ public class BookGalleryController {
                 pause.playFromStart();
             }
         });
+    }
+
+    public void setIsShowingSavedBook(boolean isShowingSavedBook) {
+        BookGalleryController.isShowingSavedBook = isShowingSavedBook;
     }
 }

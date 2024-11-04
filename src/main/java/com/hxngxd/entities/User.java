@@ -21,7 +21,7 @@ public class User extends Person {
     private Role role;
     private AccountStatus accountStatus;
     private int violationCount;
-    private List<Book> savedBooks = new ArrayList<>();
+    private final List<Book> savedBooks = new ArrayList<>();
 
     public User() {
     }

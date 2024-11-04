@@ -1,5 +1,6 @@
 package com.hxngxd.ui.controller;
 
+import com.hxngxd.actions.Action;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
@@ -84,6 +85,23 @@ public class MainController extends NavigateController {
 
     @FXML
     private void showHome(ActionEvent event) {
+        BookGalleryController bookGalleryController = (BookGalleryController)
+                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
+        bookGalleryController.setIsShowingSavedBook(false);
+        bookGalleryController.showBookCards(null);
+        showBookGallery();
+    }
+
+    @FXML
+    private void showSavedBook(ActionEvent event) {
+        BookGalleryController bookGalleryController = (BookGalleryController)
+                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
+        bookGalleryController.setIsShowingSavedBook(true);
+        bookGalleryController.showBookCards(null);
+        showBookGallery();
+    }
+
+    private void showBookGallery() {
         if (currentTab == UI.BOOK_GALLERY) {
             return;
         }
