@@ -7,9 +7,11 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -21,11 +23,29 @@ public class LoginController extends NavigateController {
     @FXML
     private TextField usernameField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
+    @FXML
+    private TextField passwordVisibleField;
     @FXML
     private Label statusLabel;
-
+    @FXML
+    private FontAwesomeIconView eye;
+    private boolean isPasswordVisible = false;
     private final UserService userService = UserService.getInstance();
+
+    @FXML
+    public void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            passwordField.setText(passwordVisibleField.getText());
+            eye.setGlyphName("EYE_SLASH");
+        } else {
+            passwordVisibleField.setText(passwordField.getText());
+            eye.setGlyphName("EYE");
+        }
+        passwordField.setVisible(isPasswordVisible);
+        passwordVisibleField.setVisible(!isPasswordVisible);
+        isPasswordVisible = !isPasswordVisible;
+    }
 
     private void handleEnterKey(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -38,6 +58,7 @@ public class LoginController extends NavigateController {
     private void initialize() {
         usernameField.setOnKeyPressed(this::handleEnterKey);
         passwordField.setOnKeyPressed(this::handleEnterKey);
+        passwordVisibleField.setOnKeyPressed(this::handleEnterKey);
     }
 
     @FXML
