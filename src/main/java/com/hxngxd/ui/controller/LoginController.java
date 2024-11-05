@@ -11,6 +11,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,35 +23,29 @@ public class LoginController extends NavigateController {
     @FXML
     private TextField usernameField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
+    @FXML
+    private TextField passwordVisibleField;
     @FXML
     private Label statusLabel;
     @FXML
-    private TextField PasswordVisibleField;
-    @FXML
-    private FontAwesomeIconView icon;
-
-    private boolean passWordVisible = true;
+    private FontAwesomeIconView eye;
+    private boolean isPasswordVisible = false;
+    private final UserService userService = UserService.getInstance();
 
     @FXML
     public void togglePasswordVisibility() {
-        if (passWordVisible) {
-            PasswordVisibleField.setText(passwordField.getText());
-            passwordField.setVisible(false);
-            PasswordVisibleField.setVisible(true);
-            passWordVisible = false;
-            icon.setGlyphName("EYE");
+        if (isPasswordVisible) {
+            passwordField.setText(passwordVisibleField.getText());
+            eye.setGlyphName("EYE_SLASH");
         } else {
-            passwordField.setVisible(true);
-            PasswordVisibleField.setVisible(false);
-            passwordField.setText(PasswordVisibleField.getText());
-            icon.setGlyphName("EYE_SLASH");
-            passWordVisible = true;
+            passwordVisibleField.setText(passwordField.getText());
+            eye.setGlyphName("EYE");
         }
+        passwordField.setVisible(isPasswordVisible);
+        passwordVisibleField.setVisible(!isPasswordVisible);
+        isPasswordVisible = !isPasswordVisible;
     }
-
-
-    private final UserService userService = UserService.getInstance();
 
     private void handleEnterKey(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -59,14 +54,12 @@ public class LoginController extends NavigateController {
         }
     }
 
-
     @FXML
     private void initialize() {
         usernameField.setOnKeyPressed(this::handleEnterKey);
         passwordField.setOnKeyPressed(this::handleEnterKey);
-        PasswordVisibleField.setOnKeyPressed(this::handleEnterKey);
+        passwordVisibleField.setOnKeyPressed(this::handleEnterKey);
     }
-
 
     @FXML
     private void logIn(ActionEvent event) {
