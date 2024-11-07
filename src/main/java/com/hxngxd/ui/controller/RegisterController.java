@@ -42,40 +42,28 @@ public class RegisterController extends NavigateController {
     private TextField confirmPasswordVisibleField;
     @FXML
     private FontAwesomeIconView eyePassword;
-    @FXML
-    private FontAwesomeIconView eyeConfirmPassword;
 
     private final UserService userService = UserService.getInstance();
     private boolean isPasswordVisible = false;
-    private boolean isConfirmPasswordVisible = false;
 
     @FXML
     private void togglePasswordVisibility() {
         if (isPasswordVisible) {
             passwordField.setText(passwordVisibleField.getText());
+            confirmPasswordField.setText(confirmPasswordVisibleField.getText());
             eyePassword.setGlyphName("EYE_SLASH");
         } else {
             passwordVisibleField.setText(passwordField.getText());
+            confirmPasswordVisibleField.setText(confirmPasswordField.getText());
             eyePassword.setGlyphName("EYE");
         }
         passwordField.setVisible(isPasswordVisible);
+        confirmPasswordVisibleField.setVisible(isPasswordVisible);
         passwordVisibleField.setVisible(!isPasswordVisible);
+        confirmPasswordVisibleField.setVisible(!isPasswordVisible);
         isPasswordVisible = !isPasswordVisible;
     }
 
-    @FXML
-    private void toggleConfirmPasswordVisible() {
-        if (isConfirmPasswordVisible) {
-            confirmPasswordField.setText(confirmPasswordVisibleField.getText());
-            eyeConfirmPassword.setGlyphName("EYE_SLASH");
-        } else {
-            confirmPasswordVisibleField.setText(confirmPasswordField.getText());
-            eyeConfirmPassword.setGlyphName("EYE");
-        }
-        confirmPasswordField.setVisible(isConfirmPasswordVisible);
-        confirmPasswordVisibleField.setVisible(!isConfirmPasswordVisible);
-        isConfirmPasswordVisible = !isConfirmPasswordVisible;
-    }
 
     @FXML
     private void handleEnterKey(KeyEvent event) {
