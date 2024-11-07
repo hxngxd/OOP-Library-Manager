@@ -73,20 +73,20 @@
                                     <FontAwesomeIconView glyphName="HOME" size="20" />
                                  </graphic>
                                     </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAccount" prefHeight="70.0" stylesheets="@style.css" text="TÀI KHOẢN">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="USER" size="20" />
-                                 </graphic>
-                                    </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showSavedBook" prefHeight="70.0" stylesheets="@style.css" text="SÁCH ĐÃ LƯU">
                                         <font>
                                             <Font name="System Italic" size="16.0" />
                                         </font>
                                  <graphic>
                                     <FontAwesomeIconView glyphName="BOOKMARK" size="20" />
+                                 </graphic>
+                                    </Button>
+                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAccount" prefHeight="70.0" stylesheets="@style.css" text="TÀI KHOẢN">
+                                        <font>
+                                            <Font name="System Italic" size="16.0" />
+                                        </font>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="USER" size="20" />
                                  </graphic>
                                     </Button>
                                     <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="MƯỢN SÁCH">
