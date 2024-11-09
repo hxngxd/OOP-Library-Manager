@@ -20,119 +20,121 @@
             <children>
                 <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                  <AnchorPane>
-                     <children>
-                        <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <StackPane>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="7.5" top="10.0" />
-                                 </HBox.margin>
-                                 <children>
-                                    <Circle fill="#082079" radius="48.0" stroke="BLACK" strokeType="INSIDE" />
-                                          <ImageView fx:id="image" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                              <image>
-                                                  <Image url="@../../../../../../others/hehe.jpg" />
-                                              </image>
-                                          </ImageView>
-                                 </children>
-                              </StackPane>
-                              <VBox HBox.hgrow="ALWAYS">
-                                 <children>
-                                          <Label fx:id="fullNameLabel" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Fullname">
-                                              <font>
-                                                  <Font name="System Bold" size="16.0" />
-                                              </font>
-                                          </Label>
-                                          <Label fx:id="userInfoLabel" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Info" wrapText="true">
-                                              <font>
-                                                  <Font name="System Italic" size="14.0" />
-                                              </font>
-                                          </Label>
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets bottom="10.0" top="10.0" />
-                                 </HBox.margin>
-                              </VBox>
-                           </children>
-                        </HBox>
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                  </AnchorPane>
-                  <AnchorPane VBox.vgrow="ALWAYS">
-                     <children>
-                        <VBox alignment="TOP_CENTER" layoutY="-1.430511474609375E-6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showHome" prefHeight="70.0" stylesheets="@style.css" text="HOME">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="HOME" size="20" />
-                                 </graphic>
-                                    </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showSavedBook" prefHeight="70.0" stylesheets="@style.css" text="SÁCH ĐÃ LƯU">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="BOOKMARK" size="20" />
-                                 </graphic>
-                                    </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAccount" prefHeight="70.0" stylesheets="@style.css" text="TÀI KHOẢN">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="USER" size="20" />
-                                 </graphic>
-                                    </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="MƯỢN SÁCH">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="BOOK" size="20" />
-                                 </graphic>
-                                    </Button>
-                                    <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="VI PHẠM">
-                                        <font>
-                                            <Font name="System Italic" size="16.0" />
-                                        </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="EJECT" size="20" />
-                                 </graphic>
-                                    </Button>
-                              <Button alignment="CENTER" layoutX="10.0" layoutY="296.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="QUẢN LÝ">
-                                 <font>
-                                    <Font name="System Italic" size="16.0" />
-                                 </font>
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="LIST" size="20" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane VBox.vgrow="ALWAYS">
-                     <children>
-                        <HBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <children>
-                              <Button alignment="CENTER" contentDisplay="TOP" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefWidth="125.0" stylesheets="@style.css" text="THOÁT" HBox.hgrow="ALWAYS">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="CLOSE" />
-                                 </graphic></Button>
-                              <Button alignment="CENTER" contentDisplay="TOP" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="125.0" stylesheets="@style.css" text="ĐĂNG XUẤT" HBox.hgrow="ALWAYS">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="SIGN_OUT" />
-                                 </graphic></Button>
-                           </children>
-                        </HBox>
-                     </children>
-                  </AnchorPane>
+                        <AnchorPane>
+                            <children>
+                                <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <StackPane>
+                                            <HBox.margin>
+                                                <Insets bottom="10.0" left="10.0" right="7.5" top="10.0" />
+                                            </HBox.margin>
+                                            <children>
+                                                <Circle fill="#082079" radius="48.0" stroke="BLACK" strokeType="INSIDE" />
+                                                <ImageView fx:id="profileImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../../../../../../others/hehe.jpg" />
+                                                    </image>
+                                                </ImageView>
+                                            </children>
+                                        </StackPane>
+                                        <VBox HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label fx:id="fullNameLabel" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Fullname">
+                                                    <font>
+                                                        <Font name="System Bold" size="16.0" />
+                                                    </font>
+                                                </Label>
+                                                <Label fx:id="userInfoLabel" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Info" wrapText="true">
+                                                    <font>
+                                                        <Font name="System Italic" size="14.0" />
+                                                    </font>
+                                                </Label>
+                                            </children>
+                                            <HBox.margin>
+                                                <Insets bottom="10.0" top="10.0" />
+                                            </HBox.margin>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                            </children>
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0" />
+                            </VBox.margin>
+                        </AnchorPane>
+                        <AnchorPane VBox.vgrow="ALWAYS">
+                            <children>
+                                <VBox alignment="TOP_CENTER" layoutY="-1.430511474609375E-6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showHome" prefHeight="70.0" stylesheets="@style.css" text="HOME">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="HOME" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showSavedBook" prefHeight="70.0" stylesheets="@style.css" text="SÁCH ĐÃ LƯU">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="BOOKMARK" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showAccount" prefHeight="70.0" stylesheets="@style.css" text="TÀI KHOẢN">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="USER" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="borrowButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="MƯỢN SÁCH">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="BOOK" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="70.0" stylesheets="@style.css" text="VI PHẠM">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="EJECT" size="20" />
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="manageButton" alignment="CENTER" layoutX="10.0" layoutY="296.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showManage" prefHeight="70.0" stylesheets="@style.css" text="QUẢN LÝ">
+                                            <font>
+                                                <Font name="System Italic" size="16.0" />
+                                            </font>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="LIST" size="20" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane VBox.vgrow="ALWAYS">
+                            <children>
+                                <HBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <children>
+                                        <Button alignment="CENTER" contentDisplay="TOP" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefWidth="125.0" stylesheets="@style.css" text="THOÁT" HBox.hgrow="ALWAYS">
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CLOSE" />
+                                            </graphic>
+                                        </Button>
+                                        <Button alignment="CENTER" contentDisplay="TOP" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="125.0" stylesheets="@style.css" text="ĐĂNG XUẤT" HBox.hgrow="ALWAYS">
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SIGN_OUT" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </AnchorPane>
                     </children>
                 </VBox>
             </children>

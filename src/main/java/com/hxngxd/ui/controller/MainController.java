@@ -1,22 +1,23 @@
 package com.hxngxd.ui.controller;
 
-import com.hxngxd.actions.Action;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,24 +28,38 @@ public class MainController extends NavigateController {
     private static final Logger log = LogManager.getLogger(MainController.class);
     private UI currentTab;
     @FXML
-    private ImageView image;
+    private ImageView profileImage;
     @FXML
     private Label fullNameLabel;
     @FXML
     private Label userInfoLabel;
     @FXML
     private SplitPane root;
+    @FXML
+    private Button borrowButton;
+    @FXML
+    private Button manageButton;
 
     @FXML
     private void initialize() {
         User user = UserService.getInstance().getCurrentUser();
         if (user.getImage() != null) {
-            setImage(
+            setProfileImage(
                     ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
             );
         }
         setFullNameLabel(user.getFullNameFirstThenLast());
         setUserInfoLabel(user.toString());
+
+        if (user.getRole() == Role.USER) {
+            manageButton.setDisable(true);
+            manageButton.setVisible(false);
+            manageButton.setManaged(false);
+        } else {
+            borrowButton.setDisable(true);
+            borrowButton.setVisible(false);
+            borrowButton.setManaged(false);
+        }
 
         currentTab = UI.BOOK_GALLERY;
         try {
@@ -58,13 +73,13 @@ public class MainController extends NavigateController {
         }
     }
 
-    public void setImage(Image image) {
-        this.image.setFitHeight(90);
-        this.image.setFitWidth(90);
-        this.image.setPreserveRatio(true);
+    public void setProfileImage(Image profileImage) {
+        this.profileImage.setFitHeight(90);
+        this.profileImage.setFitWidth(90);
+        this.profileImage.setPreserveRatio(true);
         Circle clip = new Circle(45, 45, 45);
-        this.image.setClip(clip);
-        this.image.setImage(image);
+        this.profileImage.setClip(clip);
+        this.profileImage.setImage(profileImage);
     }
 
     public void setFullNameLabel(String fullname) {
@@ -81,7 +96,9 @@ public class MainController extends NavigateController {
             return;
         }
         currentTab = UI.ACCOUNT;
-        navigate(UIManager.loadOnce(UI.ACCOUNT).getRoot());
+        FXMLLoader loader = UIManager.loadOnce(UI.ACCOUNT);
+        ((AccountController) loader.getController()).update();
+        navigate(loader.getRoot());
     }
 
     @FXML
@@ -102,6 +119,16 @@ public class MainController extends NavigateController {
         showBookGallery();
     }
 
+    @FXML
+    private void showManage(ActionEvent event) {
+        StageManager.getInstance().showPopup(UI.MANAGE_POPUP);
+//        if (currentTab == UI.MANAGE_USER) {
+//            return;
+//        }
+//        FXMLLoader loader = UIManager.loadOnce(UI.MANAGE_USER);
+//        navigate(loader.getRoot());
+    }
+
     private void showBookGallery() {
         if (currentTab == UI.BOOK_GALLERY) {
             return;
@@ -115,12 +142,20 @@ public class MainController extends NavigateController {
         }
     }
 
-    private void navigate(Parent tab) {
+    public void navigate(Parent tab) {
         if (root.getItems().contains(tab)) {
             return;
         }
         AnchorPane navigation = (AnchorPane) root.getItems().getFirst();
         root.getItems().clear();
         root.getItems().addAll(navigation, tab);
+    }
+
+    public UI getCurrentTab() {
+        return currentTab;
+    }
+
+    public void setCurrentTab(UI currentTab) {
+        this.currentTab = currentTab;
     }
 }

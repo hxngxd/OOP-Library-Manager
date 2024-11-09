@@ -25,7 +25,7 @@
                         <Font name="System Bold" size="28.0" />
                      </font>
                   </Label>
-                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../../../../../../Pictures%20&amp;%20Videos/hehe.jpg" />
                      </image>
@@ -45,7 +45,7 @@
                               </Label>
                               <TextField fx:id="idField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="ID" text="0000">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -62,7 +62,7 @@
                               </Label>
                               <TextField fx:id="roleField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Vai trò" text="USER">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -79,7 +79,7 @@
                               </Label>
                               <TextField fx:id="joinDateField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Ngày tham gia">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -100,7 +100,7 @@
                               </Label>
                               <TextField fx:id="lastNameField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Họ và tên đệm">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font name="System Bold Italic" size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -117,7 +117,7 @@
                               </Label>
                               <TextField fx:id="firstNameField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Tên">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font name="System Bold Italic" size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -139,9 +139,9 @@
                                     <Insets left="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="usernameField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Username">
+                              <TextField fx:id="usernameField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Username">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -158,7 +158,7 @@
                               </Label>
                               <TextField fx:id="emailField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Email">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -177,7 +177,7 @@
                         </Label>
                         <TextField fx:id="addressField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Địa chỉ">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="16.0" />
                            </font>
                         </TextField>
                      </children>
@@ -207,7 +207,10 @@
                                     <Insets left="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <PasswordField fx:id="oldPasswordField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" VBox.vgrow="ALWAYS" />
+                              <PasswordField fx:id="oldPasswordField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></PasswordField>
                            </children>
                         </VBox>
                         <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
@@ -220,7 +223,10 @@
                                     <Insets left="7.0" />
                                  </VBox.margin>
                               </Label>
-                              <PasswordField fx:id="newPasswordField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" />
+                              <PasswordField fx:id="newPasswordField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Mật khẩu cần đổi">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></PasswordField>
                            </children>
                         </VBox>
                         <Button maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="70.0" stylesheets="@style.css" text="ĐỔI" HBox.hgrow="ALWAYS" />
@@ -240,7 +246,7 @@
                               </Label>
                               <TextField fx:id="saveBookField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="ID" text="0">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -257,7 +263,7 @@
                               </Label>
                               <TextField fx:id="borrowBookField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Vai trò" text="0">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>
@@ -274,7 +280,7 @@
                               </Label>
                               <TextField fx:id="violateField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Ngày tham gia" text="0">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font size="16.0" />
                                  </font>
                               </TextField>
                            </children>

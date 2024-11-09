@@ -14,8 +14,6 @@ public class Book extends EntityWithPhoto {
     private short yearOfPublication;
     private String shortDescription;
     private int numberOfPages;
-    private LocalDateTime dateAdded;
-    private LocalDateTime lastUpdated;
     private int availableCopies;
     private int totalCopies;
     private double averageRating;
@@ -23,9 +21,6 @@ public class Book extends EntityWithPhoto {
     private final List<Author> authors = new ArrayList<>();
     private final List<Genre> genres = new ArrayList<>();
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            "hh:mm:ss, dd-MM-yyyy");
 
     public Book() {
     }
@@ -103,14 +98,6 @@ public class Book extends EntityWithPhoto {
         this.totalCopies = totalCopies;
     }
 
-    public LocalDateTime getDateAdded() {
-        return dateAdded;
-    }
-
-    public LocalDateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
     public double getAverageRating() {
         return averageRating;
     }
@@ -138,8 +125,8 @@ public class Book extends EntityWithPhoto {
 
     public String getReview() {
         int fullStars = (int) averageRating;
-        String ratingStars = "\u2605".repeat(fullStars) +
-                "\u2606".repeat(5 - fullStars);
+        String ratingStars = "★".repeat(fullStars) +
+                "☆".repeat(5 - fullStars);
         return String.format("%.1f %s (%d)", averageRating, ratingStars, numberOfReviews);
     }
 
@@ -205,6 +192,7 @@ public class Book extends EntityWithPhoto {
                 this.averageRating == 0.0
                         ? "Chưa được đánh giá"
                         : getReview()).append("\n");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss, dd-MM-yyyy");
         info.append(bullet).append("Thêm vào lúc: ").append(
                 this.dateAdded.format(formatter)).append("\n");
         info.append(bullet).append("Cập nhật cuối cùng: ").append(

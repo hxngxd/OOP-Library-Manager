@@ -16,7 +16,7 @@ create table user
     address        varchar(255),
     role           enum ('USER', 'MODERATOR', 'ADMIN')                not null default 'USER',
     accountStatus  enum ('ACTIVE', 'INACTIVE', 'SUSPENDED', 'BANNED') not null default 'INACTIVE',
-    dateCreated    datetime                                                    default current_timestamp,
+    dateAdded      datetime                                                    default current_timestamp,
     lastActive     datetime,
     violationCount int                                                         default 0,
     passwordHash   varchar(255)                                       not null
@@ -336,4 +336,5 @@ VALUES (10, 8, 4, 'Sách này thật sự rất hay và bổ ích.');
 INSERT INTO review (userId, bookId, rating, comment)
 VALUES (10, 9, 5, 'Tôi rất thích cuốn sách này, đọc mãi không chán.');
 
-INSERT INTO userSavedBook (userId, bookId) VALUES (1, 1);
+INSERT INTO userSavedBook (userId, bookId)
+VALUES (1, 1);

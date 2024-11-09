@@ -7,6 +7,7 @@ module com.hxngxd.libraryManager {
     requires java.desktop;
     requires de.jensd.fx.glyphs.fontawesome;
     requires javafx.controls;
+    requires jdk.compiler;
 
     opens com.hxngxd.libraryManager to javafx.fxml;
     exports com.hxngxd.libraryManager;

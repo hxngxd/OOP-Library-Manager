@@ -31,9 +31,6 @@ public class UserService {
 
     public static void initialize() {
         UserService.getInstance().loadSavedBooks();
-        for (Book book : UserService.getInstance().currentUser.getSavedBooks()) {
-            System.out.println(book.toString());
-        }
     }
 
     private static class SingletonHolder {
@@ -453,6 +450,8 @@ public class UserService {
                     user.setLastName(resultSet.getString("lastName"));
                     user.setAddress(resultSet.getString("address"));
                     user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
+                    user.setDateAdded(
+                            resultSet.getTimestamp("dateAdded").toLocalDateTime());
                     user.setRole(Role.valueOf(resultSet.getString("role")));
                     user.setViolationCount(resultSet.getInt("violationCount"));
                     byte[] photoBytes = resultSet.getBytes("photo");

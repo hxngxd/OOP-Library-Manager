@@ -7,7 +7,9 @@ public enum UI {
     BOOK_GALLERY,
     BOOK_CARD,
     BOOK_PREVIEW,
-    ACCOUNT;
+    ACCOUNT,
+    MANAGE_USER,
+    MANAGE_POPUP;
 
     public String getPath() {
         return this.name() + ".fxml";
