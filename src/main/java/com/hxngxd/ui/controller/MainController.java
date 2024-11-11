@@ -1,6 +1,5 @@
 package com.hxngxd.ui.controller;
 
-import com.hxngxd.actions.Action;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
@@ -16,7 +15,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

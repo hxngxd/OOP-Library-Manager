@@ -41,7 +41,7 @@ public class RegisterController extends NavigateController {
     @FXML
     private TextField confirmPasswordVisibleField;
     @FXML
-    private FontAwesomeIconView eyePassword;
+    private FontAwesomeIconView eye;
 
     private final UserService userService = UserService.getInstance();
     private boolean isPasswordVisible = false;
@@ -51,11 +51,11 @@ public class RegisterController extends NavigateController {
         if (isPasswordVisible) {
             passwordField.setText(passwordVisibleField.getText());
             confirmPasswordField.setText(confirmPasswordVisibleField.getText());
-            eyePassword.setGlyphName("EYE_SLASH");
+            eye.setGlyphName("EYE_SLASH");
         } else {
             passwordVisibleField.setText(passwordField.getText());
             confirmPasswordVisibleField.setText(confirmPasswordField.getText());
-            eyePassword.setGlyphName("EYE");
+            eye.setGlyphName("EYE");
         }
         passwordField.setVisible(isPasswordVisible);
         confirmPasswordVisibleField.setVisible(isPasswordVisible);
