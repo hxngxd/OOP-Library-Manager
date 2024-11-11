@@ -64,10 +64,9 @@ public class LoginController extends NavigateController {
     @FXML
     private void logIn(ActionEvent event) {
         try {
-            userService.login(
-                    "23020078", "23020078",
-                    "Hung@07112005"
-            );
+//            userService.login(usernameField.getText(), usernameField.getText(),
+//                    isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText());
+            userService.login("23020078", "23020078", "Hung@07112005");
             statusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
             Author.initialize();
             Genre.initialize();

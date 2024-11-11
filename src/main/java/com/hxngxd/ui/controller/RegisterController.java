@@ -85,7 +85,9 @@ public class RegisterController extends NavigateController {
             userService.register(
                     firstNameField.getText(), lastNameField.getText(),
                     usernameField.getText(), emailField.getText(),
-                    passwordField.getText(), confirmPasswordField.getText()
+                    isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText(),
+                    isPasswordVisible ? confirmPasswordVisibleField.getText()
+                            : confirmPasswordField.getText()
             );
             statusLabel.setText(LogMessages.General.SUCCESS.getMessage("register"));
             Author.initialize();
