@@ -3,8 +3,11 @@ package com.hxngxd.entities;
 import java.time.LocalDateTime;
 
 public abstract class Entity {
+
     protected int id;
+
     protected LocalDateTime dateAdded;
+
     protected LocalDateTime lastUpdated;
 
     public Entity() {
@@ -37,4 +40,5 @@ public abstract class Entity {
     public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+
 }

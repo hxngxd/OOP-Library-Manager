@@ -3,8 +3,11 @@ package com.hxngxd.entities;
 import java.time.LocalDate;
 
 public abstract class Person extends EntityWithPhoto {
+
     protected String firstName;
+
     protected String lastName;
+
     protected LocalDate dateOfBirth;
 
     public Person() {
@@ -52,4 +55,5 @@ public abstract class Person extends EntityWithPhoto {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
+    
 }

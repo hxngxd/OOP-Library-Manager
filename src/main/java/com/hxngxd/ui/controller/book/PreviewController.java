@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.book;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -6,10 +6,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public abstract class PreviewController {
+
     @FXML
     protected ImageView image;
+
     @FXML
     protected Label nameLabel;
+
     @FXML
     protected Label informationLabel;
 
@@ -32,4 +35,5 @@ public abstract class PreviewController {
     protected void setInformation(String information) {
         this.informationLabel.setText(information);
     }
+    
 }

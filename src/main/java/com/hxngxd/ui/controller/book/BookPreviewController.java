@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
@@ -7,6 +7,7 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.utils.ImageHandler;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
@@ -16,19 +17,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BookPreviewController extends PreviewController {
+
     private static final Logger log = LogManager.getLogger(BookPreviewController.class);
+
     private boolean isPreviewing = false;
+
     private Book book;
+
     @FXML
     private FontAwesomeIconView saveBookIcon;
+
     @FXML
     private Button saveBookButton;
 
     public void previewBook(Book book) {
         this.book = book;
-        setImage(
-                ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5)
-        );
+        setImage(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
         setName(book.getTitle());
         setInformation(book.toStringDetail());
         setPreviewing(true);
@@ -46,25 +50,23 @@ public class BookPreviewController extends PreviewController {
     @FXML
     private void savedBook(ActionEvent event) {
         User currentUser = UserService.getInstance().getCurrentUser();
-        BookGalleryController bookGalleryController = (BookGalleryController)
-                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
         if (!currentUser.getSavedBooks().contains(book)) {
             try {
                 currentUser.saveBook(book);
                 setSaveButtonState();
-                bookGalleryController.showBookCards(null);
+                BookGalleryController.getInstance().showBookCards(null);
             } catch (DatabaseException e) {
                 e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMessage("save book"), e.getMessage());
+                log.error(LogMessages.General.FAIL.getMSG("save book"), e.getMessage());
             }
         } else {
             try {
                 currentUser.unsaveBook(book);
                 setSaveButtonState();
-                bookGalleryController.showBookCards(null);
+                BookGalleryController.getInstance().showBookCards(null);
             } catch (DatabaseException e) {
                 e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMessage("unsave book"), e.getMessage());
+                log.error(LogMessages.General.FAIL.getMSG("unsave book"), e.getMessage());
             }
         }
     }
@@ -79,4 +81,9 @@ public class BookPreviewController extends PreviewController {
             saveBookButton.setText("LƯU SÁCH");
         }
     }
+
+    public static BookPreviewController getInstance() {
+        return UIManager.getControllerOnce(UI.BOOK_PREVIEW);
+    }
+
 }

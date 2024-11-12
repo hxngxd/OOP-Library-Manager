@@ -11,10 +11,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class UIManager {
+public final class UIManager {
+
     private static final Logger log = LogManager.getLogger(UIManager.class);
+
     public static final HashMap<UI, Scene> Scenes = new HashMap<>();
+
     public static final HashMap<UI, FXMLLoader> Loaders = new HashMap<>();
+
+    public static UI currentScene = null;
 
     private UIManager() {
     }
@@ -25,8 +30,7 @@ public class UIManager {
                 Scenes.put(ui, new Scene(Objects.requireNonNull(loadOnce(ui)).getRoot()));
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMessage(
-                        "load scene: " + ui.name()), e.getMessage());
+                log.error(LogMessages.General.FAIL.getMSG("load scene: " + ui.name()), e.getMessage());
                 return null;
             }
         }
@@ -52,10 +56,17 @@ public class UIManager {
             loader.load();
         } catch (IOException e) {
             e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMessage("load ui: " + ui.name()),
-                    e.getMessage());
+            log.error(LogMessages.General.FAIL.getMSG("load ui: " + ui.name()), e.getMessage());
             return null;
         }
         return loader;
+    }
+
+    public static <T> T getControllerOnce(UI ui) {
+        return loadOnce(ui).getController();
+    }
+
+    public static <T> T getRootOnce(UI ui) {
+        return loadOnce(ui).getRoot();
     }
 }

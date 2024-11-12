@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Lớp BorrowService quản lý các thao tác mượn sách.
  */
-public class BorrowService {
+public final class BorrowService {
 
     /**
      * Gửi yêu cầu mượn sách.

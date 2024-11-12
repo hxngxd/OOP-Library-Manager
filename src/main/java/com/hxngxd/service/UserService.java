@@ -1,7 +1,6 @@
 package com.hxngxd.service;
 
 import com.hxngxd.database.DatabaseManager;
-import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.LogMessages;
@@ -17,23 +16,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserService {
-    private final DatabaseManager db = DatabaseManager.getInstance();
+public final class UserService {
+
     private static final Logger log = LogManager.getLogger(UserService.class);
-    private User currentUser = null;
+
+    private final DatabaseManager db = DatabaseManager.getInstance();
+
     public static final List<User> userList = new ArrayList<>();
+
+    private User currentUser = null;
 
     private UserService() {
     }
 
-    public static void initialize() {
+    public static void initialize()
+            throws DatabaseException, UserException {
         UserService.getInstance().loadSavedBooks();
-
     }
 
     private static class SingletonHolder {
@@ -55,20 +60,20 @@ public class UserService {
     public static void checkLoggedInAndConnected()
             throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMessage());
+            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMSG());
         }
         if (!UserService.isLoggedIn()) {
-            throw new UserException(LogMessages.User.USER_NOT_LOGGED_IN.getMessage());
+            throw new UserException(LogMessages.User.USER_NOT_LOGGED_IN.getMSG());
         }
     }
 
     public static void checkLoggedOutAndConnected()
             throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMessage());
+            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMSG());
         }
         if (UserService.isLoggedIn()) {
-            throw new UserException(LogMessages.User.USER_NOT_LOGGED_OUT.getMessage());
+            throw new UserException(LogMessages.User.USER_NOT_LOGGED_OUT.getMSG());
         }
     }
 
@@ -83,7 +88,7 @@ public class UserService {
         InputHandler.validateEmail(email);
 
         if (getUserByUsernameOrEmail(false, username, email) != null) {
-            throw new UserException(LogMessages.User.USER_EXIST.getMessage());
+            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
         }
 
         InputHandler.validatePassword(password);
@@ -110,7 +115,7 @@ public class UserService {
         currentUser.setAccountStatus(AccountStatus.ACTIVE);
         currentUser.setViolationCount(0);
 
-        log.info(LogMessages.General.SUCCESS.getMessage("create account"));
+        log.info(LogMessages.General.SUCCESS.getMSG("create account"));
     }
 
     public void login(String username, String email, String password)
@@ -121,17 +126,17 @@ public class UserService {
 
         User user = getUserByUsernameOrEmail(false, username, email);
         if (user == null) {
-            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMessage());
+            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
         }
 
         PasswordEncoder.compare(password, user.getPasswordHash());
 
         if (user.getAccountStatus() == AccountStatus.SUSPENDED) {
-            throw new UserException(LogMessages.User.USER_SUSPENDED.getMessage());
+            throw new UserException(LogMessages.User.USER_SUSPENDED.getMSG());
         }
 
         if (user.getAccountStatus() == AccountStatus.BANNED) {
-            throw new UserException(LogMessages.User.USER_BANNED.getMessage());
+            throw new UserException(LogMessages.User.USER_BANNED.getMSG());
         }
 
         user = getUserByUsernameOrEmail(true, username, email);
@@ -140,17 +145,13 @@ public class UserService {
                 "id", user.getId());
         currentUser = user;
 
-        userList.add(currentUser);
         if (currentUser.getRole() != Role.USER) {
             getAllUsers();
         }
 
-        if (currentUser.getAccountStatus() != AccountStatus.SUSPENDED ||
-                currentUser.getAccountStatus() != AccountStatus.BANNED) {
-            currentUser.setAccountStatus(AccountStatus.ACTIVE);
-        }
+        currentUser.setAccountStatus(AccountStatus.ACTIVE);
 
-        log.info(LogMessages.General.SUCCESS.getMessage("log in"));
+        log.info(LogMessages.General.SUCCESS.getMSG("log in"));
     }
 
     public void logout()
@@ -164,8 +165,9 @@ public class UserService {
                 List.of(currentUser.getId()));
         currentUser.setAccountStatus(AccountStatus.INACTIVE);
         currentUser = null;
+        userList.clear();
 
-        log.info(LogMessages.General.SUCCESS.getMessage("log out"));
+        log.info(LogMessages.General.SUCCESS.getMSG("log out"));
     }
 
     public void updateProfilePicture(File imageFile)
@@ -173,7 +175,7 @@ public class UserService {
         checkLoggedInAndConnected();
 
         if (imageFile == null) {
-            log.info(LogMessages.File.FILE_IS_NULL.getMessage());
+            log.info(LogMessages.File.FILE_IS_NULL.getMSG());
             return;
         }
 
@@ -183,8 +185,9 @@ public class UserService {
                 "photo", toByte,
                 "id", currentUser.getId());
 
-        log.info(LogMessages.General.SUCCESS.getMessage("change profile picture"));
+        log.info(LogMessages.General.SUCCESS.getMSG("change profile picture"));
     }
+
 //    public boolean updateProfile(int userId, String newFirstName, String newLastName,
 //                                 LocalDate newDateOfBirth, String newAddress) {
 //        if (!checkLoggedInAndConnected()) {
@@ -454,26 +457,7 @@ public class UserService {
         String query = "select * from user where id = ? or username = ? or email = ?";
         return db.select("getting user", query, resultSet -> {
             if (resultSet.next()) {
-                User user = new User(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPasswordHash(resultSet.getString("passwordHash"));
-                user.setAccountStatus(AccountStatus.valueOf(resultSet.getString("accountStatus")));
-                if (inDetail) {
-                    user.setFirstName(resultSet.getString("firstName"));
-                    user.setLastName(resultSet.getString("lastName"));
-                    user.setAddress(resultSet.getString("address"));
-                    user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
-                    user.setDateAdded(
-                            resultSet.getTimestamp("dateAdded").toLocalDateTime());
-                    user.setRole(Role.valueOf(resultSet.getString("role")));
-                    user.setViolationCount(resultSet.getInt("violationCount"));
-                    byte[] photoBytes = resultSet.getBytes("photo");
-                    if (photoBytes != null) {
-                        user.setImage(ImageHandler.byteArrayToImage(photoBytes));
-                    }
-                }
-                return user;
+                return loadUserInformation(inDetail, resultSet);
             }
             return null;
         }, params);
@@ -483,48 +467,71 @@ public class UserService {
         String query = "select * from user";
         db.select("getting user", query, resultSet -> {
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                if (id == currentUser.getId()) {
-                    continue;
+                if (currentUser.getId() != resultSet.getInt("id")) {
+                    userList.add(loadUserInformation(true, resultSet));
                 }
-                User user = new User(id);
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPasswordHash(resultSet.getString("passwordHash"));
-                user.setAccountStatus(AccountStatus.valueOf(resultSet.getString("accountStatus")));
-                user.setFirstName(resultSet.getString("firstName"));
-                user.setLastName(resultSet.getString("lastName"));
-                user.setAddress(resultSet.getString("address"));
-                user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
-                user.setDateAdded(
-                        resultSet.getTimestamp("dateAdded").toLocalDateTime()
-                );
-                Timestamp lastActive = resultSet.getTimestamp("lastActive");
-                if (lastActive != null) {
-                    user.setLastUpdated(lastActive.toLocalDateTime());
-                }
-                user.setRole(Role.valueOf(resultSet.getString("role")));
-                user.setViolationCount(resultSet.getInt("violationCount"));
-                byte[] photoBytes = resultSet.getBytes("photo");
-                if (photoBytes != null) {
-                    user.setImage(ImageHandler.byteArrayToImage(photoBytes));
-                }
-                userList.add(user);
             }
             return null;
         });
     }
 
+    private User loadUserInformation(Boolean inDetail, ResultSet rs)
+            throws SQLException {
+        User user = new User(rs.getInt("id"));
+
+        user.setUsername(rs.getString("username"));
+
+        user.setEmail(rs.getString("email"));
+
+        user.setPasswordHash(rs.getString("passwordHash"));
+
+        user.setAccountStatus(AccountStatus.valueOf(rs.getString("accountStatus")));
+
+        if (!inDetail) {
+            return user;
+        }
+
+        user.setFirstName(rs.getString("firstName"));
+
+        user.setLastName(rs.getString("lastName"));
+
+        String address = rs.getString("address");
+        if (address != null) {
+            user.setAddress(address);
+        }
+
+        Timestamp dateAdded = rs.getTimestamp("dateAdded");
+        if (dateAdded != null) {
+            user.setDateAdded(dateAdded.toLocalDateTime());
+        }
+
+        Timestamp lastActive = rs.getTimestamp("lastActive");
+        if (lastActive != null) {
+            user.setLastUpdated(lastActive.toLocalDateTime());
+        }
+
+        user.setRole(Role.valueOf(rs.getString("role")));
+
+        user.setViolationCount(rs.getInt("violationCount"));
+
+        byte[] photoBytes = rs.getBytes("photo");
+        if (photoBytes != null) {
+            user.setImage(ImageHandler.byteArrayToImage(photoBytes));
+        }
+
+        return user;
+    }
+
     private void loadSavedBooks()
             throws DatabaseException, UserException {
+        this.currentUser.getSavedBooks().clear();
         String query = "select * from userSavedBook where userId = ?";
         db.select("get saved books", query, resultSet -> {
             while (resultSet.next()) {
-                this.currentUser.getSavedBooks().add(
-                        Book.bookMap.get(resultSet.getInt("bookId"))
-                );
+                this.currentUser.getSavedBooks().add(BookService.bookMap.get(resultSet.getInt("bookId")));
             }
             return null;
         }, this.currentUser.getId());
     }
+
 }

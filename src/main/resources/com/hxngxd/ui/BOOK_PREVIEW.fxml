@@ -10,49 +10,72 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxWidth="350.0" minWidth="275.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.BookPreviewController">
-   <children>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <content>
-            <AnchorPane>
-                <children>
-                    <VBox fx:id="bookDisplay" alignment="TOP_CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
-                        <children>
-                            <ImageView fx:id="image" fitHeight="420.0" fitWidth="280.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
-                                <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                                </VBox.margin>
-                            </ImageView>
-                        <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="60.0" text="TITLE" textAlignment="CENTER" wrapText="true">
-                           <font>
-                              <Font name="System Bold Italic" size="18.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets left="15.0" right="15.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label fx:id="informationLabel" alignment="TOP_LEFT" contentDisplay="CENTER" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="350.0" text="infomation" wrapText="true">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets left="15.0" right="15.0" />
-                           </VBox.margin>
-                        </Label>
-                        </children>
-                    </VBox>
-                </children>
-            </AnchorPane>
-         </content>
-      </ScrollPane>
-      <VBox fx:id="bookDisplay1" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Button fx:id="saveBookButton" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#savedBook" prefHeight="45.0" stylesheets="@style.css" text="LƯU SÁCH">
-               <graphic>
-                  <FontAwesomeIconView fx:id="saveBookIcon" glyphName="BOOKMARK_ALT" />
-               </graphic></Button>
-            <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="XEM CHI TIẾT" />
-         </children>
-      </VBox>
-   </children>
+<AnchorPane maxWidth="350.0" minWidth="275.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hxngxd.ui.controller.book.BookPreviewController">
+    <children>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="90.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <content>
+                <AnchorPane>
+                    <children>
+                        <VBox fx:id="bookDisplay" alignment="TOP_CENTER" spacing="5.0"
+                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                            <children>
+                                <ImageView fx:id="image" fitHeight="420.0" fitWidth="280.0"
+                                           pickOnBounds="true" preserveRatio="true"
+                                           VBox.vgrow="ALWAYS">
+                                    <VBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
+                                    </VBox.margin>
+                                </ImageView>
+                                <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER"
+                                       maxHeight="1.7976931348623157E308"
+                                       maxWidth="1.7976931348623157E308" prefHeight="60.0"
+                                       text="TITLE" textAlignment="CENTER" wrapText="true">
+                                    <font>
+                                        <Font name="System Bold Italic" size="18.0"/>
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="15.0" right="15.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <Label fx:id="informationLabel" alignment="TOP_LEFT"
+                                       contentDisplay="CENTER" lineSpacing="5.0"
+                                       maxHeight="1.7976931348623157E308"
+                                       maxWidth="1.7976931348623157E308" prefHeight="350.0"
+                                       text="infomation" wrapText="true">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="15.0" right="15.0"/>
+                                    </VBox.margin>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+        </ScrollPane>
+        <VBox fx:id="bookDisplay1" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0"
+              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0">
+            <children>
+                <Button fx:id="saveBookButton" contentDisplay="RIGHT"
+                        maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        onAction="#savedBook" prefHeight="45.0" stylesheets="@style.css"
+                        text="LƯU SÁCH">
+                    <graphic>
+                        <FontAwesomeIconView fx:id="saveBookIcon" glyphName="BOOKMARK_ALT"/>
+                    </graphic>
+                </Button>
+                <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0"
+                        maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0"
+                        stylesheets="@style.css" text="XEM CHI TIẾT"/>
+            </children>
+        </VBox>
+    </children>
 </AnchorPane>

@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
@@ -6,8 +6,10 @@ import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.book.BookCardController;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -23,27 +25,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BookGalleryController {
+public final class BookGalleryController {
+
     private static final Logger log = LogManager.getLogger(BookGalleryController.class);
+
     private static final List<FXMLLoader> bookCards = new ArrayList<>();
+
     @FXML
     private FlowPane bookCardContainer;
+
     @FXML
     private TextField searchField;
+
     public static boolean isShowingSavedBook = false;
-    private final User currentUser = UserService.getInstance().getCurrentUser();
+
+    private User currentUser = null;
 
     @FXML
     private void initialize() {
         loadBookCards();
-        showBookCards(null);
         searchBook();
+        onActive();
+    }
+
+    public void onActive() {
+        currentUser = UserService.getInstance().getCurrentUser();
+        showBookCards(null);
     }
 
     private void loadBookCards() {
-        List<Book> bookList = new ArrayList<>(Book.bookMap.values());
-        Collections.shuffle(bookList);
+        bookCards.clear();
 
+        List<Book> bookList = new ArrayList<>(BookService.bookMap.values());
+        Collections.shuffle(bookList);
         for (Book book : bookList) {
             try {
                 FXMLLoader loader = UIManager.load(UI.BOOK_CARD);
@@ -51,8 +65,7 @@ public class BookGalleryController {
                 ((BookCardController) loader.getController()).setBook(book);
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMessage("create book card"),
-                        e.getMessage());
+                log.error(LogMessages.General.FAIL.getMSG("create book card"), e.getMessage());
             }
         }
     }
@@ -62,14 +75,15 @@ public class BookGalleryController {
             for (FXMLLoader bookCard : bookCards) {
                 BookCardController bookCardController = bookCard.getController();
                 Book book = bookCardController.getBook();
+                Parent root = bookCard.getRoot();
                 if (isShowingSavedBook) {
                     if (!currentUser.getSavedBooks().contains(book)) {
-                        bookCardContainer.getChildren().remove(bookCard.getRoot());
+                        bookCardContainer.getChildren().remove(root);
                         continue;
                     }
                 }
-                if (!bookCardContainer.getChildren().contains(bookCard.getRoot())) {
-                    bookCardContainer.getChildren().add(bookCard.getRoot());
+                if (!bookCardContainer.getChildren().contains(root)) {
+                    bookCardContainer.getChildren().add(root);
                 }
             }
             return;
@@ -123,4 +137,9 @@ public class BookGalleryController {
     public void setIsShowingSavedBook(boolean isShowingSavedBook) {
         BookGalleryController.isShowingSavedBook = isShowingSavedBook;
     }
+
+    public static BookGalleryController getInstance() {
+        return UIManager.getControllerOnce(UI.BOOK_GALLERY);
+    }
+
 }

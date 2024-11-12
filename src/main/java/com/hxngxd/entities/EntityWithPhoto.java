@@ -3,6 +3,7 @@ package com.hxngxd.entities;
 import javafx.scene.image.Image;
 
 public abstract class EntityWithPhoto extends Entity {
+
     protected Image image = null;
 
     public EntityWithPhoto() {
@@ -19,4 +20,5 @@ public abstract class EntityWithPhoto extends Entity {
     public void setImage(Image image) {
         this.image = image;
     }
+    
 }

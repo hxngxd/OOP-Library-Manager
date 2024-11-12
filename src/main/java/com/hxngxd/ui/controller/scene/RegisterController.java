@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.scene;
 
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Genre;
@@ -10,44 +10,36 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.tab.BookGalleryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RegisterController extends NavigateController {
+public final class RegisterController extends AuthenticationController {
+
     private static final Logger log = LogManager.getLogger(RegisterController.class);
+
     @FXML
     private TextField firstNameField;
+
     @FXML
     private TextField lastNameField;
-    @FXML
-    private TextField usernameField;
+
     @FXML
     private TextField emailField;
-    @FXML
-    private TextField passwordField;
+
     @FXML
     private TextField confirmPasswordField;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private TextField passwordVisibleField;
+
     @FXML
     private TextField confirmPasswordVisibleField;
-    @FXML
-    private FontAwesomeIconView eye;
 
-    private final UserService userService = UserService.getInstance();
-    private boolean isPasswordVisible = false;
-
+    @Override
     @FXML
-    private void togglePasswordVisibility() {
+    protected void togglePasswordVisibility() {
         if (isPasswordVisible) {
             passwordField.setText(passwordVisibleField.getText());
             confirmPasswordField.setText(confirmPasswordVisibleField.getText());
@@ -64,46 +56,54 @@ public class RegisterController extends NavigateController {
         isPasswordVisible = !isPasswordVisible;
     }
 
-
-    @FXML
-    private void handleEnterKey(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            register(null);
-            event.consume();
-        }
-    }
-
     @FXML
     private void initialize() {
-        confirmPasswordField.setOnKeyPressed(this::handleEnterKey);
-        confirmPasswordVisibleField.setOnKeyPressed(this::handleEnterKey);
+    }
+
+    public void onActive() {
+        usernameField.setText("");
+        emailField.setText("");
+        passwordField.setText("");
+        passwordVisibleField.setText("");
+        confirmPasswordField.setText("");
+        confirmPasswordVisibleField.setText("");
     }
 
     @FXML
     private void register(ActionEvent event) {
+        UserService userService = UserService.getInstance();
         try {
+            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
+            String confirmedPassword = isPasswordVisible ? confirmPasswordVisibleField.getText() : confirmPasswordField.getText();
             userService.register(
                     firstNameField.getText(), lastNameField.getText(),
                     usernameField.getText(), emailField.getText(),
-                    isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText(),
-                    isPasswordVisible ? confirmPasswordVisibleField.getText()
-                            : confirmPasswordField.getText()
+                    password, confirmedPassword
             );
-            statusLabel.setText(LogMessages.General.SUCCESS.getMessage("register"));
+            StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("create account"));
+
             Author.initialize();
             Genre.initialize();
             BookService.initialize();
             UserService.initialize();
             StageManager.getInstance().setScene(UI.MAIN);
+            MainController.getInstance().onActive();
+
         } catch (DatabaseException | UserException | ValidationException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             log.error(e.getMessage());
-            statusLabel.setText(e.getMessage());
+            StageManager.showInformationPopup(e.getMessage());
         }
     }
 
     @FXML
     private void goToLogin(ActionEvent event) {
         StageManager.getInstance().setScene(UI.LOGIN);
+        LoginController.getInstance().onActive();
     }
+
+    public static RegisterController getInstance() {
+        return UIManager.getControllerOnce(UI.REGISTER);
+    }
+
 }

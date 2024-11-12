@@ -3,7 +3,8 @@ package com.hxngxd.actions;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Violation extends Action {
+public final class Violation extends Action {
+
     private String description;
 
     public Violation(int id, int userId, LocalDateTime timestamp, String description) {
@@ -22,4 +23,5 @@ public class Violation extends Action {
     public static List<Violation> getUsersViolations(int userId) {
         return null;
     }
+
 }

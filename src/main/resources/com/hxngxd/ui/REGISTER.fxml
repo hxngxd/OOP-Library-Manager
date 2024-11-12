@@ -13,9 +13,9 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23"
+            prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/22"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.controller.RegisterController">
+            fx:controller="com.hxngxd.ui.controller.scene.RegisterController">
     <children>
         <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308"
               maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0"
@@ -190,16 +190,6 @@
                         <Font size="14.0"/>
                     </font>
                 </Button>
-                <Label fx:id="statusLabel" alignment="CENTER" layoutX="10.0" layoutY="10.0"
-                       maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                       textAlignment="CENTER">
-                    <font>
-                        <Font name="System Italic" size="18.0"/>
-                    </font>
-                    <VBox.margin>
-                        <Insets top="5.0"/>
-                    </VBox.margin>
-                </Label>
             </children>
         </VBox>
     </children>

@@ -12,15 +12,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User extends Person {
+public final class User extends Person {
+
     private static final Logger log = LogManager.getLogger(User.class);
+
     private String username;
+
     private String email;
+
     private String passwordHash;
+
     private String address;
+
     private Role role;
+
     private AccountStatus accountStatus;
+
     private int violationCount;
+
     private final List<Book> savedBooks = new ArrayList<>();
 
     public User() {
@@ -127,7 +136,7 @@ public class User extends Person {
             db.insert("userSavedBook", false,
                     List.of("userId", "bookId"),
                     getId(), book.getId());
-            log.info(LogMessages.General.SUCCESS.getMessage("save book"));
+            log.info(LogMessages.General.SUCCESS.getMSG("save book"));
         } else {
             throw new DatabaseException("This book is already saved");
         }
@@ -141,9 +150,10 @@ public class User extends Person {
             db.delete("userSavedBook",
                     List.of("userId", "bookId"),
                     getId(), book.getId());
-            log.info(LogMessages.General.SUCCESS.getMessage("unsave book"));
+            log.info(LogMessages.General.SUCCESS.getMSG("unsave book"));
         } else {
             throw new DatabaseException("The book is not saved");
         }
     }
+
 }

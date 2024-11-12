@@ -2,25 +2,33 @@ package com.hxngxd.entities;
 
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.utils.Formatter;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class Book extends EntityWithPhoto {
+public final class Book extends EntityWithPhoto {
+
     private String title;
+
     private short yearOfPublication;
+
     private String shortDescription;
+
     private int numberOfPages;
+
     private int availableCopies;
+
     private int totalCopies;
+
     private double averageRating;
+
     private int numberOfReviews;
+
     private final List<Author> authors = new ArrayList<>();
+
     private final List<Genre> genres = new ArrayList<>();
-    public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
     public Book() {
     }
@@ -29,11 +37,9 @@ public class Book extends EntityWithPhoto {
         super(id);
     }
 
-    public Book(int id, LocalDateTime dateAdded,
-                LocalDateTime lastUpdated) {
+    public Book(int id, LocalDateTime dateAdded) {
         super(id);
         this.dateAdded = dateAdded;
-        this.lastUpdated = lastUpdated;
         setReview();
     }
 
@@ -109,7 +115,6 @@ public class Book extends EntityWithPhoto {
                 "select bookid, round(sum(rating) * 1.0 / count(rating), 2) as averagerating, " +
                         "count(rating) as numberofreviews " +
                         "from review where bookid = %d group by bookid;", this.id);
-
         try {
             db.select("calculating rating", query, resultSet -> {
                 if (resultSet.next()) {
@@ -125,8 +130,7 @@ public class Book extends EntityWithPhoto {
 
     public String getReview() {
         int fullStars = (int) averageRating;
-        String ratingStars = "★".repeat(fullStars) +
-                "☆".repeat(5 - fullStars);
+        String ratingStars = "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
         return String.format("%.1f %s (%d)", averageRating, ratingStars, numberOfReviews);
     }
 
@@ -171,9 +175,7 @@ public class Book extends EntityWithPhoto {
         info.append(this.yearOfPublication).append("\n");
         authorsToString(info);
         genresToString(info);
-        info.append(this.averageRating == 0.0
-                ? "Chưa được đánh giá"
-                : getReview());
+        info.append(this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview());
         return info.toString();
     }
 
@@ -181,24 +183,31 @@ public class Book extends EntityWithPhoto {
         String bullet = "• ";
         StringBuilder info = new StringBuilder();
         info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
+
         info.append(bullet).append("Năm phát hành: ").append(this.yearOfPublication).append("\n");
+
         info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
+
         info.append(bullet).append("Tác giả: ");
         authorsToString(info);
+
         info.append(bullet).append("Thể loại: ");
         genresToString(info);
+
         info.append(bullet).append("Mô tả ngắn: ").append(this.shortDescription).append("\n");
+
         info.append(bullet).append("Đánh giá: ").append(
-                this.averageRating == 0.0
-                        ? "Chưa được đánh giá"
-                        : getReview()).append("\n");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss, dd-MM-yyyy");
+                this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview()).append("\n");
+
         info.append(bullet).append("Thêm vào lúc: ").append(
-                this.dateAdded.format(formatter)).append("\n");
+                Formatter.formatDateTime(this.dateAdded)).append("\n");
+
         info.append(bullet).append("Cập nhật cuối cùng: ").append(
-                this.lastUpdated.format(formatter)).append("\n");
+                Formatter.formatDateTime(this.lastUpdated)).append("\n");
+
         info.append(bullet).append("Số bản sao có sẵn: ").append(
                 this.availableCopies).append("/").append(this.totalCopies);
+
         return info.toString();
     }
 
@@ -221,4 +230,5 @@ public class Book extends EntityWithPhoto {
         }
         info.append("\n");
     }
+
 }

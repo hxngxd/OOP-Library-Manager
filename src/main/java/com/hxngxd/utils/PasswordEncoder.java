@@ -4,7 +4,8 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.exceptions.PasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class PasswordEncoder {
+public final class PasswordEncoder {
+
     private static final int cost_factor = 12;
 
     private PasswordEncoder() {
@@ -18,7 +19,8 @@ public class PasswordEncoder {
     public static void compare(String originalPassword, String hashedPassword)
             throws PasswordException {
         if (!BCrypt.checkpw(originalPassword, hashedPassword)) {
-            throw new PasswordException(LogMessages.User.WRONG_PASSWORD.getMessage());
+            throw new PasswordException(LogMessages.User.WRONG_PASSWORD.getMSG());
         }
     }
+
 }

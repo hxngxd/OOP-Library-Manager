@@ -3,8 +3,11 @@ package com.hxngxd.actions;
 import java.time.LocalDateTime;
 
 public abstract class Action {
+
     protected int id;
+
     protected int userId;
+
     protected LocalDateTime timestamp;
 
     public Action(int id, int userId, LocalDateTime timestamp) {
@@ -28,4 +31,5 @@ public abstract class Action {
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
+
 }

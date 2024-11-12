@@ -1,6 +1,7 @@
 package com.hxngxd.entities;
 
 import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
 
 import java.sql.Date;
@@ -9,14 +10,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Author extends Person {
+public final class Author extends Person {
+
     private String biography;
+
     private LocalDate dayOfDeath;
+
     private final List<Book> books = new ArrayList<>();
 
     public static final HashMap<Integer, Author> authorMap = new HashMap<>();
 
-    public static void initialize() {
+    public static void initialize()
+            throws DatabaseException {
+        authorMap.clear();
+
         String query = "select * from author";
         DatabaseManager.getInstance().select("getting authors", query, resultSet -> {
             while (resultSet.next()) {
@@ -93,4 +100,5 @@ public class Author extends Person {
         }
         return this.id == ((Author) other).getId();
     }
+
 }

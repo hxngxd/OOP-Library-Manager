@@ -1,19 +1,26 @@
 package com.hxngxd.entities;
 
 import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.exceptions.DatabaseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Genre extends Entity {
+public final class Genre extends Entity {
+
     private String name;
+
     private String description;
+
     private final List<Book> books = new ArrayList<>();
 
     public static final HashMap<Integer, Genre> genreMap = new HashMap<>();
 
-    public static void initialize() {
+    public static void initialize()
+            throws DatabaseException {
+        genreMap.clear();
+
         String query = "select * from genre";
         DatabaseManager.getInstance().select("getting genres", query, resultSet -> {
             while (resultSet.next()) {

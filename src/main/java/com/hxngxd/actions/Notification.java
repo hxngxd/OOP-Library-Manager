@@ -5,9 +5,12 @@ import com.hxngxd.enums.NotificationType;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Notification extends Action {
+public final class Notification extends Action {
+
     private String content;
+
     private final NotificationType notificationType;
+
     private boolean isRead;
 
     public Notification(int id, int userId, LocalDateTime timestamp,
@@ -57,4 +60,5 @@ public class Notification extends Action {
     public static List<Notification> getUnreadNotificationsOfUsers(int userId) {
         return null;
     }
+
 }

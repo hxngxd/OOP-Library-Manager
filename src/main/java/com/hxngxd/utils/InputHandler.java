@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class InputHandler {
+public final class InputHandler {
 
     private static final Map<Character, Character> vietnameseCharMap = new HashMap<>();
 
@@ -83,10 +83,7 @@ public class InputHandler {
         vietnameseCharMap.put('đ', 'd');
     }
 
-    private static final Pattern emailPattern = Pattern.compile(
-            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
-                    "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
-    );
+    private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
     public static final double similarThresHold = 0.9;
 
@@ -97,14 +94,10 @@ public class InputHandler {
             throws ValidationException {
         for (String input : inputs) {
             if (input.isEmpty()) {
-                throw new ValidationException(
-                        LogMessages.Validation.INFO_IS_MISSING.getMessage()
-                );
+                throw new ValidationException(LogMessages.Validation.INFO_IS_MISSING.getMSG());
             }
             if (input.length() > 127) {
-                throw new ValidationException(
-                        LogMessages.Validation.INFO_TOO_LONG.getMessage()
-                );
+                throw new ValidationException(LogMessages.Validation.INFO_TOO_LONG.getMSG());
             }
         }
     }
@@ -113,13 +106,12 @@ public class InputHandler {
             throws ValidationException {
         Matcher matcher = emailPattern.matcher(email);
         if (!matcher.matches()) {
-            throw new ValidationException(
-                    LogMessages.Validation.EMAIL_NOT_VALID.getMessage()
-            );
+            throw new ValidationException(LogMessages.Validation.EMAIL_NOT_VALID.getMSG());
         }
     }
 
-    public static void validatePassword(String password) throws PasswordException {
+    public static void validatePassword(String password)
+            throws PasswordException {
         if (password.length() <= 6) {
             throw new PasswordException("Password size should be greater than 6");
         }
@@ -223,4 +215,5 @@ public class InputHandler {
         }
         return sb.toString();
     }
+
 }

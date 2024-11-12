@@ -11,7 +11,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
-public class ImageHandler {
+public final class ImageHandler {
+
     private static final Logger log = LogManager.getLogger(ImageHandler.class);
 
     private ImageHandler() {
@@ -28,18 +29,17 @@ public class ImageHandler {
             result = inputStream.readAllBytes();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            log.error(LogMessages.File.FILE_NOT_FOUND.getMessage(file.getAbsolutePath()));
+            log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(file.getAbsolutePath()));
         } catch (IOException e) {
             e.printStackTrace();
-            log.error(LogMessages.File.FILE_IO_ERROR.getMessage(file.getAbsolutePath()));
+            log.error(LogMessages.File.FILE_IO_ERROR.getMSG(file.getAbsolutePath()));
         }
         return result;
     }
 
-    public static Image cropImageByRatio(Image image,
-                                         double widthRatio, double heightRatio) {
+    public static Image cropImageByRatio(Image image, double widthRatio, double heightRatio) {
         if (image == null) {
-            log.info(LogMessages.General.IS_NULL.getMessage("Image"));
+            log.info(LogMessages.General.IS_NULL.getMSG("Image"));
             return null;
         }
 
@@ -69,34 +69,27 @@ public class ImageHandler {
                 (int) cropWidth, (int) cropHeight);
     }
 
-    public static Image cropImageByRatio(byte[] imageBytes,
-                                         double widthRatio, double heightRatio) {
+    public static Image cropImageByRatio(byte[] imageBytes, double widthRatio, double heightRatio) {
         Image image = byteArrayToImage(imageBytes);
         return cropImageByRatio(image, widthRatio, heightRatio);
     }
 
     public static Image loadImageFromFile(File file) {
         if (file == null) {
-            log.info(LogMessages.General.IS_NULL.getMessage("File"));
+            log.info(LogMessages.General.IS_NULL.getMSG("File"));
             return null;
         }
         try (InputStream inputStream = new FileInputStream(file)) {
             return new Image(inputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            log.error(
-                    LogMessages.File.FILE_NOT_FOUND.getMessage(
-                            file.getAbsolutePath()), e.getMessage());
+            log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(file.getAbsolutePath()), e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            log.error(
-                    LogMessages.File.FILE_IO_ERROR.getMessage(
-                            file.getAbsolutePath()), e.getMessage());
+            log.error(LogMessages.File.FILE_IO_ERROR.getMSG(file.getAbsolutePath()), e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(
-                    LogMessages.General.SOMETHING_WENT_WRONG.getMessage(
-                            file.getAbsolutePath()), e.getMessage());
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMSG(file.getAbsolutePath()), e.getMessage());
         }
         return null;
     }
@@ -105,14 +98,11 @@ public class ImageHandler {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(
-                        "Tất cả file ảnh",
-                        "*.jpg", "*.jpeg", "*.png"),
-                new FileChooser.ExtensionFilter(
-                        "File JPG", "*.jpg", "*.jpeg"),
-                new FileChooser.ExtensionFilter(
-                        "File PNG", "*.png")
+                new FileChooser.ExtensionFilter("Tất cả file ảnh", "*.jpg", "*.jpeg", "*.png"),
+                new FileChooser.ExtensionFilter("File JPG", "*.jpg", "*.jpeg"),
+                new FileChooser.ExtensionFilter("File PNG", "*.png")
         );
         return fileChooser.showOpenDialog(StageManager.getInstance().getMainStage());
     }
+
 }

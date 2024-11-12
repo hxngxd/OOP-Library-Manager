@@ -1,9 +1,7 @@
 package com.hxngxd.enums;
 
-/**
- * Enum Permission đại diện cho các quyền hạn của các vai trò.
- */
 public enum Permission {
+
     DELETE_LOWER_REVIEWS,          // Xoá đánh giá sách của chức thấp hơn
     DELETE_OWN_ACCOUNT,            // Xoá tài khoản của mình
     DELETE_LOWER_ACCOUNT,          // Xoá tài khoản chức thấp hơn
@@ -14,4 +12,5 @@ public enum Permission {
     MANAGE_BOOKS,                  // Quản lý sách (thêm, sửa, xoá, xử lý yêu cầu)
     SEND_NOTIFICATIONS,            // Gửi thông báo
     MANAGE_SYSTEM                  // Quản lý hệ thống (sao lưu, phục hồi, thống kê)
+    
 }

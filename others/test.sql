@@ -162,7 +162,9 @@ create index idxNotificationType on notification (notificationType);
 
 insert into user(firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
 values ('Hùng', 'Nguyễn Tường', '2005-11-07', '23020078', '23020078@vnu.edu.vn', null, 'ADMIN',
-        '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK');
+        '$2a$11$gCDeAx4PAivnsEqFxLnVmeAhx0X.PRVgmEPTTJqkl8XwwjrXc/LPK'),
+        ('Minh', 'Hoàng Lê', '2005-09-07', '23020111', '23020111@vnu.edu.vn', null, 'USER',
+        '$2a$12$dL/dIDK702tQBvAlu6Bto.5hz9ip8U33uEFV8tYRId2oS2IuAWoKq');
 
 INSERT INTO user (firstName, lastName, dateOfBirth, username, email, address, role, passwordHash)
 VALUES ('Alexis', 'Barnes', '1970-10-10', 'user1', 'user1@example.com', 'Holderville', 'MODERATOR',

@@ -3,7 +3,7 @@ package com.hxngxd.libraryManager;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
-import com.hxngxd.utils.InputHandler;
+import com.hxngxd.utils.PasswordEncoder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -13,9 +13,13 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 public class Main extends Application {
+
     private final Logger log = LogManager.getLogger(Main.class);
+
     private final DatabaseManager db = DatabaseManager.getInstance();
+
     private final UserService userService = UserService.getInstance();
+
     private final StageManager stageManager = StageManager.getInstance();
 
 
@@ -42,4 +46,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch();
     }
+
 }

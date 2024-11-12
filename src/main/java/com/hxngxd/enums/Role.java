@@ -2,18 +2,18 @@ package com.hxngxd.enums;
 
 import java.util.Set;
 
-/**
- * Enum Role đại diện cho các vai trò trong hệ thống, kèm theo các quyền hạn.
- */
 public enum Role {
+
     USER(Set.of(
             Permission.DELETE_OWN_ACCOUNT
     )),
+
     MODERATOR(Set.of(
             Permission.DELETE_LOWER_REVIEWS,
             Permission.MANAGE_BOOKS,
             Permission.SEND_NOTIFICATIONS
     )),
+
     ADMIN(Set.of(
             Permission.DELETE_LOWER_REVIEWS,
             Permission.DELETE_LOWER_ACCOUNT,
@@ -32,12 +32,6 @@ public enum Role {
         this.permissions = permissions;
     }
 
-    /**
-     * Kiểm tra xem vai trò có quyền hạn này hay không.
-     *
-     * @param permission Quyền hạn cần kiểm tra.
-     * @return true nếu vai trò có quyền hạn này, ngược lại false.
-     */
     public boolean hasPermission(Permission permission) {
         return permissions.contains(permission);
     }

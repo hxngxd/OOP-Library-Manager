@@ -3,9 +3,12 @@ package com.hxngxd.actions;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Review extends Action {
+public final class Review extends Action {
+
     private int bookId;
+
     private double rating;
+
     private String comment;
 
     public Review(int id, int userId, LocalDateTime timestamp, int bookId,
@@ -52,4 +55,5 @@ public class Review extends Action {
     public static List<Review> getUsersReviews(int userId) {
         return null;
     }
+
 }

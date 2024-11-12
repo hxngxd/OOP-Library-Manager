@@ -1,7 +1,10 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.User;
+import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.UIManager;
+import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,41 +22,55 @@ import javafx.util.Duration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class ManageUserController {
+public final class ManageUserController {
+
     @FXML
     private TableView<User> userTableView;
+
     @FXML
     private TextField searchField;
+
     @FXML
     private ComboBox<String> searchFieldComboBox;
+
     @FXML
     private TableColumn<User, Integer> idColumn;
+
     @FXML
     private TableColumn<User, String> firstNameColumn;
+
     @FXML
     private TableColumn<User, String> lastNameColumn;
+
     @FXML
     private TableColumn<User, String> dateOfBirthColumn;
+
     @FXML
     private TableColumn<User, String> usernameColumn;
+
     @FXML
     private TableColumn<User, String> emailColumn;
+
     @FXML
     private TableColumn<User, String> addressColumn;
+
     @FXML
     private TableColumn<User, String> roleColumn;
+
     @FXML
     private TableColumn<User, String> joinDateColumn;
+
     @FXML
     private TableColumn<User, String> statusColumn;
+
     @FXML
     private TableColumn<User, String> lastActivityColumn;
+
     @FXML
     private TableColumn<User, Integer> violationCountColumn;
 
-    private ObservableList<User> userList = FXCollections.observableArrayList(UserService.userList);
+    private final ObservableList<User> userList = FXCollections.observableArrayList(UserService.userList);
 
     @FXML
     public void initialize() {
@@ -82,8 +99,7 @@ public class ManageUserController {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
                 LocalDate dob = param.getValue().getDateOfBirth();
-                String formattedDate = (dob != null) ?
-                        dob.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+                String formattedDate = (dob != null) ? Formatter.formatDateDash(dob) : null;
                 return new ReadOnlyObjectWrapper<>(formattedDate);
             }
         });
@@ -120,9 +136,7 @@ public class ManageUserController {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
                 LocalDateTime joinDate = param.getValue().getDateAdded();
-                String formattedJoinDate = joinDate != null ?
-                        joinDate.format(
-                                DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy")) : null;
+                String formattedJoinDate = joinDate != null ? Formatter.formatDateTime(joinDate) : null;
                 return new ReadOnlyObjectWrapper<>(formattedJoinDate);
             }
         });
@@ -138,12 +152,9 @@ public class ManageUserController {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
                 LocalDateTime lastActivity = param.getValue().getLastUpdated();
-                String formattedLastActivity = lastActivity != null ?
-                        lastActivity.format(DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy"))
-                        : "Chưa hoạt động";
+                String formattedLastActivity = lastActivity != null ? Formatter.formatDateTime(lastActivity) : "Chưa hoạt động";
                 return new ReadOnlyObjectWrapper<>(
-                        param.getValue().getId()
-                                == UserService.getInstance().getCurrentUser().getId()
+                        param.getValue().getId() == UserService.getInstance().getCurrentUser().getId()
                                 ? "Đang hoạt động" : formattedLastActivity);
             }
         });
@@ -198,8 +209,7 @@ public class ManageUserController {
                         && InputHandler.isUnidecodeSimilar(user.getFirstName(), searchText);
 
                 case "Ngày sinh" -> user.getDateOfBirth() != null
-                        && user.getDateOfBirth().format(
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(searchText);
+                        && Formatter.formatDateDash(user.getDateOfBirth()).contains(searchText);
 
                 case "Username" -> user.getUsername() != null
                         && InputHandler.isSimilar(user.getUsername(), searchText);
@@ -215,8 +225,7 @@ public class ManageUserController {
                         user.getRole().name(), searchText);
 
                 case "Ngày tham gia" -> user.getDateAdded() != null
-                        && user.getDateAdded().format(
-                        DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy")).contains(searchText);
+                        && Formatter.formatDateTime(user.getDateAdded()).contains(searchText);
 
                 case "Trạng thái" -> user.getAccountStatus() != null
                         && InputHandler.lowerPrefixMatching(
@@ -232,4 +241,9 @@ public class ManageUserController {
     public void loadUsers() {
         userTableView.setItems(userList);
     }
+
+    public static ManageUserController getInstance() {
+        return UIManager.getControllerOnce(UI.MANAGE_USER);
+    }
+
 }

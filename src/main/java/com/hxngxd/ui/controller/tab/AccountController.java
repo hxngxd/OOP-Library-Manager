@@ -1,9 +1,11 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.scene.MainController;
+import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,51 +14,67 @@ import javafx.scene.image.*;
 import javafx.scene.shape.Circle;
 
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 
-public class AccountController {
+public final class AccountController {
+
     private final UserService userService = UserService.getInstance();
-    private final User currentUser = userService.getCurrentUser();
+
+    private User currentUser = null;
+
     @FXML
     private ImageView profileImage;
+
     @FXML
     private TextField idField;
+
     @FXML
     private TextField roleField;
+
     @FXML
     private TextField joinDateField;
+
     @FXML
     private TextField lastNameField;
+
     @FXML
     private TextField firstNameField;
+
     @FXML
     private TextField usernameField;
+
     @FXML
     private TextField emailField;
+
     @FXML
     private TextField addressField;
+
     @FXML
     private DatePicker birthdayField;
+
     @FXML
     private TextField oldPasswordField;
+
     @FXML
     private TextField newPasswordField;
+
     @FXML
     private TextField saveBookField;
+
     @FXML
     private TextField borrowBookField;
+
     @FXML
     private TextField violateField;
 
     @FXML
     private void initialize() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss, dd-MM-yyyy");
+        onActive();
         idField.setText(String.valueOf(currentUser.getId()));
         roleField.setText(currentUser.getRole().name());
-        joinDateField.setText(currentUser.getDateAdded().format(formatter));
+        joinDateField.setText(Formatter.formatDateTime(currentUser.getDateAdded()));
         usernameField.setText(currentUser.getUsername());
         birthdayField.setStyle("-fx-font-size: 16px;");
-        update();
+
     }
 
     @FXML
@@ -65,10 +83,8 @@ public class AccountController {
         if (file == null) {
             return;
         }
-        MainController mainController = UIManager.loadOnce(UI.MAIN).getController();
-        Image cropped = ImageHandler.cropImageByRatio(
-                ImageHandler.loadImageFromFile(file), 1, 1);
-        mainController.setProfileImage(cropped);
+        Image cropped = ImageHandler.cropImageByRatio(ImageHandler.loadImageFromFile(file), 1, 1);
+        MainController.getInstance().setProfileImage(cropped);
         setProfileImage(cropped);
         UserService.getInstance().updateProfilePicture(file);
     }
@@ -82,9 +98,9 @@ public class AccountController {
         this.profileImage.setImage(profileImage);
     }
 
-    public void update() {
-        setProfileImage(ImageHandler.cropImageByRatio(
-                currentUser.getImage(), 1, 1));
+    public void onActive() {
+        currentUser = userService.getCurrentUser();
+        setProfileImage(ImageHandler.cropImageByRatio(currentUser.getImage(), 1, 1));
         lastNameField.setText(currentUser.getLastName());
         firstNameField.setText(currentUser.getFirstName());
         emailField.setText(currentUser.getEmail());
@@ -94,4 +110,9 @@ public class AccountController {
         borrowBookField.setText(String.valueOf(0));
         violateField.setText(String.valueOf(currentUser.getViolationCount()));
     }
+
+    public static AccountController getInstance() {
+        return UIManager.getControllerOnce(UI.ACCOUNT);
+    }
+
 }

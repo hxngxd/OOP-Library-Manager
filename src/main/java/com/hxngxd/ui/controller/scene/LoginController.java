@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.scene;
 
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Genre;
@@ -7,32 +7,20 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.tab.BookGalleryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoginController extends NavigateController {
-    private static final Logger log = LogManager.getLogger(LoginController.class);
-    @FXML
-    private TextField usernameField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private TextField passwordVisibleField;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private FontAwesomeIconView eye;
-    private boolean isPasswordVisible = false;
-    private final UserService userService = UserService.getInstance();
+public final class LoginController extends AuthenticationController {
 
+    private static final Logger log = LogManager.getLogger(LoginController.class);
+
+    @Override
     @FXML
     public void togglePasswordVisibility() {
         if (isPasswordVisible) {
@@ -47,7 +35,7 @@ public class LoginController extends NavigateController {
         isPasswordVisible = !isPasswordVisible;
     }
 
-    private void handleEnterKey(KeyEvent event) {
+    private void authenticateOnEnter(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             logIn(null);
             event.consume();
@@ -56,32 +44,55 @@ public class LoginController extends NavigateController {
 
     @FXML
     private void initialize() {
-        usernameField.setOnKeyPressed(this::handleEnterKey);
-        passwordField.setOnKeyPressed(this::handleEnterKey);
-        passwordVisibleField.setOnKeyPressed(this::handleEnterKey);
+        usernameField.setOnKeyPressed(this::authenticateOnEnter);
+        passwordField.setOnKeyPressed(this::authenticateOnEnter);
+        passwordVisibleField.setOnKeyPressed(this::authenticateOnEnter);
+        onActive();
+    }
+
+    public void onActive() {
+        usernameField.setText("");
+        passwordField.setText("");
+        passwordVisibleField.setText("");
     }
 
     @FXML
     private void logIn(ActionEvent event) {
+        UserService userService = UserService.getInstance();
         try {
-//            userService.login(usernameField.getText(), usernameField.getText(),
-//                    isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText());
-            userService.login("23020078", "23020078", "Hung@07112005");
-            statusLabel.setText(LogMessages.General.SUCCESS.getMessage("log in"));
+            String username = usernameField.getText();
+            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
+//            userService.login(username, username, password);
+            if (username.equals("2")) {
+                userService.login("23020111", "23020111", "Minh@07092005");
+            } else {
+                userService.login("23020078", "23020078", "Hung@07112005");
+            }
+            StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("log in"));
+
             Author.initialize();
             Genre.initialize();
             BookService.initialize();
             UserService.initialize();
+
             StageManager.getInstance().setScene(UI.MAIN);
+            MainController.getInstance().onActive();
+
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             log.error(e.getMessage());
-            statusLabel.setText(e.getMessage());
+            StageManager.showInformationPopup(e.getMessage());
         }
     }
 
     @FXML
     private void goToRegister(ActionEvent event) {
         StageManager.getInstance().setScene(UI.REGISTER);
+        RegisterController.getInstance().onActive();
     }
+
+    public static LoginController getInstance() {
+        return UIManager.getControllerOnce(UI.LOGIN);
+    }
+
 }

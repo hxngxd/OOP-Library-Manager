@@ -1,6 +1,7 @@
 package com.hxngxd.enums;
 
 public enum UI {
+
     LOGIN,
     REGISTER,
     MAIN,
@@ -9,9 +10,12 @@ public enum UI {
     BOOK_PREVIEW,
     ACCOUNT,
     MANAGE_USER,
-    MANAGE_POPUP;
+    MANAGE_POPUP,
+    INFORMATION_POPUP,
+    CONFIRMATION_POPUP;
 
     public String getPath() {
         return this.name() + ".fxml";
     }
+
 }

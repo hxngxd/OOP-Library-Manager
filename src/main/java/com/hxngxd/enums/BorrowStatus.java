@@ -1,9 +1,7 @@
 package com.hxngxd.enums;
 
-/**
- * Enum BorrowStatus đại diện cho trạng thái của giao dịch mượn sách.
- */
 public enum BorrowStatus {
+
     PENDING,         // Yêu cầu mượn đang chờ duyệt.
     APPROVED,        // Yêu cầu đã được phê duyệt.
     BORROWED,        // Sách đã được mượn.
@@ -11,4 +9,5 @@ public enum BorrowStatus {
     OVERDUE,         // Sách đang mượn quá hạn.
     RETURNED_LATE,   // Sách trả trễ hạn.
     REJECTED         // Yêu cầu bị từ chối.
+    
 }

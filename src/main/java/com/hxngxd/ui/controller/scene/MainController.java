@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui.controller.scene;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
@@ -7,10 +7,12 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.tab.AccountController;
+import com.hxngxd.ui.controller.tab.BookGalleryController;
+import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,55 +24,58 @@ import javafx.scene.shape.Circle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Objects;
+public final class MainController extends NavigateController {
 
-public class MainController extends NavigateController {
     private static final Logger log = LogManager.getLogger(MainController.class);
-    private UI currentTab;
+
+    private static UI currentTab = null;
+
     @FXML
     private ImageView profileImage;
+
     @FXML
     private Label fullNameLabel;
+
     @FXML
     private Label userInfoLabel;
+
     @FXML
     private SplitPane root;
+
     @FXML
     private Button borrowButton;
+
     @FXML
     private Button manageButton;
 
     @FXML
     private void initialize() {
+        showBookGallery();
+    }
+
+    public void onActive() {
         User user = UserService.getInstance().getCurrentUser();
         if (user.getImage() != null) {
             setProfileImage(
                     ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
             );
+        } else {
+            setProfileImage(null);
         }
         setFullNameLabel(user.getFullNameFirstThenLast());
         setUserInfoLabel(user.toString());
 
-        if (user.getRole() == Role.USER) {
-            manageButton.setDisable(true);
-            manageButton.setVisible(false);
-            manageButton.setManaged(false);
-        } else {
-            borrowButton.setDisable(true);
-            borrowButton.setVisible(false);
-            borrowButton.setManaged(false);
-        }
+        boolean isUSER = user.getRole() == Role.USER;
 
-        currentTab = UI.BOOK_GALLERY;
-        try {
-            AnchorPane bookGallery = (AnchorPane) Objects.requireNonNull(
-                    UIManager.loadOnce(UI.BOOK_GALLERY)).getRoot();
-            root.getItems().add(bookGallery);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMessage("load book gallery"),
-                    e.getMessage());
-        }
+        manageButton.setDisable(isUSER);
+        manageButton.setVisible(!isUSER);
+        manageButton.setManaged(!isUSER);
+
+        borrowButton.setDisable(!isUSER);
+        borrowButton.setVisible(isUSER);
+        borrowButton.setManaged(isUSER);
+
+        showHome(null);
     }
 
     public void setProfileImage(Image profileImage) {
@@ -92,48 +97,45 @@ public class MainController extends NavigateController {
 
     @FXML
     private void showAccount(ActionEvent event) {
-        if (currentTab == UI.ACCOUNT) {
+        UI ui = UI.ACCOUNT;
+        if (currentTab == ui) {
             return;
         }
-        currentTab = UI.ACCOUNT;
-        FXMLLoader loader = UIManager.loadOnce(UI.ACCOUNT);
-        ((AccountController) loader.getController()).update();
-        navigate(loader.getRoot());
+        currentTab = ui;
+        navigate(UIManager.getRootOnce(ui));
+        AccountController.getInstance().onActive();
     }
 
     @FXML
     private void showHome(ActionEvent event) {
-        BookGalleryController bookGalleryController = (BookGalleryController)
-                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
-        bookGalleryController.setIsShowingSavedBook(false);
-        bookGalleryController.showBookCards(null);
+        BookGalleryController.getInstance().onActive();
+        BookGalleryController.getInstance().setIsShowingSavedBook(false);
+        BookGalleryController.getInstance().showBookCards(null);
         showBookGallery();
     }
 
     @FXML
     private void showSavedBook(ActionEvent event) {
-        BookGalleryController bookGalleryController = (BookGalleryController)
-                UIManager.Loaders.get(UI.BOOK_GALLERY).getController();
-        bookGalleryController.setIsShowingSavedBook(true);
-        bookGalleryController.showBookCards(null);
+        BookGalleryController.getInstance().onActive();
+        BookGalleryController.getInstance().setIsShowingSavedBook(true);
+        BookGalleryController.getInstance().showBookCards(null);
         showBookGallery();
     }
 
     @FXML
     private void showManage(ActionEvent event) {
-        StageManager.getInstance().showPopup(UI.MANAGE_POPUP);
+        StageManager.showPopup(UI.MANAGE_POPUP);
     }
 
     private void showBookGallery() {
-        if (currentTab == UI.BOOK_GALLERY) {
+        UI ui = UI.BOOK_GALLERY;
+        if (currentTab == ui) {
             return;
         }
-        currentTab = UI.BOOK_GALLERY;
-        navigate(UIManager.loadOnce(UI.BOOK_GALLERY).getRoot());
-        FXMLLoader loader = UIManager.loadOnce(UI.BOOK_PREVIEW);
-        BookPreviewController bpController = loader.getController();
-        if (bpController.isPreviewing()) {
-            root.getItems().add(loader.getRoot());
+        currentTab = ui;
+        navigate(UIManager.getRootOnce(ui));
+        if (BookPreviewController.getInstance().isPreviewing()) {
+            root.getItems().add(UIManager.getRootOnce(UI.BOOK_PREVIEW));
         }
     }
 
@@ -151,6 +153,27 @@ public class MainController extends NavigateController {
     }
 
     public void setCurrentTab(UI currentTab) {
-        this.currentTab = currentTab;
+        MainController.currentTab = currentTab;
     }
+
+    @FXML
+    private void logOut() {
+        StageManager.showConfirmationPopup("ĐĂNG XUẤT?", () -> {
+            try {
+                UserService.getInstance().logout();
+                StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("log out"));
+                StageManager.getInstance().setScene(UI.LOGIN);
+                LoginController.getInstance().onActive();
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+                StageManager.showInformationPopup(e.getMessage());
+            }
+        });
+    }
+
+    public static MainController getInstance() {
+        return UIManager.getControllerOnce(UI.MAIN);
+    }
+
 }
