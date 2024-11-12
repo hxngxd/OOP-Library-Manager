@@ -96,8 +96,7 @@ public class BookGalleryController {
                 bookInfos.add(genre.getName());
             }
             for (String bookInfo : bookInfos) {
-                approxMatch = approxMatch || (InputHandler.minEditDistance(bookInfo, info)
-                        <= InputHandler.editDistanceThreshHold);
+                approxMatch = approxMatch || (InputHandler.isSimilar(bookInfo, info));
             }
             if (approxMatch) {
                 if (!bookCardContainer.getChildren().contains(card)) {
@@ -110,7 +109,7 @@ public class BookGalleryController {
     }
 
     public void searchBook() {
-        PauseTransition pause = new PauseTransition(Duration.millis(200));
+        PauseTransition pause = new PauseTransition(Duration.millis(250));
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 63) {
                 searchField.setText(newValue.substring(0, 63));

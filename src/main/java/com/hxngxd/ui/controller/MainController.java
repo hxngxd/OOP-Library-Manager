@@ -122,11 +122,6 @@ public class MainController extends NavigateController {
     @FXML
     private void showManage(ActionEvent event) {
         StageManager.getInstance().showPopup(UI.MANAGE_POPUP);
-//        if (currentTab == UI.MANAGE_USER) {
-//            return;
-//        }
-//        FXMLLoader loader = UIManager.loadOnce(UI.MANAGE_USER);
-//        navigate(loader.getRoot());
     }
 
     private void showBookGallery() {

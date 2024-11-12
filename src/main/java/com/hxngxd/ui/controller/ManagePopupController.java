@@ -20,6 +20,7 @@ public class ManagePopupController {
             mainController.setCurrentTab(UI.MANAGE_USER);
             FXMLLoader loader = UIManager.loadOnce(UI.MANAGE_USER);
             mainController.navigate(loader.getRoot());
+            ((ManageUserController) loader.getController()).loadUsers();
         }
         exit();
     }

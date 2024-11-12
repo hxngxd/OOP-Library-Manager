@@ -3,6 +3,7 @@ package com.hxngxd.libraryManager;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
+import com.hxngxd.utils.InputHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;

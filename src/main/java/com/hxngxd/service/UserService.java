@@ -19,18 +19,21 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
     private final DatabaseManager db = DatabaseManager.getInstance();
     private static final Logger log = LogManager.getLogger(UserService.class);
     private User currentUser = null;
+    public static final List<User> userList = new ArrayList<>();
 
     private UserService() {
     }
 
     public static void initialize() {
         UserService.getInstance().loadSavedBooks();
+
     }
 
     private static class SingletonHolder {
@@ -137,6 +140,16 @@ public class UserService {
                 "id", user.getId());
         currentUser = user;
 
+        userList.add(currentUser);
+        if (currentUser.getRole() != Role.USER) {
+            getAllUsers();
+        }
+
+        if (currentUser.getAccountStatus() != AccountStatus.SUSPENDED ||
+                currentUser.getAccountStatus() != AccountStatus.BANNED) {
+            currentUser.setAccountStatus(AccountStatus.ACTIVE);
+        }
+
         log.info(LogMessages.General.SUCCESS.getMessage("log in"));
     }
 
@@ -149,6 +162,7 @@ public class UserService {
                 List.of(Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name()),
                 List.of("id"),
                 List.of(currentUser.getId()));
+        currentUser.setAccountStatus(AccountStatus.INACTIVE);
         currentUser = null;
 
         log.info(LogMessages.General.SUCCESS.getMessage("log out"));
@@ -463,6 +477,42 @@ public class UserService {
             }
             return null;
         }, params);
+    }
+
+    private void getAllUsers() {
+        String query = "select * from user";
+        db.select("getting user", query, resultSet -> {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                if (id == currentUser.getId()) {
+                    continue;
+                }
+                User user = new User(id);
+                user.setUsername(resultSet.getString("username"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPasswordHash(resultSet.getString("passwordHash"));
+                user.setAccountStatus(AccountStatus.valueOf(resultSet.getString("accountStatus")));
+                user.setFirstName(resultSet.getString("firstName"));
+                user.setLastName(resultSet.getString("lastName"));
+                user.setAddress(resultSet.getString("address"));
+                user.setDateOfBirth(resultSet.getDate("dateOfBirth").toLocalDate());
+                user.setDateAdded(
+                        resultSet.getTimestamp("dateAdded").toLocalDateTime()
+                );
+                Timestamp lastActive = resultSet.getTimestamp("lastActive");
+                if (lastActive != null) {
+                    user.setLastUpdated(lastActive.toLocalDateTime());
+                }
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setViolationCount(resultSet.getInt("violationCount"));
+                byte[] photoBytes = resultSet.getBytes("photo");
+                if (photoBytes != null) {
+                    user.setImage(ImageHandler.byteArrayToImage(photoBytes));
+                }
+                userList.add(user);
+            }
+            return null;
+        });
     }
 
     private void loadSavedBooks()
