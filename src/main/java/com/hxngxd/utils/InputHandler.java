@@ -85,7 +85,7 @@ public final class InputHandler {
 
     private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    public static final double similarThresHold = 0.9;
+    public static final double similarThresHold = 0.75;
 
     private InputHandler() {
     }
@@ -144,7 +144,7 @@ public final class InputHandler {
         }
     }
 
-    public static int levenshteinDistance(String str1, String str2) {
+    public static int damerauLevenshteinDistance(String str1, String str2) {
         int len1 = str1.length();
         int len2 = str2.length();
         int[][] dp = new int[len1 + 1][len2 + 1];
@@ -157,7 +157,15 @@ public final class InputHandler {
                     dp[i][j] = i;
                 } else {
                     int cost = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1;
-                    dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + cost);
+
+                    dp[i][j] = Math.min(
+                            Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                            dp[i - 1][j - 1] + cost
+                    );
+
+                    if (i > 1 && j > 1 && str1.charAt(i - 1) == str2.charAt(j - 2) && str1.charAt(i - 2) == str2.charAt(j - 1)) {
+                        dp[i][j] = Math.min(dp[i][j], dp[i - 2][j - 2] + 1);
+                    }
                 }
             }
         }
@@ -168,19 +176,42 @@ public final class InputHandler {
         info = info.toLowerCase().replaceAll("\\s+", "");
         search = search.toLowerCase().replaceAll("\\s+", "");
 
+        int bound = 3;
+
+        if (search.length() <= bound) {
+            if (info.length() < search.length()) {
+                return 0.0;
+            }
+            if (info.contains(search)) {
+                return 1.0;
+            }
+            return 0.0;
+        }
+
         if (info.contains(search)) {
             return 1.0;
         }
 
         double maxSimilarity = 0.0;
-        int searchLen = search.length();
-        for (int len = searchLen - 1; len <= searchLen + 1; len++) {
-            if (len < 1) continue;
-            for (int i = 0; i <= info.length() - len; i++) {
-                String subStr = info.substring(i, i + len);
-                int distance = levenshteinDistance(subStr, search);
-                double similarity = 1.0 - ((double) distance / Math.max(subStr.length(), searchLen));
-                maxSimilarity = Math.max(maxSimilarity, similarity);
+
+        for (int subLength = bound + 1; subLength <= search.length(); subLength++) {
+            for (int start = 0; start <= search.length() - subLength; start++) {
+                String searchSubStr = search.substring(start, start + subLength);
+
+                for (int len = subLength - 1; len <= subLength + 1; len++) {
+                    if (len < 1 || len > info.length()) continue;
+
+                    for (int i = 0; i <= info.length() - len; i++) {
+                        String infoSubStr = info.substring(i, i + len);
+                        int distance = damerauLevenshteinDistance(infoSubStr, searchSubStr);
+                        double similarity = 1.0 - ((double) distance / Math.max(infoSubStr.length(), searchSubStr.length()));
+                        maxSimilarity = Math.max(maxSimilarity, similarity);
+
+                        if (maxSimilarity == 1.0) {
+                            return maxSimilarity;
+                        }
+                    }
+                }
             }
         }
 

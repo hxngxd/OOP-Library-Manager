@@ -110,7 +110,7 @@ public final class BookGalleryController {
                 bookInfos.add(genre.getName());
             }
             for (String bookInfo : bookInfos) {
-                approxMatch = approxMatch || (InputHandler.isSimilar(bookInfo, info));
+                approxMatch = approxMatch || (InputHandler.isUnidecodeSimilar(bookInfo, info));
             }
             if (approxMatch) {
                 if (!bookCardContainer.getChildren().contains(card)) {
