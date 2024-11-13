@@ -6,7 +6,7 @@ import com.hxngxd.ui.controller.scene.MainController;
 import com.hxngxd.ui.controller.tab.ManageUserController;
 import javafx.fxml.FXML;
 
-public class ManagePopupController extends PopupController {
+public final class ManagePopupController extends PopupController {
 
     @FXML
     private void manageUser() {
@@ -15,7 +15,7 @@ public class ManagePopupController extends PopupController {
         if (mainController.getCurrentTab() != ui) {
             mainController.setCurrentTab(ui);
             mainController.navigate(UIManager.getRootOnce(ui));
-            ManageUserController.getInstance().loadUsers();
+            ManageUserController.getInstance().update();
         }
         exit();
     }

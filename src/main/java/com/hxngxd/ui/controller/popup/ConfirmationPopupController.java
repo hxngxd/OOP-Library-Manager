@@ -11,10 +11,11 @@ public class ConfirmationPopupController extends InformationPopupController {
         if (action != null) {
             action.run();
         }
+        exit();
     }
 
     public void setAction(Runnable action) {
         this.action = action;
     }
-    
+
 }

@@ -124,7 +124,7 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void showManage(ActionEvent event) {
-        StageManager.showPopup(UI.MANAGE_POPUP);
+        StageManager.showManagePopup();
     }
 
     private void showBookGallery() {
@@ -161,13 +161,13 @@ public final class MainController extends NavigateController {
         StageManager.showConfirmationPopup("ĐĂNG XUẤT?", () -> {
             try {
                 UserService.getInstance().logout();
-                StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("log out"));
+                StageManager.showInfoPopup(LogMessages.General.SUCCESS.getMSG("log out"));
                 StageManager.getInstance().setScene(UI.LOGIN);
                 LoginController.getInstance().onActive();
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error(e.getMessage());
-                StageManager.showInformationPopup(e.getMessage());
+                StageManager.showInfoPopup(e.getMessage());
             }
         });
     }

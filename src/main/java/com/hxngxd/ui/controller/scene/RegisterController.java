@@ -11,7 +11,6 @@ import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -80,7 +79,7 @@ public final class RegisterController extends AuthenticationController {
                     usernameField.getText(), emailField.getText(),
                     password, confirmedPassword
             );
-            StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("create account"));
+            StageManager.showInfoPopup(LogMessages.General.SUCCESS.getMSG("create account"));
 
             Author.initialize();
             Genre.initialize();
@@ -92,7 +91,7 @@ public final class RegisterController extends AuthenticationController {
         } catch (DatabaseException | UserException | ValidationException e) {
 //            e.printStackTrace();
             log.error(e.getMessage());
-            StageManager.showInformationPopup(e.getMessage());
+            StageManager.showInfoPopup(e.getMessage());
         }
     }
 

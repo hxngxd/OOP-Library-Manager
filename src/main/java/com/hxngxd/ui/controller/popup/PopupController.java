@@ -7,7 +7,7 @@ public abstract class PopupController {
 
     @FXML
     protected void exit() {
-        StageManager.closePopupStage();
+        StageManager.closePopup();
     }
-    
+
 }

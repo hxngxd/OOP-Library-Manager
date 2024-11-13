@@ -12,7 +12,8 @@ public enum UI {
     MANAGE_USER,
     MANAGE_POPUP,
     INFORMATION_POPUP,
-    CONFIRMATION_POPUP;
+    CONFIRMATION_POPUP,
+    CONFIRMATION_INPUT_POPUP;
 
     public String getPath() {
         return this.name() + ".fxml";

@@ -36,15 +36,15 @@ public final class LogMessages {
 
         USER_DONT_HAVE_TO("The current user does not have to do this"),
 
-        WRONG_PASSWORD("Wrong password"),
+        WRONG_PASSWORD("Sai mật khẩu"),
 
         USER_NOT_ALLOWED("The current user does not have permission to %s"),
 
         USER_CANNOT("You can't %s"),
 
-        USER_SUSPENDED("User is suspended"),
+        USER_SUSPENDED("Tài khoản đã bị khoá"),
 
-        USER_BANNED("User is banned");
+        USER_BANNED("Tài khoản đã bị cấm");
 
         private final String message;
 

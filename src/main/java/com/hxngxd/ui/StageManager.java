@@ -3,14 +3,19 @@ package com.hxngxd.ui;
 import com.hxngxd.enums.UI;
 import com.hxngxd.ui.controller.popup.ConfirmationPopupController;
 import com.hxngxd.ui.controller.popup.InformationPopupController;
+import com.hxngxd.ui.controller.popup.ManagePopupController;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.stage.Modality;
+import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.Stack;
+
 public final class StageManager {
 
-    private static final Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+    public static final Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
 
     private final double widthRatio = 0.775;
 
@@ -20,7 +25,7 @@ public final class StageManager {
 
     private Stage mainStage;
 
-    private Stage popupStage;
+    public static Stack<Stage> stageStack = new Stack<>();
 
     private StageManager() {
     }
@@ -36,6 +41,7 @@ public final class StageManager {
     public void initialize(Stage stage) {
         if (this.mainStage == null) {
             this.mainStage = stage;
+            stageStack.push(mainStage);
         }
         setTitle("QUẢN LÝ THƯ VIỆN CĂNG NHẤT 2024");
         setWidth(widthRatio, widthRatio);
@@ -73,48 +79,62 @@ public final class StageManager {
         this.mainStage.setY((screenSize.getHeight() - this.mainStage.getHeight()) / 2);
     }
 
-    public static void showPopup(UI ui) {
-        closePopupStage();
-        stageManager.popupStage = new Stage();
-        stageManager.popupStage.initModality(Modality.WINDOW_MODAL);
-        stageManager.popupStage.initOwner(stageManager.mainStage);
-        stageManager.popupStage.setScene(UIManager.loadScene(ui));
-        stageManager.popupStage.getIcons().clear();
-        stageManager.popupStage.sizeToScene();
-        stageManager.popupStage.setOnShown(event -> {
-            stageManager.popupStage.setX((screenSize.getWidth() - stageManager.popupStage.getWidth()) / 2);
-            stageManager.popupStage.setY((screenSize.getHeight() - stageManager.popupStage.getHeight()) / 2);
-        });
-        stageManager.popupStage.showAndWait();
-    }
-
-    public static void showInformationPopup(String information) {
-        InformationPopupController informationPopupController = (InformationPopupController)
-                UIManager.loadOnce(UI.INFORMATION_POPUP).getController();
-        informationPopupController.setInformationLabel(information);
-        showPopup(UI.INFORMATION_POPUP);
-    }
-
-    public static void showConfirmationPopup(String information, Runnable action) {
-        ConfirmationPopupController confirmationPopupController = (ConfirmationPopupController)
-                UIManager.loadOnce(UI.CONFIRMATION_POPUP).getController();
-        confirmationPopupController.setInformationLabel(information);
-        confirmationPopupController.setAction(action);
-        showPopup(UI.CONFIRMATION_POPUP);
-    }
-
     public static void closeMainStage() {
-        stageManager.closeStage(stageManager.mainStage);
+        stageManager.mainStage.close();
     }
 
-    public static void closePopupStage() {
-        stageManager.closeStage(stageManager.popupStage);
+    public static void showInfoPopup(String info) {
+        FXMLLoader loader = loadPopup(UI.INFORMATION_POPUP);
+        ((InformationPopupController) loader.getController()).setInformationLabel(info);
+        stageStack.peek().showAndWait();
     }
 
-    private void closeStage(Stage stage) {
-        if (stage != null && stage.isShowing()) {
-            stage.close();
-            stage = null;
+    public static void showConfirmationPopup(String info, Runnable action) {
+        FXMLLoader loader = loadPopup(UI.CONFIRMATION_POPUP);
+        ConfirmationPopupController cpc = loader.getController();
+        cpc.setInformationLabel(info);
+        cpc.setAction(action);
+        stageStack.peek().showAndWait();
+    }
+
+    public static void showManagePopup() {
+        loadPopup(UI.MANAGE_POPUP);
+        stageStack.peek().showAndWait();
+    }
+
+    private static FXMLLoader loadPopup(UI ui) {
+        FXMLLoader loader = UIManager.load(ui);
+
+        Stage popupStage = new Stage();
+        if (!stageStack.isEmpty()) {
+            Stage ownerStage = stageStack.peek();
+            popupStage.initOwner(ownerStage);
+            ownerStage.getScene().getRoot().setDisable(true);
+        }
+        popupStage.setScene(new Scene(loader.getRoot()));
+        popupStage.sizeToScene();
+        popupStage.setOnShown(event -> {
+            popupStage.setX((screenSize.getWidth() - popupStage.getWidth()) / 2);
+            popupStage.setY((screenSize.getHeight() - popupStage.getHeight()) / 2);
+        });
+        popupStage.setResizable(false);
+        popupStage.setOnCloseRequest(Event::consume);
+        stageStack.push(popupStage);
+
+        return loader;
+    }
+
+    public static void closePopup() {
+        if (!stageStack.isEmpty()) {
+            Stage popupStage = stageStack.pop();
+            if (popupStage.isShowing()) {
+                popupStage.close();
+            }
+            popupStage = null;
+            if (!stageStack.isEmpty()) {
+                Stage ownerStage = stageStack.peek();
+                ownerStage.getScene().getRoot().setDisable(false);
+            }
         }
     }
 

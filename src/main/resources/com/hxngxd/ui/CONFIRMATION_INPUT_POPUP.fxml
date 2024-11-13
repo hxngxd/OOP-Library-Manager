@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefWidth="300.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.popup.ConfirmationInputPopupController">
+    <children>
+        <VBox spacing="16.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+            <children>
+                <Label fx:id="informationLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="label" wrapText="true" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+            <TextField fx:id="textField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+                <HBox alignment="CENTER" spacing="15.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#run" prefHeight="50.0" stylesheets="@style.css" text="OK" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefHeight="50.0" stylesheets="@style.css" text="HUỶ" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
