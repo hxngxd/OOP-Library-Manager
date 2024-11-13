@@ -50,7 +50,7 @@ public final class BookGalleryController {
 
     public void onActive() {
         currentUser = UserService.getInstance().getCurrentUser();
-        showBookCards(null);
+        showBookCards();
     }
 
     private void loadBookCards() {
@@ -70,7 +70,7 @@ public final class BookGalleryController {
         }
     }
 
-    public void showBookCards(String info) {
+    private void showBookCards(String info) {
         if (info == null || info.isEmpty()) {
             for (FXMLLoader bookCard : bookCards) {
                 BookCardController bookCardController = bookCard.getController();
@@ -122,13 +122,21 @@ public final class BookGalleryController {
         }
     }
 
+    public void showBookCards() {
+        showBookCards(null);
+    }
+
+    public void showBookCardsBySearch() {
+        showBookCards(searchField.getText());
+    }
+
     public void searchBook() {
         PauseTransition pause = new PauseTransition(Duration.millis(250));
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 63) {
                 searchField.setText(newValue.substring(0, 63));
             } else {
-                pause.setOnFinished(event -> showBookCards(searchField.getText()));
+                pause.setOnFinished(event -> showBookCardsBySearch());
                 pause.playFromStart();
             }
         });

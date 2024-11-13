@@ -54,7 +54,7 @@ public class BookPreviewController extends PreviewController {
             try {
                 currentUser.saveBook(book);
                 setSaveButtonState();
-                BookGalleryController.getInstance().showBookCards(null);
+                BookGalleryController.getInstance().showBookCardsBySearch();
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMSG("save book"), e.getMessage());
@@ -63,7 +63,7 @@ public class BookPreviewController extends PreviewController {
             try {
                 currentUser.unsaveBook(book);
                 setSaveButtonState();
-                BookGalleryController.getInstance().showBookCards(null);
+                BookGalleryController.getInstance().showBookCardsBySearch();
             } catch (DatabaseException e) {
                 e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMSG("unsave book"), e.getMessage());

@@ -110,7 +110,7 @@ public final class MainController extends NavigateController {
     private void showHome(ActionEvent event) {
         BookGalleryController.getInstance().onActive();
         BookGalleryController.getInstance().setIsShowingSavedBook(false);
-        BookGalleryController.getInstance().showBookCards(null);
+        BookGalleryController.getInstance().showBookCards();
         showBookGallery();
     }
 
@@ -118,7 +118,7 @@ public final class MainController extends NavigateController {
     private void showSavedBook(ActionEvent event) {
         BookGalleryController.getInstance().onActive();
         BookGalleryController.getInstance().setIsShowingSavedBook(true);
-        BookGalleryController.getInstance().showBookCards(null);
+        BookGalleryController.getInstance().showBookCards();
         showBookGallery();
     }
 

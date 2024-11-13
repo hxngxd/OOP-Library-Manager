@@ -242,6 +242,12 @@ public final class ManageUserController {
         userTableView.setItems(userList);
     }
 
+    @FXML
+    private void changeRole() {
+        User currentSelected = userTableView.getSelectionModel().getSelectedItem();
+        System.out.println(currentSelected.getId());
+    }
+
     public static ManageUserController getInstance() {
         return UIManager.getControllerOnce(UI.MANAGE_USER);
     }
