@@ -5,6 +5,7 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.tab.AccountController;
@@ -124,7 +125,7 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void showManage(ActionEvent event) {
-        StageManager.showManagePopup();
+        PopupManager.navigate("QUẢN LÝ");
     }
 
     private void showBookGallery() {
@@ -158,16 +159,16 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void logOut() {
-        StageManager.showConfirmationPopup("ĐĂNG XUẤT?", () -> {
+        PopupManager.confirm("Đăng xuất?", () -> {
             try {
                 UserService.getInstance().logout();
-                StageManager.showInfoPopup(LogMessages.General.SUCCESS.getMSG("log out"));
+                PopupManager.info(LogMessages.General.SUCCESS.getMSG("log out"));
                 StageManager.getInstance().setScene(UI.LOGIN);
                 LoginController.getInstance().onActive();
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 log.error(e.getMessage());
-                StageManager.showInfoPopup(e.getMessage());
+                PopupManager.info(e.getMessage());
             }
         });
     }

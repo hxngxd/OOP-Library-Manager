@@ -1,7 +1,7 @@
 package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.Entity;
-import com.hxngxd.ui.StageManager;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.utils.Formatter;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -79,7 +79,7 @@ public abstract class ManageController<T extends Entity> {
     public void update() {
         searchField.setText("");
         loadItems();
-        StageManager.showInfoPopup("CẬP NHẬT THÀNH CÔNG!");
+        PopupManager.info("Cập nhật thành công!");
     }
 
     protected T getSelected() {

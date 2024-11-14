@@ -9,6 +9,7 @@ import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
@@ -79,7 +80,7 @@ public final class RegisterController extends AuthenticationController {
                     usernameField.getText(), emailField.getText(),
                     password, confirmedPassword
             );
-            StageManager.showInfoPopup(LogMessages.General.SUCCESS.getMSG("create account"));
+            PopupManager.info(LogMessages.General.SUCCESS.getMSG("create account"));
 
             Author.initialize();
             Genre.initialize();
@@ -91,7 +92,7 @@ public final class RegisterController extends AuthenticationController {
         } catch (DatabaseException | UserException | ValidationException e) {
 //            e.printStackTrace();
             log.error(e.getMessage());
-            StageManager.showInfoPopup(e.getMessage());
+            PopupManager.info(e.getMessage());
         }
     }
 
