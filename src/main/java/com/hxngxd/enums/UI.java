@@ -10,9 +10,7 @@ public enum UI {
     BOOK_PREVIEW,
     ACCOUNT,
     MANAGE_USER,
-    MANAGE_POPUP,
-    INFORMATION_POPUP,
-    CONFIRMATION_POPUP;
+    POPUP;
 
     public String getPath() {
         return this.name() + ".fxml";
