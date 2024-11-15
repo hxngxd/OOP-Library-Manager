@@ -5,9 +5,11 @@ import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.UserException;
+import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.StageManager;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
@@ -207,7 +209,7 @@ public final class ManageUserController extends ManageController<User> {
             itemList = FXCollections.observableArrayList(UserService.userList);
             super.update();
         } catch (DatabaseException e) {
-//            StageManager.showInfoPopup("CẬP NHẬT DANH SÁCH NGƯỜI DÙNG THẤT BẠI!");
+            PopupManager.info("CẬP NHẬT DANH SÁCH NGƯỜI DÙNG THẤT BẠI!");
         }
     }
 
@@ -216,24 +218,18 @@ public final class ManageUserController extends ManageController<User> {
         if (getSelected() == null) {
             return;
         }
-
-//        StageManager.showConfirmationInputPopup("Đổi mật khẩu", this::changePw);
-    }
-
-    private void changePw() {
-//        String newPassword = ConfirmationInputPopupController.getInstance().getText();
-//        String message = String.format("Xác nhận đổi mật khẩu của user có id=%d?", getSelectedId());
-//        StageManager.showConfirmationPopup(
-//                message, () -> {
-//                    try {
-//                        userService.changePassword(getSelectedId(), newPassword);
-//                        update();
-//                    } catch (DatabaseException | UserException e) {
-//                        System.out.println(e.getMessage());
-//                        StageManager.showInfoPopup(e.getMessage());
-//                    }
-//                }
-//        );
+        PopupManager.confirmInput("Đổi mật khẩu", "Mật khẩu mới", () -> {
+            String message = String.format("Xác nhận đổi mật khẩu user có id=%d?", getSelectedId());
+            String newPassword = PopupManager.getInputPeek().getText();
+            try {
+                userService.changePassword(getSelectedId(), newPassword);
+                PopupManager.popInput();
+                PopupManager.closePopup();
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            }
+        });
     }
 
     @FXML
@@ -256,16 +252,18 @@ public final class ManageUserController extends ManageController<User> {
             return;
         }
         String message = String.format("Xác nhận %s user có id=%d?", action, getSelectedId());
-//        StageManager.showConfirmationPopup(
-//                message, () -> {
-//                    try {
-//                        userService.changeAccountStatus(getSelectedId(), status);
-//                        update();
-//                    } catch (DatabaseException | UserException e) {
-//                        StageManager.showInfoPopup(e.getMessage());
-//                    }
-//                }
-//        );
+        PopupManager.confirm(
+                message, () -> {
+                    try {
+                        userService.changeAccountStatus(getSelectedId(), status);
+                        update();
+                    } catch (DatabaseException | UserException e) {
+                        PopupManager.info(e.getMessage());
+                    } finally {
+                        PopupManager.closePopup();
+                    }
+                }
+        );
     }
 
     @FXML
@@ -283,16 +281,18 @@ public final class ManageUserController extends ManageController<User> {
             return;
         }
         String message = String.format("Xác nhận đổi vai trò của user có id=%d thành %s?", getSelectedId(), role.name());
-//        StageManager.showConfirmationPopup(
-//                message, () -> {
-//                    try {
-//                        userService.changeRole(getSelectedId(), role);
-//                        update();
-//                    } catch (DatabaseException | UserException e) {
-//                        StageManager.showInfoPopup(e.getMessage());
-//                    }
-//                }
-//        );
+        PopupManager.confirm(
+                message, () -> {
+                    try {
+                        userService.changeRole(getSelectedId(), role);
+                        update();
+                    } catch (DatabaseException | UserException e) {
+                        PopupManager.info(e.getMessage());
+                    } finally {
+                        PopupManager.closePopup();
+                    }
+                }
+        );
     }
 
     public static ManageUserController getInstance() {

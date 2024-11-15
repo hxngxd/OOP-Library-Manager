@@ -169,6 +169,8 @@ public final class MainController extends NavigateController {
 //                e.printStackTrace();
                 log.error(e.getMessage());
                 PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
             }
         });
     }

@@ -9,12 +9,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.util.Stack;
 
 public final class PopupManager {
 
@@ -23,6 +26,11 @@ public final class PopupManager {
 
     @FXML
     private Label messageLabel;
+
+    @FXML
+    private TextField textField;
+
+    private static Stack<TextField> inputStack = new Stack<>();
 
     @FXML
     private VBox buttonVbox;
@@ -43,7 +51,7 @@ public final class PopupManager {
     public static void confirm(String message, Runnable action) {
         PopupManager popup = loadPopup();
         popup.addMessage(message);
-        popup.addConfirmation(action);
+        popup.addConfirmation(action, PopupManager::closePopup);
         showPeek();
     }
 
@@ -53,12 +61,12 @@ public final class PopupManager {
         popup.addNavigateButton("NGƯỜI DÙNG", () -> {
             MainController mainController = MainController.getInstance();
             UI ui = UI.MANAGE_USER;
+            closePopup();
             if (mainController.getCurrentTab() != ui) {
                 mainController.setCurrentTab(ui);
                 mainController.navigate(UIManager.getRootOnce(ui));
                 ManageUserController.getInstance().update();
             }
-            closePopup();
         });
         popup.addNavigateButton("SÁCH", () -> {
         });
@@ -69,6 +77,17 @@ public final class PopupManager {
         popup.addNavigateButton("THỂ LOẠI", () -> {
         });
         popup.addNavigateButton("HUỶ", PopupManager::closePopup);
+        showPeek();
+    }
+
+    public static void confirmInput(String message, String prompt, Runnable action) {
+        PopupManager popup = loadPopup();
+        popup.addMessage(message);
+        popup.addInput(prompt);
+        popup.addConfirmation(action, () -> {
+            popInput();
+            closePopup();
+        });
         showPeek();
     }
 
@@ -113,6 +132,16 @@ public final class PopupManager {
         return (Button) pane.lookup("#" + id);
     }
 
+    public static TextField getInputPeek() {
+        return inputStack.peek();
+    }
+
+    public static void popInput() {
+        if (!inputStack.isEmpty()) {
+            inputStack.pop();
+        }
+    }
+
     private void addMessage(String message) {
         messageLabel.setText(message);
         mainVbox.getChildren().add(messageLabel);
@@ -127,16 +156,25 @@ public final class PopupManager {
         VBox.setVgrow(clone, Priority.ALWAYS);
     }
 
-    private void addConfirmation(Runnable action) {
+    private void addConfirmation(Runnable action, Runnable cancel) {
         if (!mainVbox.getChildren().contains(buttonVbox)) {
             mainVbox.getChildren().add(buttonVbox);
         }
         buttonVbox.getChildren().add(confirmation);
         getButton(confirmation, "okButton").setOnAction(event -> {
             action.run();
-            PopupManager.closePopup();
         });
-        getButton(confirmation, "cancelButton").setOnAction(event -> closePopup());
+        getButton(confirmation, "cancelButton").setOnAction(event -> {
+            cancel.run();
+        });
+    }
+
+    private void addInput(String prompt) {
+        if (!mainVbox.getChildren().contains(textField)) {
+            mainVbox.getChildren().add(textField);
+        }
+        textField.setPromptText(prompt);
+        inputStack.push(textField);
     }
 
     private Button cloneButton(Button original, String text, Runnable action) {
@@ -149,8 +187,7 @@ public final class PopupManager {
         clone.setPrefHeight(original.getPrefHeight());
         clone.setMaxWidth(original.getMaxWidth());
         clone.setMaxHeight(original.getMaxHeight());
-        clone.setStyle(original.getStyle());
-        clone.getStyleClass().setAll(original.getStyleClass());
+        clone.getStylesheets().add(getClass().getResource("/com/hxngxd/ui/style.css").toExternalForm());
         clone.setOnAction(event -> {
             action.run();
         });

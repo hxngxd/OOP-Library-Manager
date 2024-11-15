@@ -9,7 +9,10 @@ public abstract class NavigateController {
 
     @FXML
     protected void exit(ActionEvent event) {
-        PopupManager.confirm("Thoát chương trình?", StageManager::closeMainStage);
+        PopupManager.confirm("Thoát chương trình?", () -> {
+            PopupManager.closePopup();
+            StageManager.closeMainStage();
+        });
     }
 
 }

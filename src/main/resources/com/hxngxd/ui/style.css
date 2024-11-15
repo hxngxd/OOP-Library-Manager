@@ -21,42 +21,6 @@
     -fx-text-fill: white; /* Chữ màu trắng khi nhấn */
 }
 
-/* MenuButton styles */
-.menu-button {
-    -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */
-    -fx-text-fill: black; /* Chữ màu đen */
-    -fx-font-size: 16px;
-    -fx-background-radius: 0; /* Không bo góc */
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0); /* Drop shadow rộng hơn */
-}
-
-/* Gray background on hover */
-.menu-button:hover {
-    -fx-background-color: #d7d7d7; /* Màu xám đậm hơn khi hover */
-}
-
-/* Light blue background on click */
-.menu-button:pressed {
-    -fx-background-color: #52baff; /* Màu xanh nhạt khi nhấn */
-    -fx-text-fill: white; /* Chữ màu trắng khi nhấn */
-}
-
-/* Màu chữ cho label bên trong MenuButton */
-.menu-button > .label {
-    -fx-text-fill: black; /* Chữ màu đen bình thường */
-}
-
-.menu-button:pressed > .label {
-    -fx-text-fill: white; /* Chữ màu trắng khi nhấn */
-}
-
-/* MenuItem styles */
-.menu-item {
-    -fx-text-fill: black; /* Chữ màu đen cho MenuItem */
-    -fx-font-size: 16px;
-}
-
 /* Box styles */
 .box {
     -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */
