@@ -76,20 +76,11 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <HBox HBox.hgrow="ALWAYS">
-                     <children>
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changePassword" stylesheets="@style.css" text="ĐỔI MẬT KHẨU" HBox.hgrow="ALWAYS">
-                                  <font>
-                                      <Font size="14.0" />
-                                  </font>
-                              </Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="ĐỔI THÔNG TIN" HBox.hgrow="ALWAYS">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changePassword" stylesheets="@style.css" text="ĐỔI MẬT KHẨU" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
-                     </children>
-                  </HBox>
                   <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                      <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#releaseUser" stylesheets="@style.css" text="THẢ USER" HBox.hgrow="ALWAYS">

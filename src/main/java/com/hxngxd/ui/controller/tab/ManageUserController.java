@@ -218,8 +218,8 @@ public final class ManageUserController extends ManageController<User> {
         if (getSelected() == null) {
             return;
         }
-        PopupManager.confirmInput("Đổi mật khẩu", "Mật khẩu mới", () -> {
-            String message = String.format("Xác nhận đổi mật khẩu user có id=%d?", getSelectedId());
+        String message = String.format("Đổi mật khẩu user có id=%d?", getSelectedId());
+        PopupManager.confirmInput(message, "Mật khẩu mới", () -> {
             String newPassword = PopupManager.getInputPeek().getText();
             try {
                 userService.changePassword(getSelectedId(), newPassword);
