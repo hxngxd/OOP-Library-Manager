@@ -247,6 +247,24 @@ public final class ManageUserController extends ManageController<User> {
         changeAccountStatus(AccountStatus.BANNED, "cấm vĩnh viễn");
     }
 
+    @FXML
+    private void deleteUser() {
+        if (getSelected() == null || getSelectedId() == userService.getCurrentUser().getId()) {
+            return;
+        }
+        String message = String.format("Xác nhận xoá user có id=%d (không thể hoàn tác)", getSelectedId());
+        PopupManager.confirm(message, () -> {
+            try {
+                userService.deleteAccount(getSelectedId());
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
+    }
+
     private void changeAccountStatus(AccountStatus status, String action) {
         if (getSelected() == null || getSelected().getAccountStatus() == status) {
             return;

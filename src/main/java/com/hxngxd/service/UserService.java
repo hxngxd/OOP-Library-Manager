@@ -315,21 +315,24 @@ public final class UserService {
         log.info(LogMessages.General.SUCCESS.getMSG("change account status"));
     }
 
-//    public boolean changePassword(String oldPassword, String newPassword) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (!PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash())) {
-//            log.info(LogMessages.wrongPW);
-//            return false;
-//        }
-//
-//        boolean update = db.update("user", "passwordHash",
-//                PasswordEncoder.encode(currentUser.getPasswordHash()),
-//                "id", currentUser.getId());
-//        return LogMessages.logResult(update, "change password");
-//    }
+    public void changePassword(String oldPassword, String newPassword)
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
+
+        if (newPassword.equals(oldPassword)) {
+            throw new PasswordException("New password is the same as the old one");
+        }
+
+        InputHandler.validatePassword(newPassword);
+
+        PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash());
+
+        String newHashedPassword = PasswordEncoder.encode(newPassword);
+        db.update("user", "passwordHash", newHashedPassword, "id", currentUser.getId());
+        currentUser.setPasswordHash(newHashedPassword);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("change own password"));
+    }
 
     public void changePassword(int userId, String newPassword)
             throws DatabaseException, UserException {
@@ -355,69 +358,27 @@ public final class UserService {
         log.info(LogMessages.General.SUCCESS.getMSG("change password"));
     }
 
-////    public static boolean resetPasswordRequest(String email) {
-////        return true;
-////    }
-////
-////    public static boolean emailOTPRequest(String email) {
-////        return true;
-////    }
-////
-////    public static boolean verifyEmail(String email, String OTP) {
-////        return true;
-////    }
-//
-//    public boolean deleteOwnAccount(String password) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (!currentUser.getRole().hasPermission(Permission.DELETE_OWN_ACCOUNT)) {
-//            log.info(LogMessages.userNotAllowTo("delete their own account"));
-//            return false;
-//        }
-//
-//        if (!PasswordEncoder.compare(password, currentUser.getPasswordHash())) {
-//            log.info(LogMessages.wrongPW);
-//            return false;
-//        }
-//
-//        boolean delete = db.delete("user", "id", currentUser.getId());
-//        if (delete) {
-//            currentUser = null;
-//        }
-//        return LogMessages.logResult(delete, "delete your account and log out");
-//    }
-//
-//    public boolean deleteOthersAccount(int userId) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (userId == currentUser.getId()) {
-//            log.info("Password is required to delete your own password");
-//            return false;
-//        }
-//
-//        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
-//            log.info(LogMessages.userNotAllowTo("delete others' account"));
-//            return false;
-//        }
-//
-//        User user = getUserbyId(false, userId);
-//        if (user == null) {
-//            log.info(LogMessages.userNotFound);
-//            return false;
-//        }
-//
-//        if (user.getRole() == Role.ADMIN) {
-//            log.info(LogMessages.userCant("delete other Admin's account"));
-//            return false;
-//        }
-//
-//        boolean delete = db.delete("user", "id", userId);
-//        return LogMessages.logResult(delete, "delete account");
-//    }
+    public void deleteAccount(int userId)
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
+
+        if (userId == currentUser.getId()) {
+            throw new UserException("Password is required to delete your own account");
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
+            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("delete others' account"));
+        }
+
+        User user = getUserbyId(false, userId);
+        if (user == null) {
+            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
+        }
+
+        db.delete("user", "id", userId);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("delete account"));
+    }
 
     private User getUserbyId(Boolean inDetail, int id)
             throws UserException {

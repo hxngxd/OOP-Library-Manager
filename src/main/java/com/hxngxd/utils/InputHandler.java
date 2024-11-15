@@ -112,7 +112,7 @@ public final class InputHandler {
 
     public static void validatePassword(String password)
             throws PasswordException {
-        if (password.length() <= 6) {
+        if (password.length() < 6) {
             throw new PasswordException("Password size should be greater than 6");
         }
 

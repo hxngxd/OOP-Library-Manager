@@ -2,7 +2,10 @@ package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.scene.MainController;
 import com.hxngxd.utils.Formatter;
@@ -109,6 +112,23 @@ public final class AccountController {
         saveBookField.setText(String.valueOf(currentUser.getSavedBooks().size()));
         borrowBookField.setText(String.valueOf(0));
         violateField.setText(String.valueOf(currentUser.getViolationCount()));
+    }
+
+    @FXML
+    private void changePassword() {
+        if (oldPasswordField.getText().isEmpty() || newPasswordField.getText().isEmpty()) {
+            return;
+        }
+        PopupManager.confirm("Xác nhận đổi mật khẩu?", () -> {
+            try {
+                userService.changePassword(oldPasswordField.getText(), newPasswordField.getText());
+                PopupManager.info("Đổi mật khẩu thành công!");
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
     }
 
     public static AccountController getInstance() {
