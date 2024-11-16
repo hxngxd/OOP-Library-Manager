@@ -3,6 +3,8 @@ package com.hxngxd.entities;
 import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.service.BookService;
+import com.hxngxd.service.UserService;
 import com.hxngxd.utils.Formatter;
 
 import java.time.LocalDateTime;
@@ -267,7 +269,21 @@ public final class Book extends EntityWithPhoto {
     }
 
     public void loadReviews() {
-
+        reviews.clear();
+        UserService.getInstance().getAllUsers();
+        String query = "select * from review where bookId = ?";
+        DatabaseManager.getInstance().select("load reviews", query, resultSet -> {
+            while (resultSet.next()) {
+                Review review = new Review(resultSet.getInt("id"));
+                review.setUser(UserService.userMap.get(resultSet.getInt("userId")));
+                review.setBook(BookService.bookMap.get(resultSet.getInt("bookId")));
+                review.setRating(resultSet.getInt("rating"));
+                review.setComment(resultSet.getString("comment"));
+                review.setTimestamp(resultSet.getTimestamp("reviewTime").toLocalDateTime());
+                reviews.add(review);
+            }
+            return null;
+        }, id);
     }
 
     public List<Review> getReviews() {

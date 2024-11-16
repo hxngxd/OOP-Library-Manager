@@ -2,14 +2,18 @@ package com.hxngxd.utils;
 
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.ui.StageManager;
+import com.hxngxd.ui.UIManager;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.URL;
 
 public final class ImageHandler {
 
@@ -69,6 +73,13 @@ public final class ImageHandler {
                 (int) cropWidth, (int) cropHeight);
     }
 
+    public static void circleCrop(ImageView imageView, double size) {
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
+        imageView.setPreserveRatio(true);
+        imageView.setClip(new Circle(size / 2, size / 2, size / 2));
+    }
+
     public static Image cropImageByRatio(byte[] imageBytes, double widthRatio, double heightRatio) {
         Image image = byteArrayToImage(imageBytes);
         return cropImageByRatio(image, widthRatio, heightRatio);
@@ -103,6 +114,22 @@ public final class ImageHandler {
                 new FileChooser.ExtensionFilter("File PNG", "*.png")
         );
         return fileChooser.showOpenDialog(StageManager.getInstance().getMainStage());
+    }
+
+    public static Image loadImageFromResource(String resourcePath) {
+        try {
+            URL resourceURL = UIManager.class.getResource(resourcePath);
+            if (resourceURL != null) {
+                return new Image(resourceURL.toExternalForm());
+            } else {
+                log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(resourcePath));
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
 }

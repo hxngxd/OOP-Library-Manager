@@ -85,11 +85,7 @@ public final class MainController extends NavigateController {
     }
 
     public void setProfileImage(Image profileImage) {
-        this.profileImage.setFitHeight(90);
-        this.profileImage.setFitWidth(90);
-        this.profileImage.setPreserveRatio(true);
-        Circle clip = new Circle(45, 45, 45);
-        this.profileImage.setClip(clip);
+        ImageHandler.circleCrop(this.profileImage, 90);
         this.profileImage.setImage(profileImage);
     }
 

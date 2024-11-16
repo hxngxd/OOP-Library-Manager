@@ -46,11 +46,13 @@ public final class BookDetailController extends BookPreviewController {
 
     private void displayReviews() {
         reviewsVbox.getChildren().clear();
+        book.loadReviews();
+        System.out.println(book.getReviews().size());
         if (book.getNumberOfReviews() == 0) {
             return;
         }
         reviewsVbox.getChildren().add(reviewHeader);
-        for (Review review : this.book.getReviews()) {
+        for (Review review : book.getReviews()) {
             FXMLLoader loader = UIManager.load(UI.USER_REVIEW);
             UserReviewController urc = loader.getController();
             urc.display(review);

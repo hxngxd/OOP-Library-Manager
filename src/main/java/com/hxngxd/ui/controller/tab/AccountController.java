@@ -96,11 +96,7 @@ public final class AccountController {
     }
 
     private void setProfileImage(Image profileImage) {
-        this.profileImage.setFitHeight(150);
-        this.profileImage.setFitWidth(150);
-        this.profileImage.setPreserveRatio(true);
-        Circle clip = new Circle(75, 75, 75);
-        this.profileImage.setClip(clip);
+        ImageHandler.circleCrop(this.profileImage, 150);
         this.profileImage.setImage(profileImage);
     }
 
