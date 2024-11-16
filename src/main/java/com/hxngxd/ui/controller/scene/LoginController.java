@@ -6,9 +6,9 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
@@ -68,7 +68,7 @@ public final class LoginController extends AuthenticationController {
             } else {
                 userService.login("23020078", "23020078", "Hung@07112005");
             }
-            StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("log in"));
+            PopupManager.info(LogMessages.General.SUCCESS.getMSG("log in"));
 
             Author.initialize();
             Genre.initialize();
@@ -81,7 +81,7 @@ public final class LoginController extends AuthenticationController {
         } catch (Exception e) {
 //            e.printStackTrace();
             log.error(e.getMessage());
-            StageManager.showInformationPopup(e.getMessage());
+            PopupManager.info(e.getMessage());
         }
     }
 
@@ -89,6 +89,11 @@ public final class LoginController extends AuthenticationController {
     private void goToRegister(ActionEvent event) {
         StageManager.getInstance().setScene(UI.REGISTER);
         RegisterController.getInstance().onActive();
+    }
+
+    @FXML
+    private void forgotPassword() {
+        PopupManager.info("Liên hệ ADMIN để cấp lại mật khẩu");
     }
 
     public static LoginController getInstance() {

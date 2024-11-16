@@ -85,7 +85,7 @@ public final class InputHandler {
 
     private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    public static final double similarThresHold = 0.8;
+    public static final double similarThresHold = 0.75;
 
     private InputHandler() {
     }
@@ -112,7 +112,7 @@ public final class InputHandler {
 
     public static void validatePassword(String password)
             throws PasswordException {
-        if (password.length() <= 6) {
+        if (password.length() < 6) {
             throw new PasswordException("Password size should be greater than 6");
         }
 

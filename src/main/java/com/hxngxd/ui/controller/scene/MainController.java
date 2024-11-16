@@ -5,11 +5,13 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.tab.AccountController;
 import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
+import com.hxngxd.ui.controller.tab.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,8 +23,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MainController extends NavigateController {
 
@@ -124,7 +130,26 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void showManage(ActionEvent event) {
-        StageManager.showPopup(UI.MANAGE_POPUP);
+        List<Pair<String, Runnable>> btns = new ArrayList<>();
+        btns.add(new Pair<>("NGƯỜI DÙNG", () -> {
+            UI ui = UI.MANAGE_USER;
+            PopupManager.closePopup();
+            if (currentTab != ui) {
+                currentTab = ui;
+                navigate(UIManager.getRootOnce(ui));
+                ManageUserController.getInstance().update();
+            }
+        }));
+        btns.add(new Pair<>("SÁCH", () -> {
+        }));
+        btns.add(new Pair<>("MƯỢN SÁCH", () -> {
+        }));
+        btns.add(new Pair<>("TÁC GIẢ", () -> {
+        }));
+        btns.add(new Pair<>("THỂ LOẠI", () -> {
+        }));
+        btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
+        PopupManager.navigate("QUẢN LÝ", btns);
     }
 
     private void showBookGallery() {
@@ -158,16 +183,18 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void logOut() {
-        StageManager.showConfirmationPopup("ĐĂNG XUẤT?", () -> {
+        PopupManager.confirm("Đăng xuất?", () -> {
             try {
                 UserService.getInstance().logout();
-                StageManager.showInformationPopup(LogMessages.General.SUCCESS.getMSG("log out"));
+                PopupManager.info(LogMessages.General.SUCCESS.getMSG("log out"));
                 StageManager.getInstance().setScene(UI.LOGIN);
                 LoginController.getInstance().onActive();
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 log.error(e.getMessage());
-                StageManager.showInformationPopup(e.getMessage());
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
             }
         });
     }

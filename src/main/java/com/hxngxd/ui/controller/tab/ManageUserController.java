@@ -1,8 +1,15 @@
 package com.hxngxd.ui.controller.tab;
 
 import com.hxngxd.entities.User;
+import com.hxngxd.enums.AccountStatus;
+import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.PasswordException;
+import com.hxngxd.exceptions.UserException;
+import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
@@ -10,32 +17,15 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public final class ManageUserController {
-
-    @FXML
-    private TableView<User> userTableView;
-
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private ComboBox<String> searchFieldComboBox;
-
-    @FXML
-    private TableColumn<User, Integer> idColumn;
+public final class ManageUserController extends ManageController<User> {
 
     @FXML
     private TableColumn<User, String> firstNameColumn;
@@ -59,27 +49,17 @@ public final class ManageUserController {
     private TableColumn<User, String> roleColumn;
 
     @FXML
-    private TableColumn<User, String> joinDateColumn;
-
-    @FXML
     private TableColumn<User, String> statusColumn;
-
-    @FXML
-    private TableColumn<User, String> lastActivityColumn;
 
     @FXML
     private TableColumn<User, Integer> violationCountColumn;
 
-    private final ObservableList<User> userList = FXCollections.observableArrayList(UserService.userList);
+    private final UserService userService = UserService.getInstance();
 
+    @Override
     @FXML
     public void initialize() {
-        idColumn.setCellValueFactory(new Callback<>() {
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<User, Integer> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getId());
-            }
-        });
+        super.initialize();
 
         firstNameColumn.setCellValueFactory(new Callback<>() {
             @Override
@@ -132,14 +112,6 @@ public final class ManageUserController {
             }
         });
 
-        joinDateColumn.setCellValueFactory(new Callback<>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
-                LocalDateTime joinDate = param.getValue().getDateAdded();
-                String formattedJoinDate = joinDate != null ? Formatter.formatDateTime(joinDate) : null;
-                return new ReadOnlyObjectWrapper<>(formattedJoinDate);
-            }
-        });
 
         statusColumn.setCellValueFactory(new Callback<>() {
             @Override
@@ -148,16 +120,6 @@ public final class ManageUserController {
             }
         });
 
-        lastActivityColumn.setCellValueFactory(new Callback<>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
-                LocalDateTime lastActivity = param.getValue().getLastUpdated();
-                String formattedLastActivity = lastActivity != null ? Formatter.formatDateTime(lastActivity) : "Chưa hoạt động";
-                return new ReadOnlyObjectWrapper<>(
-                        param.getValue().getId() == UserService.getInstance().getCurrentUser().getId()
-                                ? "Đang hoạt động" : formattedLastActivity);
-            }
-        });
 
         violationCountColumn.setCellValueFactory(new Callback<>() {
             @Override
@@ -175,7 +137,7 @@ public final class ManageUserController {
                 emailColumn.getText(),
                 addressColumn.getText(),
                 roleColumn.getText(),
-                joinDateColumn.getText(),
+                dateAddedColumn.getText(),
                 statusColumn.getText()
         ));
         searchFieldComboBox.setValue(idColumn.getText());
@@ -185,20 +147,21 @@ public final class ManageUserController {
             if (newValue.length() > 127) {
                 searchField.setText(newValue.substring(0, 127));
             } else {
-                pause.setOnFinished(event -> filterUsers(newValue));
+                pause.setOnFinished(event -> filterItems());
                 pause.playFromStart();
             }
         });
     }
 
-    private void filterUsers(String searchText) {
+    @Override
+    protected void filterItems() {
         String selectedField = searchFieldComboBox.getValue();
+        String searchText = InputHandler.unidecode(searchField.getText());
 
-        FilteredList<User> filteredData = new FilteredList<>(userList, user -> {
+        FilteredList<User> filteredData = new FilteredList<>(itemList, user -> {
             if (searchText.isEmpty()) {
                 return true;
             }
-
             return switch (selectedField) {
                 case "ID" -> String.valueOf(user.getId()).equals(searchText);
 
@@ -234,18 +197,124 @@ public final class ManageUserController {
                 default -> false;
             };
         });
-
-        userTableView.setItems(filteredData);
+        itemTableView.setItems(filteredData);
     }
 
-    public void loadUsers() {
-        userTableView.setItems(userList);
+    @Override
+    @FXML
+    public void update() {
+        try {
+            userService.getAllUsers();
+            itemList.clear();
+            itemList = FXCollections.observableArrayList(UserService.userList);
+            super.update();
+        } catch (DatabaseException e) {
+            PopupManager.info("CẬP NHẬT DANH SÁCH NGƯỜI DÙNG THẤT BẠI!");
+        }
     }
 
     @FXML
-    private void changeRole() {
-        User currentSelected = userTableView.getSelectionModel().getSelectedItem();
-        System.out.println(currentSelected.getId());
+    private void changePassword() {
+        if (getSelected() == null) {
+            noneSelected();
+            return;
+        }
+        String message = String.format("Đổi mật khẩu user có id=%d?", getSelectedId());
+        PopupManager.confirmInput(message, "Mật khẩu mới", () -> {
+            String newPassword = PopupManager.getInputPeek().getText();
+            try {
+                userService.changePassword(getSelectedId(), newPassword);
+                PopupManager.popInput();
+                PopupManager.closePopup();
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            }
+        });
+    }
+
+    @FXML
+    private void releaseUser() {
+        changeAccountStatus(AccountStatus.INACTIVE, "thả");
+    }
+
+    @FXML
+    private void suspendUser() {
+        changeAccountStatus(AccountStatus.SUSPENDED, "khoá");
+    }
+
+    @FXML
+    private void banUser() {
+        changeAccountStatus(AccountStatus.BANNED, "cấm vĩnh viễn");
+    }
+
+    @FXML
+    private void deleteUser() {
+        if (getSelected() == null || getSelectedId() == userService.getCurrentUser().getId()) {
+            noneSelected();
+            return;
+        }
+        String message = String.format("Xác nhận xoá user có id=%d (không thể hoàn tác)", getSelectedId());
+        PopupManager.confirm(message, () -> {
+            try {
+                userService.deleteAccount(getSelectedId());
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
+    }
+
+    private void changeAccountStatus(AccountStatus status, String action) {
+        if (getSelected() == null || getSelected().getAccountStatus() == status) {
+            noneSelected();
+            return;
+        }
+        String message = String.format("Xác nhận %s user có id=%d?", action, getSelectedId());
+        PopupManager.confirm(
+                message, () -> {
+                    try {
+                        userService.changeAccountStatus(getSelectedId(), status);
+                        update();
+                    } catch (DatabaseException | UserException e) {
+                        PopupManager.info(e.getMessage());
+                    } finally {
+                        PopupManager.closePopup();
+                    }
+                }
+        );
+    }
+
+    @FXML
+    private void changeRoleToUser() {
+        changeRole(Role.USER);
+    }
+
+    @FXML
+    private void changeRoleToModerator() {
+        changeRole(Role.MODERATOR);
+    }
+
+    private void changeRole(Role role) {
+        if (getSelected() == null || getSelected().getRole() == role) {
+            noneSelected();
+            return;
+        }
+        String message = String.format("Xác nhận đổi vai trò của user có id=%d thành %s?", getSelectedId(), role.name());
+        PopupManager.confirm(
+                message, () -> {
+                    try {
+                        userService.changeRole(getSelectedId(), role);
+                        update();
+                    } catch (DatabaseException | UserException e) {
+                        PopupManager.info(e.getMessage());
+                    } finally {
+                        PopupManager.closePopup();
+                    }
+                }
+        );
     }
 
     public static ManageUserController getInstance() {
