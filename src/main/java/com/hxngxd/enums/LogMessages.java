@@ -26,9 +26,9 @@ public final class LogMessages {
 
     public enum User {
 
-        USER_EXIST("User already exists"),
+        USER_EXIST("Username hoặc Email đã được sử dụng"),
 
-        USER_NOT_FOUND("User does not exist"),
+        USER_NOT_FOUND("Tài khoản không tồn tại"),
 
         USER_NOT_LOGGED_IN("No user is logged in"),
 
@@ -118,11 +118,11 @@ public final class LogMessages {
 
     public enum Validation {
 
-        EMAIL_NOT_VALID("Email is not valid"),
+        EMAIL_NOT_VALID("Email không hợp lệ"),
 
-        INFO_TOO_LONG("Some information is too long"),
+        INFO_TOO_LONG("Một số thông tin quá dài"),
 
-        INFO_IS_MISSING("Some information is missing"),
+        INFO_IS_MISSING("Một số thông tin bị trống"),
 
         INVALID_INPUT("Invalid input");
 

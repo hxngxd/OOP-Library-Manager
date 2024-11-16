@@ -289,7 +289,7 @@
                                 </VBox>
                             </children>
                         </HBox>
-                        <Button maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="700.0" stylesheets="@style.css" text="LƯU" VBox.vgrow="ALWAYS">
+                        <Button maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#saveInformation" prefHeight="40.0" prefWidth="700.0" stylesheets="@style.css" text="LƯU" VBox.vgrow="ALWAYS">
                             <VBox.margin>
                                 <Insets top="5.0" />
                             </VBox.margin>

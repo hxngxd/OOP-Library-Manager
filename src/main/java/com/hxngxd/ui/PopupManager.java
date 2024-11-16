@@ -16,7 +16,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
+import java.util.List;
 import java.util.Stack;
 
 public final class PopupManager {
@@ -55,28 +57,12 @@ public final class PopupManager {
         showPeek();
     }
 
-    public static void navigate(String message) {
+    public static void navigate(String message, List<Pair<String, Runnable>> btns) {
         PopupManager popup = loadPopup();
         popup.addMessage(message);
-        popup.addNavigateButton("NGƯỜI DÙNG", () -> {
-            MainController mainController = MainController.getInstance();
-            UI ui = UI.MANAGE_USER;
-            closePopup();
-            if (mainController.getCurrentTab() != ui) {
-                mainController.setCurrentTab(ui);
-                mainController.navigate(UIManager.getRootOnce(ui));
-                ManageUserController.getInstance().update();
-            }
-        });
-        popup.addNavigateButton("SÁCH", () -> {
-        });
-        popup.addNavigateButton("MƯỢN SÁCH", () -> {
-        });
-        popup.addNavigateButton("TÁC GIẢ", () -> {
-        });
-        popup.addNavigateButton("THỂ LOẠI", () -> {
-        });
-        popup.addNavigateButton("HUỶ", PopupManager::closePopup);
+        for (Pair<String, Runnable> btn : btns) {
+            popup.addNavigateButton(btn.getKey(), btn.getValue());
+        }
         showPeek();
     }
 
