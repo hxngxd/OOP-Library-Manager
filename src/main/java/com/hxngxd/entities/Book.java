@@ -1,5 +1,6 @@
 package com.hxngxd.entities;
 
+import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.Formatter;
@@ -29,6 +30,8 @@ public final class Book extends EntityWithPhoto {
     private final List<Author> authors = new ArrayList<>();
 
     private final List<Genre> genres = new ArrayList<>();
+
+    private final List<Review> reviews = new ArrayList<>();
 
     public Book() {
     }
@@ -129,9 +132,21 @@ public final class Book extends EntityWithPhoto {
     }
 
     public String getReview() {
+        if (numberOfReviews == 0) {
+            return "Chưa được đánh giá";
+        }
         int fullStars = (int) averageRating;
         String ratingStars = "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
         return String.format("%.1f %s (%d)", averageRating, ratingStars, numberOfReviews);
+    }
+
+    public String getDetailReview() {
+        if (numberOfReviews == 0) {
+            return "Chưa được đánh giá";
+        }
+        int fullStars = (int) averageRating;
+        String ratingStars = "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
+        return String.format("%s %.1f • %d lượt đánh giá", ratingStars, averageRating, numberOfReviews);
     }
 
     public int getNumberOfReviews() {
@@ -211,7 +226,27 @@ public final class Book extends EntityWithPhoto {
         return info.toString();
     }
 
-    private void genresToString(StringBuilder info) {
+    public String toStringHalfDetail() {
+        String bullet = "• ";
+        StringBuilder info = new StringBuilder();
+
+        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
+
+        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
+
+        info.append(bullet).append("Thêm vào lúc: ").append(
+                Formatter.formatDateTime(this.dateAdded)).append("\n");
+
+        info.append(bullet).append("Cập nhật cuối cùng: ").append(
+                Formatter.formatDateTime(this.lastUpdated)).append("\n");
+
+        info.append(bullet).append("Số bản sao có sẵn: ").append(
+                this.availableCopies).append("/").append(this.totalCopies);
+
+        return info.toString();
+    }
+
+    public void genresToString(StringBuilder info) {
         for (int i = 0; i < this.genres.size(); i++) {
             info.append(this.genres.get(i).getName());
             if (i < this.genres.size() - 1) {
@@ -221,7 +256,7 @@ public final class Book extends EntityWithPhoto {
         info.append("\n");
     }
 
-    private void authorsToString(StringBuilder info) {
+    public void authorsToString(StringBuilder info) {
         for (int i = 0; i < this.authors.size(); i++) {
             info.append(this.authors.get(i).getFullNameFirstThenLast());
             if (i < this.authors.size() - 1) {
@@ -231,4 +266,11 @@ public final class Book extends EntityWithPhoto {
         info.append("\n");
     }
 
+    public void loadReviews() {
+
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
 }

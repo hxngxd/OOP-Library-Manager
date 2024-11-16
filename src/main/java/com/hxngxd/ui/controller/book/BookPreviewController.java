@@ -6,7 +6,9 @@ import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.scene.MainController;
 import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.utils.ImageHandler;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -22,7 +24,7 @@ public class BookPreviewController extends PreviewController {
 
     private boolean isPreviewing = false;
 
-    private Book book;
+    protected Book book;
 
     @FXML
     private FontAwesomeIconView saveBookIcon;
@@ -31,11 +33,15 @@ public class BookPreviewController extends PreviewController {
     private Button saveBookButton;
 
     public void previewBook(Book book) {
-        this.book = book;
-        setImage(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
+        prv(book);
         setName(book.getTitle());
         setInformation(book.toStringDetail());
         setPreviewing(true);
+    }
+
+    protected void prv(Book book) {
+        this.book = book;
+        setImage(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
         setSaveButtonState();
     }
 
@@ -55,18 +61,22 @@ public class BookPreviewController extends PreviewController {
                 currentUser.saveBook(book);
                 setSaveButtonState();
                 BookGalleryController.getInstance().showBookCardsBySearch();
+                PopupManager.info("Đã lưu sách");
             } catch (DatabaseException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMSG("save book"), e.getMessage());
+                PopupManager.info("Lỗi khi lưu sách");
             }
         } else {
             try {
                 currentUser.unsaveBook(book);
                 setSaveButtonState();
                 BookGalleryController.getInstance().showBookCardsBySearch();
+                PopupManager.info("Đã bỏ lưu sách");
             } catch (DatabaseException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 log.error(LogMessages.General.FAIL.getMSG("unsave book"), e.getMessage());
+                PopupManager.info("Lỗi khi bỏ lưu sách");
             }
         }
     }
@@ -80,6 +90,18 @@ public class BookPreviewController extends PreviewController {
             saveBookIcon.setGlyphName("BOOKMARK_ALT");
             saveBookButton.setText("LƯU SÁCH");
         }
+    }
+
+    @FXML
+    private void showDetail() {
+        UI ui = UI.BOOK_DETAIL;
+        MainController mainController = MainController.getInstance();
+        if (mainController.getCurrentTab() == ui) {
+            return;
+        }
+        mainController.setCurrentTab(ui);
+        mainController.navigate(UIManager.getRootOnce(ui));
+        BookDetailController.getInstance().onActive(this.book);
     }
 
     public static BookPreviewController getInstance() {
