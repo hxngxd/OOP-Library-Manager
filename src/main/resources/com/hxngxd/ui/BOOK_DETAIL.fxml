@@ -9,7 +9,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -86,50 +85,6 @@
                                           <Font name="System Bold" size="18.0" />
                                        </font>
                                     </Label>
-                                    <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: #e6e6e6;" VBox.vgrow="ALWAYS">
-                                       <children>
-                                          <ImageView fx:id="image1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
-                                          <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label fx:id="userLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="User">
-                                                   <font>
-                                                      <Font name="System Bold Italic" size="16.0" />
-                                                   </font>
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </Label>
-                                                <Label fx:id="elapseLabel" layoutX="10.0" layoutY="36.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Elapse">
-                                                   <font>
-                                                      <Font size="16.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label fx:id="userRatingLabel" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Rating" VBox.vgrow="ALWAYS">
-                                                   <font>
-                                                      <Font size="16.0" />
-                                                   </font>
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </Label>
-                                                <Label fx:id="userReviewLabel" layoutX="10.0" layoutY="36.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Reviews" VBox.vgrow="ALWAYS">
-                                                   <font>
-                                                      <Font size="16.0" />
-                                                   </font>
-                                                   <VBox.margin>
-                                                      <Insets />
-                                                   </VBox.margin>
-                                                </Label>
-                                             </children>
-                                             <HBox.margin>
-                                                <Insets bottom="5.0" top="5.0" />
-                                             </HBox.margin>
-                                          </VBox>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                    </HBox>
                                  </children>
                               </VBox>
                            </children>
