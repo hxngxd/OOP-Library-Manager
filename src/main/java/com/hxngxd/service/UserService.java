@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public final class UserService {
@@ -33,6 +34,8 @@ public final class UserService {
     private final DatabaseManager db = DatabaseManager.getInstance();
 
     public static final List<User> userList = new ArrayList<>();
+
+    public static final HashMap<Integer, User> userMap = new HashMap<>();
 
     private User currentUser = null;
 
@@ -116,7 +119,6 @@ public final class UserService {
         currentUser.setPasswordHash(passwordHash);
         currentUser.setRole(Role.USER);
         currentUser.setAccountStatus(AccountStatus.ACTIVE);
-        currentUser.setViolationCount(0);
 
         log.info(LogMessages.General.SUCCESS.getMSG("create account"));
     }
@@ -163,6 +165,7 @@ public final class UserService {
         currentUser.setAccountStatus(AccountStatus.INACTIVE);
         currentUser = null;
         userList.clear();
+        userMap.clear();
 
         log.info(LogMessages.General.SUCCESS.getMSG("log out"));
     }
@@ -346,12 +349,18 @@ public final class UserService {
     public void getAllUsers()
             throws DatabaseException {
         userList.clear();
+        userMap.clear();
 
         String query = "select * from user";
         db.select("getting user", query, resultSet -> {
             while (resultSet.next()) {
-                if (currentUser.getId() != resultSet.getInt("id")) {
-                    userList.add(loadUserInformation(true, resultSet));
+                int id = resultSet.getInt("id");
+                if (currentUser.getId() != id) {
+                    User user = loadUserInformation(true, resultSet);
+                    userList.add(user);
+                    userMap.put(id, user);
+                } else {
+                    userMap.put(currentUser.getId(), currentUser);
                 }
             }
             return null;
@@ -400,11 +409,11 @@ public final class UserService {
 
         user.setRole(Role.valueOf(rs.getString("role")));
 
-        user.setViolationCount(rs.getInt("violationCount"));
-
         byte[] photoBytes = rs.getBytes("photo");
         if (photoBytes != null) {
             user.setImage(ImageHandler.byteArrayToImage(photoBytes));
+        } else {
+            user.setImage(ImageHandler.loadImageFromResource("profileImage.jpg"));
         }
 
         return user;

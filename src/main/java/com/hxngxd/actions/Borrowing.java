@@ -1,5 +1,7 @@
 package com.hxngxd.actions;
 
+import com.hxngxd.entities.Book;
+import com.hxngxd.entities.User;
 import com.hxngxd.enums.BorrowStatus;
 
 import java.time.LocalDate;
@@ -7,11 +9,11 @@ import java.time.LocalDateTime;
 
 public final class Borrowing extends Action {
 
-    private int bookId;
+    private Book book;
 
-    private int handlerId;
+    private User handler;
 
-    private final LocalDateTime requestDate;
+    private final LocalDateTime requestDate = null;
 
     private LocalDateTime approvalDate;
 
@@ -22,35 +24,6 @@ public final class Borrowing extends Action {
     private LocalDate actualReturnDate;
 
     private BorrowStatus status;
-
-    public Borrowing(int id, int userId, LocalDateTime timestamp, int bookId,
-                     int handlerId, LocalDateTime requestDate, LocalDate estimatedReturnDate) {
-        super(id, userId, timestamp);
-        this.bookId = bookId;
-        this.handlerId = handlerId;
-        this.requestDate = requestDate;
-        this.approvalDate = null;
-        this.borrowDate = null;
-        this.estimatedReturnDate = estimatedReturnDate;
-        this.actualReturnDate = null;
-        this.status = BorrowStatus.PENDING;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public int getHandlerId() {
-        return handlerId;
-    }
-
-    public void setHandlerId(int handlerId) {
-        this.handlerId = handlerId;
-    }
 
     public LocalDateTime getRequestDate() {
         return requestDate;
