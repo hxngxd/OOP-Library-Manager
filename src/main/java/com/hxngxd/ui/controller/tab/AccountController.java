@@ -150,13 +150,8 @@ public final class AccountController {
 
     private void changeProfile()
             throws DatabaseException, UserException, ValidationException {
-        if (!firstNameField.getText().equals(currentUser.getFirstName()) ||
-                !lastNameField.getText().equals(currentUser.getLastName()) ||
-                !addressField.getText().equals(currentUser.getAddress())
-        ) {
-            userService.updateProfile(firstNameField.getText(), lastNameField.getText(),
-                    birthdayField.getValue(), addressField.getText());
-        }
+        userService.updateProfile(firstNameField.getText(), lastNameField.getText(),
+                birthdayField.getValue(), addressField.getText());
     }
 
     public static AccountController getInstance() {

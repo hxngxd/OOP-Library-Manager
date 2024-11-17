@@ -85,7 +85,7 @@ public final class InputHandler {
 
     private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    public static final double similarThresHold = 0.75;
+    public static final double similarThresHold = 0.8;
 
     private InputHandler() {
     }
@@ -93,7 +93,7 @@ public final class InputHandler {
     public static void validateInput(String... inputs)
             throws ValidationException {
         for (String input : inputs) {
-            if (input.isEmpty()) {
+            if (input == null || input.isEmpty()) {
                 throw new ValidationException(LogMessages.Validation.INFO_IS_MISSING.getMSG());
             }
             if (input.length() > 127) {
