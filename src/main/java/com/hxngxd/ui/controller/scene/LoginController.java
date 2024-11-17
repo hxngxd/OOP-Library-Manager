@@ -91,6 +91,11 @@ public final class LoginController extends AuthenticationController {
         RegisterController.getInstance().onActive();
     }
 
+    @FXML
+    private void forgotPassword() {
+        PopupManager.info("Liên hệ ADMIN để cấp lại mật khẩu");
+    }
+
     public static LoginController getInstance() {
         return UIManager.getControllerOnce(UI.LOGIN);
     }

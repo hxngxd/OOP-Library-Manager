@@ -98,7 +98,7 @@
                                       <Font size="14.0" />
                                   </font>
                               </Button>
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="XOÁ USER" HBox.hgrow="ALWAYS">
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteUser" stylesheets="@style.css" text="XOÁ USER" HBox.hgrow="ALWAYS">
                                   <font>
                                       <Font size="14.0" />
                                   </font>

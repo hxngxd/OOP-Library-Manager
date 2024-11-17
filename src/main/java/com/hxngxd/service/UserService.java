@@ -21,6 +21,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,9 +143,7 @@ public final class UserService {
         }
 
         user = getUserByUsernameOrEmail(true, username, email);
-        db.update("user",
-                "accountStatus", AccountStatus.ACTIVE.name(),
-                "id", user.getId());
+        db.update("user", "accountStatus", AccountStatus.ACTIVE.name(), "id", user.getId());
         currentUser = user;
 
         currentUser.setAccountStatus(AccountStatus.ACTIVE);
@@ -179,93 +178,49 @@ public final class UserService {
 
         byte[] toByte = ImageHandler.fileToByteArray(imageFile);
 
-        db.update("user",
-                "photo", toByte,
-                "id", currentUser.getId());
+        db.update("user", "photo", toByte, "id", currentUser.getId());
+
+        currentUser.setImage(ImageHandler.loadImageFromFile(imageFile));
 
         log.info(LogMessages.General.SUCCESS.getMSG("change profile picture"));
     }
 
-//    public boolean updateProfile(int userId, String newFirstName, String newLastName,
-//                                 LocalDate newDateOfBirth, String newAddress) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (userId != currentUser.getId()) {
-//            if (!currentUser.getRole().hasPermission(Permission.EDIT_OTHERS_PROFILE)) {
-//                log.info(LogMessages.userNotAllowTo("change others' profile"));
-//                return false;
-//            }
-//
-//            User user = getUserbyId(false, userId);
-//            if (user == null) {
-//                log.info(LogMessages.userNotFound);
-//                return false;
-//            } else {
-//                if (user.getRole() == Role.ADMIN) {
-//                    log.info(LogMessages.userCant("change other Admins' profile"));
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        if (!InputHandler.validateInput(
-//                newFirstName, newLastName, newAddress
-//        )) {
-//            return false;
-//        }
-//
-//        boolean update = db.update("user",
-//                List.of("firstName", "lastName", "dateOfBirth", "address"),
-//                List.of(newFirstName, newLastName,
-//                        Date.valueOf(newDateOfBirth), newAddress),
-//                List.of("id"), List.of(userId));
-//        return LogMessages.logResult(update, "update profile");
-//    }
-//
-//    public boolean changeEmail(int userId, String newEmail) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (userId != currentUser.getId()) {
-//            if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
-//                log.info(LogMessages.userNotAllowTo("change others' email"));
-//                return false;
-//            }
-//
-//            User other = getUserbyId(false, userId);
-//            if (other == null) {
-//                log.info(LogMessages.userNotFound);
-//                return false;
-//            } else {
-//                if (other.getRole() == Role.ADMIN) {
-//                    log.info(LogMessages.userCant("change other Admins' email"));
-//                    return false;
-//                }
-//            }
-//        } else {
-//            if (newEmail.equals(currentUser.getEmail())) {
-//                log.info("New email is still the same");
-//                return false;
-//            }
-//        }
-//
-//        if (!InputHandler.validateEmail(newEmail)) {
-//            log.info(LogMessages.emailNotValid);
-//            return false;
-//        }
-//
-//        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
-//            log.info("Email is already used by other users");
-//            return false;
-//        }
-//
-//        boolean update = db.update("user", "email", newEmail,
-//                "id", userId);
-//        return LogMessages.logResult(update, "change email");
-//    }
+    public void updateProfile(String newFirstName, String newLastName,
+                              LocalDate newDateOfBirth, String newAddress)
+            throws DatabaseException, UserException, ValidationException {
+        checkLoggedInAndConnected();
+
+        InputHandler.validateInput(newFirstName, newLastName, newAddress);
+
+        db.update("user",
+                List.of("firstName", "lastName", "dateOfBirth", "address"),
+                List.of(newFirstName, newLastName, Date.valueOf(newDateOfBirth), newAddress),
+                List.of("id"), List.of(currentUser.getId()));
+
+        currentUser.setFirstName(newFirstName);
+        currentUser.setLastName(newLastName);
+        currentUser.setDateOfBirth(newDateOfBirth);
+        currentUser.setAddress(newAddress);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("update profile"));
+    }
+
+    public void changeEmail(String newEmail)
+            throws DatabaseException, UserException, ValidationException {
+        checkLoggedInAndConnected();
+
+        InputHandler.validateEmail(newEmail);
+
+        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
+            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
+        }
+
+        db.update("user", "email", newEmail, "id", currentUser.getId());
+
+        currentUser.setEmail(newEmail);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("change email"));
+    }
 
     public void changeRole(int userId, Role role)
             throws DatabaseException, UserException {
@@ -276,9 +231,6 @@ public final class UserService {
         }
 
         User user = getUserbyId(false, userId);
-        if (user == null) {
-            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
-        }
 
         if (user.getRole() == Role.ADMIN) {
             throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin role"));
@@ -302,9 +254,6 @@ public final class UserService {
         }
 
         User user = getUserbyId(false, userId);
-        if (user == null) {
-            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
-        }
 
         if (user.getRole() == Role.ADMIN) {
             throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin account status"));
@@ -315,21 +264,20 @@ public final class UserService {
         log.info(LogMessages.General.SUCCESS.getMSG("change account status"));
     }
 
-//    public boolean changePassword(String oldPassword, String newPassword) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (!PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash())) {
-//            log.info(LogMessages.wrongPW);
-//            return false;
-//        }
-//
-//        boolean update = db.update("user", "passwordHash",
-//                PasswordEncoder.encode(currentUser.getPasswordHash()),
-//                "id", currentUser.getId());
-//        return LogMessages.logResult(update, "change password");
-//    }
+    public void changePassword(String oldPassword, String newPassword)
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
+
+        InputHandler.validatePassword(newPassword);
+
+        PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash());
+
+        String newHashedPassword = PasswordEncoder.encode(newPassword);
+        db.update("user", "passwordHash", newHashedPassword, "id", currentUser.getId());
+        currentUser.setPasswordHash(newHashedPassword);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("change own password"));
+    }
 
     public void changePassword(int userId, String newPassword)
             throws DatabaseException, UserException {
@@ -340,9 +288,6 @@ public final class UserService {
         }
 
         User user = getUserbyId(false, userId);
-        if (user == null) {
-            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
-        }
 
         if (user.getRole() == Role.ADMIN) {
             throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin password"));
@@ -355,81 +300,40 @@ public final class UserService {
         log.info(LogMessages.General.SUCCESS.getMSG("change password"));
     }
 
-////    public static boolean resetPasswordRequest(String email) {
-////        return true;
-////    }
-////
-////    public static boolean emailOTPRequest(String email) {
-////        return true;
-////    }
-////
-////    public static boolean verifyEmail(String email, String OTP) {
-////        return true;
-////    }
-//
-//    public boolean deleteOwnAccount(String password) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (!currentUser.getRole().hasPermission(Permission.DELETE_OWN_ACCOUNT)) {
-//            log.info(LogMessages.userNotAllowTo("delete their own account"));
-//            return false;
-//        }
-//
-//        if (!PasswordEncoder.compare(password, currentUser.getPasswordHash())) {
-//            log.info(LogMessages.wrongPW);
-//            return false;
-//        }
-//
-//        boolean delete = db.delete("user", "id", currentUser.getId());
-//        if (delete) {
-//            currentUser = null;
-//        }
-//        return LogMessages.logResult(delete, "delete your account and log out");
-//    }
-//
-//    public boolean deleteOthersAccount(int userId) {
-//        if (!checkLoggedInAndConnected()) {
-//            return false;
-//        }
-//
-//        if (userId == currentUser.getId()) {
-//            log.info("Password is required to delete your own password");
-//            return false;
-//        }
-//
-//        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
-//            log.info(LogMessages.userNotAllowTo("delete others' account"));
-//            return false;
-//        }
-//
-//        User user = getUserbyId(false, userId);
-//        if (user == null) {
-//            log.info(LogMessages.userNotFound);
-//            return false;
-//        }
-//
-//        if (user.getRole() == Role.ADMIN) {
-//            log.info(LogMessages.userCant("delete other Admin's account"));
-//            return false;
-//        }
-//
-//        boolean delete = db.delete("user", "id", userId);
-//        return LogMessages.logResult(delete, "delete account");
-//    }
+    public void deleteAccount(int userId)
+            throws DatabaseException, UserException {
+        checkLoggedInAndConnected();
 
-    private User getUserbyId(Boolean inDetail, int id)
-            throws UserException {
-        return getUser(inDetail, id, "", "");
+        if (userId == currentUser.getId()) {
+            throw new UserException("Password is required to delete your own account");
+        }
+
+        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
+            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("delete others' account"));
+        }
+
+        getUserbyId(false, userId);
+
+        db.delete("user", "id", userId);
+
+        log.info(LogMessages.General.SUCCESS.getMSG("delete account"));
     }
 
-    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email)
-            throws UserException {
+    private User getUserbyId(Boolean inDetail, int id)
+            throws DatabaseException, UserException {
+        User user = getUser(inDetail, id, "", "");
+        if (user == null) {
+            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
+        }
+        return user;
+    }
+
+    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email) {
         return getUser(inDetail, -1, username, email);
     }
 
-    private User getUser(Boolean inDetail, Object... params) {
+    private User getUser(Boolean inDetail, Object... params)
+            throws DatabaseException, UserException {
         String query = "select * from user where id = ? or username = ? or email = ?";
         return db.select("getting user", query, resultSet -> {
             if (resultSet.next()) {

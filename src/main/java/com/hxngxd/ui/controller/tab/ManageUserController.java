@@ -216,6 +216,7 @@ public final class ManageUserController extends ManageController<User> {
     @FXML
     private void changePassword() {
         if (getSelected() == null) {
+            noneSelected();
             return;
         }
         String message = String.format("Đổi mật khẩu user có id=%d?", getSelectedId());
@@ -247,8 +248,28 @@ public final class ManageUserController extends ManageController<User> {
         changeAccountStatus(AccountStatus.BANNED, "cấm vĩnh viễn");
     }
 
+    @FXML
+    private void deleteUser() {
+        if (getSelected() == null || getSelectedId() == userService.getCurrentUser().getId()) {
+            noneSelected();
+            return;
+        }
+        String message = String.format("Xác nhận xoá user có id=%d (không thể hoàn tác)", getSelectedId());
+        PopupManager.confirm(message, () -> {
+            try {
+                userService.deleteAccount(getSelectedId());
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
+    }
+
     private void changeAccountStatus(AccountStatus status, String action) {
         if (getSelected() == null || getSelected().getAccountStatus() == status) {
+            noneSelected();
             return;
         }
         String message = String.format("Xác nhận %s user có id=%d?", action, getSelectedId());
@@ -278,6 +299,7 @@ public final class ManageUserController extends ManageController<User> {
 
     private void changeRole(Role role) {
         if (getSelected() == null || getSelected().getRole() == role) {
+            noneSelected();
             return;
         }
         String message = String.format("Xác nhận đổi vai trò của user có id=%d thành %s?", getSelectedId(), role.name());
