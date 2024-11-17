@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 
 <SplitPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-           prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22"
+           prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.hxngxd.ui.controller.scene.MainController">
     <items>
@@ -27,8 +27,9 @@
                     <children>
                         <AnchorPane>
                             <children>
-                                <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                      AnchorPane.topAnchor="0.0">
+                                <HBox onMouseClicked="#showAccount2" styleClass="review"
+                                      stylesheets="@style.css" AnchorPane.leftAnchor="0.0"
+                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <StackPane>
                                             <HBox.margin>
@@ -131,18 +132,6 @@
                                             </font>
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="BOOK" size="20"/>
-                                            </graphic>
-                                        </Button>
-                                        <Button alignment="CENTER"
-                                                maxHeight="1.7976931348623157E308"
-                                                maxWidth="1.7976931348623157E308"
-                                                mnemonicParsing="false" prefHeight="70.0"
-                                                stylesheets="@style.css" text="VI PHẠM">
-                                            <font>
-                                                <Font name="System Italic" size="16.0"/>
-                                            </font>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="EJECT" size="20"/>
                                             </graphic>
                                         </Button>
                                         <Button fx:id="manageButton" alignment="CENTER"

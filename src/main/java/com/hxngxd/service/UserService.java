@@ -119,7 +119,6 @@ public final class UserService {
         currentUser.setPasswordHash(passwordHash);
         currentUser.setRole(Role.USER);
         currentUser.setAccountStatus(AccountStatus.ACTIVE);
-        currentUser.setViolationCount(0);
 
         log.info(LogMessages.General.SUCCESS.getMSG("create account"));
     }
@@ -409,8 +408,6 @@ public final class UserService {
         }
 
         user.setRole(Role.valueOf(rs.getString("role")));
-
-        user.setViolationCount(rs.getInt("violationCount"));
 
         byte[] photoBytes = rs.getBytes("photo");
         if (photoBytes != null) {

@@ -109,6 +109,11 @@ public final class MainController extends NavigateController {
     }
 
     @FXML
+    private void showAccount2() {
+        showAccount(null);
+    }
+
+    @FXML
     private void showHome(ActionEvent event) {
         BookGalleryController.getInstance().onActive();
         BookGalleryController.getInstance().setIsShowingSavedBook(false);
@@ -145,7 +150,7 @@ public final class MainController extends NavigateController {
         btns.add(new Pair<>("THỂ LOẠI", () -> {
         }));
         btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
-        PopupManager.navigate("QUẢN LÝ", btns);
+        PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", btns);
     }
 
     private void showBookGallery() {

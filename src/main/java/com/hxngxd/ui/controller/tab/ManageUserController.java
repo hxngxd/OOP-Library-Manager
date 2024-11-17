@@ -51,9 +51,6 @@ public final class ManageUserController extends ManageController<User> {
     @FXML
     private TableColumn<User, String> statusColumn;
 
-    @FXML
-    private TableColumn<User, Integer> violationCountColumn;
-
     private final UserService userService = UserService.getInstance();
 
     @Override
@@ -117,14 +114,6 @@ public final class ManageUserController extends ManageController<User> {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> param) {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getAccountStatus().name());
-            }
-        });
-
-
-        violationCountColumn.setCellValueFactory(new Callback<>() {
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<User, Integer> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getViolationCount());
             }
         });
 

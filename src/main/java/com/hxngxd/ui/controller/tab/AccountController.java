@@ -71,9 +71,6 @@ public final class AccountController {
     private TextField borrowBookField;
 
     @FXML
-    private TextField violateField;
-
-    @FXML
     private void initialize() {
         onActive();
         idField.setText(String.valueOf(currentUser.getId()));
@@ -110,7 +107,6 @@ public final class AccountController {
         birthdayField.setValue(currentUser.getDateOfBirth());
         saveBookField.setText(String.valueOf(currentUser.getSavedBooks().size()));
         borrowBookField.setText(String.valueOf(0));
-        violateField.setText(String.valueOf(currentUser.getViolationCount()));
     }
 
     @FXML
