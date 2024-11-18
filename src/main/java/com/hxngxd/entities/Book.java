@@ -9,6 +9,7 @@ import com.hxngxd.utils.Formatter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class Book extends EntityWithPhoto {
@@ -284,6 +285,7 @@ public final class Book extends EntityWithPhoto {
             }
             return null;
         }, id);
+        reviews.sort(Comparator.comparing(Review::getTimestamp).reversed());
         setReview();
     }
 
