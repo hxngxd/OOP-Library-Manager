@@ -36,7 +36,6 @@
                            </graphic>
                         </Button>
                         <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="ĐẶT MƯỢN SÁCH" VBox.vgrow="ALWAYS" />
-                        <Button contentDisplay="RIGHT" layoutX="10.0" layoutY="56.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="45.0" stylesheets="@style.css" text="ĐÁNH GIÁ" />
                      </children>
                      <VBox.margin>
                         <Insets left="15.0" right="15.0" />

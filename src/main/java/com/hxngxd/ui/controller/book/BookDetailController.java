@@ -1,12 +1,15 @@
 package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.actions.Review;
+import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Book;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -17,9 +20,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public final class BookDetailController extends BookPreviewController {
 
+    private static final Logger log = LogManager.getLogger(BookDetailController.class);
     @FXML
     private Label authorsLabel;
 
@@ -70,7 +78,6 @@ public final class BookDetailController extends BookPreviewController {
         book.genresToString(genres);
         authorsLabel.setText(authors.toString());
         genresLabel.setText(genres.toString());
-        ratingLabel.setText(book.getDetailReview());
         descriptionLabel.setText(book.getShortDescription());
         informationLabel.setText(book.toStringHalfDetail());
 
@@ -78,7 +85,7 @@ public final class BookDetailController extends BookPreviewController {
         userImage.setImage(
                 ImageHandler.cropImageByRatio(userService.getCurrentUser().getImage(), 1, 1)
         );
-        userLabel.setText(userService.getCurrentUser().getFullNameFirstThenLast());
+        userLabel.setText(userService.getCurrentUser().getFullNameLastThenFirst());
         userComment.setText("");
 
         userComment.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -86,7 +93,9 @@ public final class BookDetailController extends BookPreviewController {
                 if (event.isShiftDown()) {
                     userComment.appendText("\n");
                 } else {
-                    System.out.println(userComment.getText());
+                    if (currentStar != 0 && !userComment.getText().isEmpty()) {
+                        PopupManager.confirm("Xác nhận đánh giá?", this::confirmReview);
+                    }
                 }
                 event.consume();
             }
@@ -94,6 +103,22 @@ public final class BookDetailController extends BookPreviewController {
 
         starHover();
         displayReviews();
+        ratingLabel.setText(book.getDetailReview());
+    }
+
+    private void confirmReview() {
+        PopupManager.closePopup();
+        try {
+            DatabaseManager.getInstance().insert("review", false,
+                    List.of("userId", "bookId", "rating", "comment"),
+                    userService.getCurrentUser().getId(), book.getId(), currentStar, userComment.getText());
+            PopupManager.info("Đã đánh giá sách!");
+            onActive(this.book);
+            log.info(LogMessages.General.SUCCESS.getMSG("review"));
+        } catch (DatabaseException e) {
+            log.info(LogMessages.General.FAIL.getMSG("review"));
+            PopupManager.info("Đánh giá thất bại!");
+        }
     }
 
     private void starHover() {
@@ -130,8 +155,17 @@ public final class BookDetailController extends BookPreviewController {
     private void displayReviews() {
         reviewsVbox.getChildren().clear();
         reviewsVbox.getChildren().add(reviewHeader);
-        reviewsVbox.getChildren().add(userReviewHbox);
         book.loadReviews();
+        boolean alreadyReviewed = false;
+        for (Review review : book.getReviews()) {
+            if (review.getUser().getId() == userService.getCurrentUser().getId()) {
+                alreadyReviewed = true;
+                break;
+            }
+        }
+        if (!alreadyReviewed) {
+            reviewsVbox.getChildren().add(userReviewHbox);
+        }
         if (book.getNumberOfReviews() == 0) {
             return;
         }
@@ -143,10 +177,6 @@ public final class BookDetailController extends BookPreviewController {
                 reviewsVbox.getChildren().add(loader.getRoot());
             }
         }
-    }
-
-    @FXML
-    private void addReview(ActionEvent event) {
     }
 
     public static BookDetailController getInstance() {

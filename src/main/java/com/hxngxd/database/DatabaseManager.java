@@ -161,7 +161,8 @@ public final class DatabaseManager {
         }
     }
 
-    public void insert(String table, boolean getId, List<String> fields, Object... values) {
+    public void insert(String table, boolean getId, List<String> fields, Object... values)
+            throws DatabaseException {
         StringBuilder query = new StringBuilder("insert into ");
         query.append(table).append("(");
         for (int i = 0; i < fields.size(); i++) {

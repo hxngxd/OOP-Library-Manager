@@ -284,6 +284,7 @@ public final class Book extends EntityWithPhoto {
             }
             return null;
         }, id);
+        setReview();
     }
 
     public List<Review> getReviews() {

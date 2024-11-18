@@ -1,6 +1,7 @@
 package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.actions.Review;
+import com.hxngxd.service.UserService;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
@@ -29,7 +30,8 @@ public class UserReviewController {
         image.setImage(
                 ImageHandler.cropImageByRatio(review.getUser().getImage(), 1, 1)
         );
-        userLabel.setText(review.getUser().getFullNameLastThenFirst());
+        userLabel.setText(review.getUser().getFullNameLastThenFirst()
+                + (review.getUser().getId() == UserService.getInstance().getCurrentUser().getId() ? " (Bạn)" : ""));
         elapseLabel.setText(Formatter.timeElapsed(review.getTimestamp()));
         userRatingLabel.setText(review.getStringRating());
         userReviewLabel.setText(review.getComment());
