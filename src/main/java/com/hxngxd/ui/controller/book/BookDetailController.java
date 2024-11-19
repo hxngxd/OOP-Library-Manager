@@ -3,7 +3,9 @@ package com.hxngxd.ui.controller.book;
 import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Book;
+import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
@@ -121,6 +123,23 @@ public final class BookDetailController extends BookPreviewController {
         }
     }
 
+    public void editReviewComment(Review review) {
+        PopupManager.closePopup();
+    }
+
+    public void deleteReview(Review review) {
+        PopupManager.closePopup();
+        try {
+            DatabaseManager.getInstance().delete("review", "id", review.getId());
+            PopupManager.info("Đã xoá đánh giá!");
+            onActive(this.book);
+            log.info(LogMessages.General.SUCCESS.getMSG("delete review"));
+        } catch (DatabaseException e) {
+            log.info(LogMessages.General.FAIL.getMSG("delete review"));
+            PopupManager.info("Xoá đánh giá thất bại!");
+        }
+    }
+
     private void starHover() {
         for (int j = 0; j < 5; j++) {
             ImageView prevImage = (ImageView) starContainer.getChildren().get(j);
@@ -157,8 +176,9 @@ public final class BookDetailController extends BookPreviewController {
         reviewsVbox.getChildren().add(reviewHeader);
         book.loadReviews();
         boolean alreadyReviewed = false;
+        User user = userService.getCurrentUser();
         for (Review review : book.getReviews()) {
-            if (review.getUser().getId() == userService.getCurrentUser().getId()) {
+            if (review.getUser().getId() == user.getId()) {
                 alreadyReviewed = true;
                 break;
             }
@@ -172,7 +192,11 @@ public final class BookDetailController extends BookPreviewController {
         for (Review review : book.getReviews()) {
             FXMLLoader loader = UIManager.load(UI.USER_REVIEW);
             UserReviewController urc = loader.getController();
-            urc.display(review);
+            if (user.getRole().hasPermission(Permission.MANAGE_REVIEWS)) {
+                urc.display(review, true, review.getUser().getId() == user.getId());
+            } else {
+                urc.display(review, review.getUser().getId() == user.getId(), true);
+            }
             if (!reviewsVbox.getChildren().contains(loader.getRoot())) {
                 reviewsVbox.getChildren().add(loader.getRoot());
             }
