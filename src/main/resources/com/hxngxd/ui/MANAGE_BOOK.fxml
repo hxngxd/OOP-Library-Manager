@@ -74,7 +74,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button layoutX="1143.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="XOÁ SÁCH" HBox.hgrow="ALWAYS">
+                  <Button layoutX="1143.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteBook" stylesheets="@style.css" text="XOÁ SÁCH" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -84,7 +84,7 @@
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button layoutX="1118.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="LÀM MỚI" HBox.hgrow="ALWAYS">
+                  <Button layoutX="1118.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#update" stylesheets="@style.css" text="LÀM MỚI" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>

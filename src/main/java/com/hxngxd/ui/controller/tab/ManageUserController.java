@@ -241,7 +241,7 @@ public final class ManageUserController extends ManageController<User> {
             noneSelected();
             return;
         }
-        String message = String.format("Xác nhận xoá user có id=%d (không thể hoàn tác)", getSelectedId());
+        String message = String.format("Xác nhận xoá user có id = %d (không thể hoàn tác)", getSelectedId());
         PopupManager.confirm(message, () -> {
             try {
                 userService.deleteAccount(getSelectedId());

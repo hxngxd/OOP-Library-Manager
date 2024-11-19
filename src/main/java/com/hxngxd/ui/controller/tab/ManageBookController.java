@@ -3,6 +3,7 @@ package com.hxngxd.ui.controller.tab;
 import com.hxngxd.entities.Book;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
@@ -165,6 +166,27 @@ public final class ManageBookController extends ManageController<Book> {
         } catch (DatabaseException e) {
             PopupManager.info("Không thể cập nhật danh sách sách");
         }
+    }
+
+    @FXML
+    public void deleteBook() {
+        if(getSelected() == null) {
+            noneSelected();
+            return;
+        }
+
+        String message = String.format("Xác nhận xoá sách có id=%d (không thể hoàn tác)", getSelectedId());
+        PopupManager.confirm(message, () -> {
+            try {
+                int bookId = getSelectedId();
+                bookService.deleteBook(bookId);
+                update();
+            } catch (DatabaseException | UserException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
     }
 
     public static ManageBookController getInstance() {

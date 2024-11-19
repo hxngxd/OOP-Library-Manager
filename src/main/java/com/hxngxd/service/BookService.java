@@ -99,4 +99,17 @@ public final class BookService {
         bookList.addAll(bookMap.values());
     }
 
+    public void deleteBook(int bookId) throws DatabaseException {
+        Book book = bookMap.get(bookId);
+        if(book == null) {
+            throw new DatabaseException("Book not found");
+        }
+
+        db.delete("book", "id", bookId);
+        bookMap.remove(bookId);
+        bookList.remove(book);
+        System.out.println("Book with ID " + bookId + " has been successfully deleted.");
+
+    }
+
 }
