@@ -53,11 +53,6 @@ public final class Author extends Person {
     public Author() {
     }
 
-    public String getFullName() {
-        return (this.firstName + " " + this.lastName).trim();
-    }
-
-
     public Author(int id) {
         this.id = id;
     }

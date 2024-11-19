@@ -35,6 +35,7 @@ public final class BookService {
 
     public static void initialize()
             throws DatabaseException {
+        bookList.clear();
         bookMap.clear();
 
         String query = "select book.*, bookauthor.authorId, bookgenre.genreId from book" +
@@ -90,26 +91,18 @@ public final class BookService {
             }
             return null;
         });
-    }
-
-    public void getAllBooks() throws DatabaseException {
-        bookList.clear();
-        bookMap.clear();
-        initialize();
         bookList.addAll(bookMap.values());
     }
 
     public void deleteBook(int bookId) throws DatabaseException {
         Book book = bookMap.get(bookId);
-        if(book == null) {
+        if (book == null) {
             throw new DatabaseException("Book not found");
         }
-
         db.delete("book", "id", bookId);
         bookMap.remove(bookId);
         bookList.remove(book);
         System.out.println("Book with ID " + bookId + " has been successfully deleted.");
-
     }
 
 }

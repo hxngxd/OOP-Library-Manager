@@ -1,8 +1,6 @@
 package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
-import com.hxngxd.ui.controller.scene.MainController;
-import com.hxngxd.ui.controller.tab.ManageUserController;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -11,8 +11,8 @@ import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.tab.AccountController;
 import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.controller.tab.ManageBookController;
-import com.hxngxd.ui.controller.tab.ManageUserController;
+import com.hxngxd.ui.controller.tab.manage.ManageBookController;
+import com.hxngxd.ui.controller.tab.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,7 +23,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -145,7 +144,7 @@ public final class MainController extends NavigateController {
         btns.add(new Pair<>("SÁCH", () -> {
             UI ui = UI.MANAGE_BOOK;
             PopupManager.closePopup();
-            if(currentTab != ui) {
+            if (currentTab != ui) {
                 currentTab = ui;
                 navigate(UIManager.getRootOnce(ui));
                 ManageBookController.getInstance().update();

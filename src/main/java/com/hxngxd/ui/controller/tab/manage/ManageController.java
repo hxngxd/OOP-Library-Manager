@@ -1,8 +1,9 @@
-package com.hxngxd.ui.controller.tab;
+package com.hxngxd.ui.controller.tab.manage;
 
 import com.hxngxd.entities.Entity;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.utils.Formatter;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 import java.time.LocalDateTime;
 
@@ -65,6 +67,16 @@ public abstract class ManageController<T extends Entity> {
                         lastUpdated != null ? Formatter.formatDateTime(lastUpdated)
                                 : Formatter.formatDateTime(param.getValue().getDateAdded())
                 );
+            }
+        });
+
+        PauseTransition pause = new PauseTransition(Duration.millis(250));
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > 127) {
+                searchField.setText(newValue.substring(0, 127));
+            } else {
+                pause.setOnFinished(event -> filterItems());
+                pause.playFromStart();
             }
         });
     }

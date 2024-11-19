@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab;
+package com.hxngxd.ui.controller.tab.manage;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
@@ -11,7 +11,6 @@ import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
-import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,7 +18,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
-import javafx.util.Duration;
 
 import java.time.LocalDate;
 
@@ -128,16 +126,6 @@ public final class ManageUserController extends ManageController<User> {
                 statusColumn.getText()
         ));
         searchFieldComboBox.setValue(idColumn.getText());
-
-        PauseTransition pause = new PauseTransition(Duration.millis(250));
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 127) {
-                searchField.setText(newValue.substring(0, 127));
-            } else {
-                pause.setOnFinished(event -> filterItems());
-                pause.playFromStart();
-            }
-        });
     }
 
     @Override
@@ -196,7 +184,7 @@ public final class ManageUserController extends ManageController<User> {
             itemList = FXCollections.observableArrayList(UserService.userList);
             super.update();
         } catch (DatabaseException e) {
-            PopupManager.info("CẬP NHẬT DANH SÁCH NGƯỜI DÙNG THẤT BẠI!");
+            PopupManager.info("Cập nhật danh sách người dùng thất bại!");
         }
     }
 

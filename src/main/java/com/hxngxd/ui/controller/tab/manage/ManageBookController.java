@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab;
+package com.hxngxd.ui.controller.tab.manage;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.enums.UI;
@@ -8,14 +8,12 @@ import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.InputHandler;
-import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.Duration;
 
 import javafx.util.Callback;
 
@@ -27,7 +25,7 @@ public final class ManageBookController extends ManageController<Book> {
     @FXML
     private TableColumn<Book, String> authorColumn;
 
-     @FXML
+    @FXML
     private TableColumn<Book, Short> yearOfPublicationColumn;
 
     @FXML
@@ -43,40 +41,46 @@ public final class ManageBookController extends ManageController<Book> {
     private TableColumn<Book, Integer> availableCopiesColumn;
 
     private final BookService bookService = BookService.getInstance();
-    
+
     @FXML
     public void initialize() {
         super.initialize();
+
         bookNameColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Book, String> param) {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getTitle());
             }
         });
+
         authorColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Book, String> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getAuthors().get(0).getFullName());
+                return new ReadOnlyObjectWrapper<>(param.getValue().authorsToString());
             }
         });
+
         yearOfPublicationColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<Short> call(TableColumn.CellDataFeatures<Book, Short> param) {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getYearOfPublication());
             }
         });
+
         genreColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Book, String> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getGenres().get(0).getName());
+                return new ReadOnlyObjectWrapper<>(param.getValue().genresToString());
             }
         });
+
         totalCopiesColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Book, Integer> param) {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getTotalCopies());
             }
         });
+
         shortDescriptionColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Book, String> param) {
@@ -95,25 +99,10 @@ public final class ManageBookController extends ManageController<Book> {
                 idColumn.getText(),
                 bookNameColumn.getText(),
                 authorColumn.getText(),
-                yearOfPublicationColumn.getText(),
                 genreColumn.getText(),
-                totalCopiesColumn.getText(),
-                shortDescriptionColumn.getText(),
-                dateAddedColumn.getText(),
-                availableCopiesColumn.getText()
+                shortDescriptionColumn.getText()
         ));
         searchFieldComboBox.setValue(idColumn.getText());
-
-        PauseTransition pause = new PauseTransition(Duration.millis(250));
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > 127) {
-                searchField.setText(newValue.substring(0, 127));
-            } else {
-                pause.setOnFinished(event -> filterItems());
-                pause.playFromStart();
-            }
-        });
-
     }
 
     @Override
@@ -125,6 +114,8 @@ public final class ManageBookController extends ManageController<Book> {
             if (searchText.isEmpty()) {
                 return true;
             }
+            String author = book.authorsToString();
+            String genre = book.genresToString();
             return switch (selectedField) {
                 case "ID" -> String.valueOf(book.getId()).contains(searchText);
 
@@ -132,45 +123,36 @@ public final class ManageBookController extends ManageController<Book> {
                         && InputHandler.isUnidecodeSimilar(book.getTitle(), searchText);
 
                 case "Tác giả" -> book.getAuthors() != null
-                        && InputHandler.isUnidecodeSimilar(book.getAuthors().get(0).getFullName(), searchText);
-
-                case "Năm xuất bản" -> String.valueOf(book.getYearOfPublication()).contains(searchText);
+                        && InputHandler.isUnidecodeSimilar(author, searchText);
 
                 case "Thể loại" -> book.getGenres() != null
-                        && InputHandler.isUnidecodeSimilar(book.getGenres().get(0).getName(), searchText);
+                        && InputHandler.isUnidecodeSimilar(genre, searchText);
 
-                case "Tổng số bản" -> String.valueOf(book.getTotalCopies()).contains(searchText);
-
-                case "Mô tả ngắn" -> book.getShortDescription() != null
+                case "Mô tả" -> book.getShortDescription() != null
                         && InputHandler.isUnidecodeSimilar(book.getShortDescription(), searchText);
 
-                case "Ngày thêm" -> book.getDateAdded() != null
-                        && InputHandler.isUnidecodeSimilar(book.getDateAdded().toString(), searchText);
-
-                case "Số bản sao còn lại" -> String.valueOf(book.getAvailableCopies()).contains(searchText);
-
                 default -> false;
-
             };
         });
+        itemTableView.setItems(filteredData);
     }
 
     @Override
     @FXML
     public void update() {
         try {
-            bookService.getAllBooks();
+            BookService.initialize();
             itemList.clear();
             itemList = FXCollections.observableArrayList(BookService.bookList);
             super.update();
         } catch (DatabaseException e) {
-            PopupManager.info("Không thể cập nhật danh sách sách");
+            PopupManager.info("Cập nhật danh sách thất bại");
         }
     }
 
     @FXML
     public void deleteBook() {
-        if(getSelected() == null) {
+        if (getSelected() == null) {
             noneSelected();
             return;
         }
@@ -192,6 +174,5 @@ public final class ManageBookController extends ManageController<Book> {
     public static ManageBookController getInstance() {
         return UIManager.getControllerOnce(UI.MANAGE_BOOK);
     }
-
 
 }
