@@ -9,17 +9,9 @@ public final class Notification extends Action {
 
     private String content;
 
-    private final NotificationType notificationType;
+    private final NotificationType notificationType = null;
 
     private boolean isRead;
-
-    public Notification(int id, int userId, LocalDateTime timestamp,
-                        String content, NotificationType notificationType) {
-        super(id, userId, timestamp);
-        this.content = content;
-        this.notificationType = notificationType;
-        this.isRead = false;
-    }
 
     public String getContent() {
         return content;

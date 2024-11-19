@@ -1,35 +1,41 @@
 package com.hxngxd.actions;
 
+import com.hxngxd.entities.User;
+
 import java.time.LocalDateTime;
 
 public abstract class Action {
 
     protected int id;
 
-    protected int userId;
+    protected User user;
 
     protected LocalDateTime timestamp;
 
-    public Action(int id, int userId, LocalDateTime timestamp) {
+    public Action() {
+    }
+
+    public Action(int id) {
         this.id = id;
-        this.userId = userId;
-        this.timestamp = timestamp;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }

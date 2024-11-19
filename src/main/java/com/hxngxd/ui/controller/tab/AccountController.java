@@ -71,9 +71,6 @@ public final class AccountController {
     private TextField borrowBookField;
 
     @FXML
-    private TextField violateField;
-
-    @FXML
     private void initialize() {
         onActive();
         idField.setText(String.valueOf(currentUser.getId()));
@@ -96,11 +93,7 @@ public final class AccountController {
     }
 
     private void setProfileImage(Image profileImage) {
-        this.profileImage.setFitHeight(150);
-        this.profileImage.setFitWidth(150);
-        this.profileImage.setPreserveRatio(true);
-        Circle clip = new Circle(75, 75, 75);
-        this.profileImage.setClip(clip);
+        ImageHandler.circleCrop(this.profileImage, 150);
         this.profileImage.setImage(profileImage);
     }
 
@@ -114,7 +107,6 @@ public final class AccountController {
         birthdayField.setValue(currentUser.getDateOfBirth());
         saveBookField.setText(String.valueOf(currentUser.getSavedBooks().size()));
         borrowBookField.setText(String.valueOf(0));
-        violateField.setText(String.valueOf(currentUser.getViolationCount()));
     }
 
     @FXML
@@ -158,13 +150,8 @@ public final class AccountController {
 
     private void changeProfile()
             throws DatabaseException, UserException, ValidationException {
-        if (!firstNameField.getText().equals(currentUser.getFirstName()) ||
-                !lastNameField.getText().equals(currentUser.getLastName()) ||
-                !addressField.getText().equals(currentUser.getAddress())
-        ) {
-            userService.updateProfile(firstNameField.getText(), lastNameField.getText(),
-                    birthdayField.getValue(), addressField.getText());
-        }
+        userService.updateProfile(firstNameField.getText(), lastNameField.getText(),
+                birthdayField.getValue(), addressField.getText());
     }
 
     public static AccountController getInstance() {

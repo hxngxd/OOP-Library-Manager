@@ -8,8 +8,10 @@ public enum UI {
     BOOK_GALLERY,
     BOOK_CARD,
     BOOK_PREVIEW,
+    BOOK_DETAIL,
     ACCOUNT,
     MANAGE_USER,
+    USER_REVIEW,
     POPUP;
 
     public String getPath() {

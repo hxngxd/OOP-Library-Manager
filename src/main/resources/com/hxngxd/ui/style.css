@@ -21,6 +21,20 @@
     -fx-text-fill: white; /* Chữ màu trắng khi nhấn */
 }
 
+.review {
+
+}
+
+.review:hover {
+    -fx-background-color: #e8e8e8;
+}
+
+.review:pressed {
+    -fx-background-color: #d6d6d6;
+    -fx-scale-x: 1.01; /* Giảm kích thước xuống 1% */
+    -fx-scale-y: 1.01; /* Giảm kích thước xuống 1% */
+}
+
 /* Box styles */
 .box {
     -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */

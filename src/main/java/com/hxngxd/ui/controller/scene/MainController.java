@@ -68,7 +68,7 @@ public final class MainController extends NavigateController {
         } else {
             setProfileImage(null);
         }
-        setFullNameLabel(user.getFullNameFirstThenLast());
+        setFullNameLabel(user.getFullNameLastThenFirst());
         setUserInfoLabel(user.toString());
 
         boolean isUSER = user.getRole() == Role.USER;
@@ -85,11 +85,7 @@ public final class MainController extends NavigateController {
     }
 
     public void setProfileImage(Image profileImage) {
-        this.profileImage.setFitHeight(90);
-        this.profileImage.setFitWidth(90);
-        this.profileImage.setPreserveRatio(true);
-        Circle clip = new Circle(45, 45, 45);
-        this.profileImage.setClip(clip);
+        ImageHandler.circleCrop(this.profileImage, 90);
         this.profileImage.setImage(profileImage);
     }
 
@@ -110,6 +106,11 @@ public final class MainController extends NavigateController {
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
         AccountController.getInstance().onActive();
+    }
+
+    @FXML
+    private void showAccount2() {
+        showAccount(null);
     }
 
     @FXML
@@ -149,7 +150,7 @@ public final class MainController extends NavigateController {
         btns.add(new Pair<>("THỂ LOẠI", () -> {
         }));
         btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
-        PopupManager.navigate("QUẢN LÝ", btns);
+        PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", btns);
     }
 
     private void showBookGallery() {

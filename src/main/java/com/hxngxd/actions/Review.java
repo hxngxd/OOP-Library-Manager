@@ -1,59 +1,44 @@
 package com.hxngxd.actions;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.hxngxd.entities.Book;
 
 public final class Review extends Action {
 
-    private int bookId;
+    private Book book;
 
-    private double rating;
+    private int rating;
 
     private String comment;
 
-    public Review(int id, int userId, LocalDateTime timestamp, int bookId,
-                  double rating, String comment) {
-        super(id, userId, timestamp);
-        this.bookId = bookId;
-        this.rating = rating;
-        this.comment = comment;
+    public Review(int id) {
+        super(id);
     }
 
-    public int getBookId() {
-        return bookId;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
-    public double getRating() {
+    public int getRating() {
         return rating;
     }
 
+    public String getStringRating() {
+        return "★".repeat(rating) + "☆".repeat(5 - rating) + " " + rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     public String getComment() {
         return comment;
     }
 
-    public static boolean addReview(Review review) {
-        return true;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
-
-    public boolean editReview(int newRating, String newComment) {
-        return true;
-    }
-
-    public boolean deleteReview(Review review) {
-        return true;
-    }
-
-    public static List<Review> getReviewsForBook(int bookId) {
-        return null;
-    }
-
-    public static List<Review> getUsersReviews(int userId) {
-        return null;
-    }
-
 }
