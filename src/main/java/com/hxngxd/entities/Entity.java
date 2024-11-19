@@ -1,6 +1,7 @@
 package com.hxngxd.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public abstract class Entity {
 

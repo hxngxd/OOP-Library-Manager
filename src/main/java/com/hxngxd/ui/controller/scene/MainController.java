@@ -11,6 +11,7 @@ import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.tab.AccountController;
 import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
+import com.hxngxd.ui.controller.tab.ManageBookController;
 import com.hxngxd.ui.controller.tab.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
@@ -142,6 +143,13 @@ public final class MainController extends NavigateController {
             }
         }));
         btns.add(new Pair<>("SÁCH", () -> {
+            UI ui = UI.MANAGE_BOOK;
+            PopupManager.closePopup();
+            if(currentTab != ui) {
+                currentTab = ui;
+                navigate(UIManager.getRootOnce(ui));
+                ManageBookController.getInstance().update();
+            }
         }));
         btns.add(new Pair<>("MƯỢN SÁCH", () -> {
         }));

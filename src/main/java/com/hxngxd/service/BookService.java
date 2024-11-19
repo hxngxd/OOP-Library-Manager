@@ -6,13 +6,19 @@ import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class BookService {
+
+    private final DatabaseManager db = DatabaseManager.getInstance();
+
+    public static final List<Book> bookList = new ArrayList<>();
 
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
@@ -85,4 +91,12 @@ public final class BookService {
             return null;
         });
     }
+
+    public void getAllBooks() throws DatabaseException {
+        bookList.clear();
+        bookMap.clear();
+        initialize();
+        bookList.addAll(bookMap.values());
+    }
+
 }

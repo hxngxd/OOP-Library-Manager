@@ -171,9 +171,14 @@ public final class Book extends EntityWithPhoto {
         return authors;
     }
 
+
+
     public List<Genre> getGenres() {
         return genres;
     }
+
+
+
 
     @Override
     public boolean equals(Object other) {
