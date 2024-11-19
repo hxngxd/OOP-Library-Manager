@@ -124,7 +124,24 @@ public final class BookDetailController extends BookPreviewController {
     }
 
     public void editReviewComment(Review review) {
-        PopupManager.closePopup();
+        PopupManager.confirmLargeInput("Sửa bình luận", "Bình luận của bạn...", review.getComment(), () -> {
+            if (PopupManager.getInputPeek().getText().isEmpty()) {
+                return;
+            }
+            try {
+                DatabaseManager.getInstance().update(
+                        "review", "comment", PopupManager.getInputPeek().getText(), "id", review.getId());
+                PopupManager.popInput();
+                PopupManager.closePopup();
+                PopupManager.closePopup();
+                onActive(this.book);
+                log.info(LogMessages.General.SUCCESS.getMSG("edit comment"));
+                PopupManager.info("Chỉnh sửa bình luận thành công!");
+            } catch (DatabaseException e) {
+                log.info(LogMessages.General.FAIL.getMSG("edit comment"));
+                PopupManager.info("Chỉnh sửa bình luận thất bại!");
+            }
+        });
     }
 
     public void deleteReview(Review review) {

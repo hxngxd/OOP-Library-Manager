@@ -7,9 +7,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -32,7 +30,10 @@ public final class PopupManager {
     @FXML
     private TextField textField;
 
-    private static Stack<TextField> inputStack = new Stack<>();
+    @FXML
+    private TextArea textArea;
+
+    private static Stack<TextInputControl> inputStack = new Stack<>();
 
     @FXML
     private VBox buttonVbox;
@@ -70,6 +71,17 @@ public final class PopupManager {
         PopupManager popup = loadPopup();
         popup.addMessage(message);
         popup.addInput(prompt);
+        popup.addConfirmation(action, () -> {
+            popInput();
+            closePopup();
+        });
+        showPeek();
+    }
+
+    public static void confirmLargeInput(String message, String prompt, String text, Runnable action) {
+        PopupManager popup = loadPopup();
+        popup.addMessage(message);
+        popup.addTextArea(prompt, text);
         popup.addConfirmation(action, () -> {
             popInput();
             closePopup();
@@ -118,7 +130,7 @@ public final class PopupManager {
         return (Button) pane.lookup("#" + id);
     }
 
-    public static TextField getInputPeek() {
+    public static TextInputControl getInputPeek() {
         return inputStack.peek();
     }
 
@@ -161,6 +173,15 @@ public final class PopupManager {
         }
         textField.setPromptText(prompt);
         inputStack.push(textField);
+    }
+
+    private void addTextArea(String prompt, String text) {
+        if (!mainVbox.getChildren().contains(textArea)) {
+            mainVbox.getChildren().add(textArea);
+        }
+        textArea.setPromptText(prompt);
+        textArea.setText(text);
+        inputStack.push(textArea);
     }
 
     private Button cloneButton(Button original, String text, Runnable action) {
