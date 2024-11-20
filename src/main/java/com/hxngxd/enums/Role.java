@@ -9,13 +9,13 @@ public enum Role {
     )),
 
     MODERATOR(Set.of(
-            Permission.DELETE_LOWER_REVIEWS,
+            Permission.MANAGE_REVIEWS,
             Permission.MANAGE_BOOKS,
             Permission.SEND_NOTIFICATIONS
     )),
 
     ADMIN(Set.of(
-            Permission.DELETE_LOWER_REVIEWS,
+            Permission.MANAGE_REVIEWS,
             Permission.DELETE_LOWER_ACCOUNT,
             Permission.CHANGE_OTHERS_ROLE,
             Permission.CHANGE_OTHERS_ACCOUNT_STATUS,

@@ -69,7 +69,7 @@ public final class MainController extends NavigateController {
         } else {
             setProfileImage(null);
         }
-        setFullNameLabel(user.getFullNameFirstThenLast());
+        setFullNameLabel(user.getFullNameLastThenFirst());
         setUserInfoLabel(user.toString());
 
         boolean isUSER = user.getRole() == Role.USER;
