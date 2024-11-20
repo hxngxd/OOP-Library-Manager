@@ -7,6 +7,7 @@ import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -151,9 +152,19 @@ public final class ManageBookController extends ManageController<Book> {
     }
 
     @FXML
-    public void deleteBook() {
+    private void addBook() {
+
+    }
+
+    @FXML
+    private void editBook() {
+
+    }
+
+    @FXML
+    private void removeBook() {
         if (getSelected() == null) {
-            noneSelected();
+            noneSelected("cuốn sách");
             return;
         }
 
@@ -169,6 +180,16 @@ public final class ManageBookController extends ManageController<Book> {
                 PopupManager.closePopup();
             }
         });
+    }
+
+    @FXML
+    private void seeBook() {
+        if (getSelected() == null) {
+            noneSelected("cuốn sách");
+            return;
+        }
+        BookPreviewController.getInstance().previewBook(BookService.bookMap.get(getSelectedId()));
+        BookPreviewController.getInstance().showDetail();
     }
 
     public static ManageBookController getInstance() {

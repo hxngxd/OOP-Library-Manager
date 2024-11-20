@@ -4,8 +4,11 @@ import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +19,7 @@ import java.util.List;
 
 public final class BookService {
 
+    private static final Logger log = LogManager.getLogger(BookService.class);
     private final DatabaseManager db = DatabaseManager.getInstance();
 
     public static final List<Book> bookList = new ArrayList<>();
@@ -94,7 +98,8 @@ public final class BookService {
         bookList.addAll(bookMap.values());
     }
 
-    public void deleteBook(int bookId) throws DatabaseException {
+    public void deleteBook(int bookId)
+            throws DatabaseException {
         Book book = bookMap.get(bookId);
         if (book == null) {
             throw new DatabaseException("Book not found");
@@ -102,7 +107,7 @@ public final class BookService {
         db.delete("book", "id", bookId);
         bookMap.remove(bookId);
         bookList.remove(book);
-        System.out.println("Book with ID " + bookId + " has been successfully deleted.");
+        log.info(LogMessages.General.SUCCESS.getMSG("delete book"));
     }
 
 }

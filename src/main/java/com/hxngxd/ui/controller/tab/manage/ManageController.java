@@ -102,8 +102,8 @@ public abstract class ManageController<T extends Entity> {
         return itemTableView.getSelectionModel().getSelectedItem().getId();
     }
 
-    protected void noneSelected() {
-        PopupManager.info("Không có bản ghi nào được chọn");
+    protected void noneSelected(String type) {
+        PopupManager.info("Không có " + type + " nào được chọn");
     }
 
 }

@@ -191,7 +191,7 @@ public final class ManageUserController extends ManageController<User> {
     @FXML
     private void changePassword() {
         if (getSelected() == null) {
-            noneSelected();
+            noneSelected("người dùng");
             return;
         }
         String message = String.format("Đổi mật khẩu user có id=%d?", getSelectedId());
@@ -226,7 +226,7 @@ public final class ManageUserController extends ManageController<User> {
     @FXML
     private void deleteUser() {
         if (getSelected() == null || getSelectedId() == userService.getCurrentUser().getId()) {
-            noneSelected();
+            noneSelected("người dùng");
             return;
         }
         String message = String.format("Xác nhận xoá user có id = %d (không thể hoàn tác)", getSelectedId());
@@ -244,7 +244,7 @@ public final class ManageUserController extends ManageController<User> {
 
     private void changeAccountStatus(AccountStatus status, String action) {
         if (getSelected() == null || getSelected().getAccountStatus() == status) {
-            noneSelected();
+            noneSelected("người dùng");
             return;
         }
         String message = String.format("Xác nhận %s user có id=%d?", action, getSelectedId());
@@ -274,7 +274,7 @@ public final class ManageUserController extends ManageController<User> {
 
     private void changeRole(Role role) {
         if (getSelected() == null || getSelected().getRole() == role) {
-            noneSelected();
+            noneSelected("người dùng");
             return;
         }
         String message = String.format("Xác nhận đổi vai trò của user có id=%d thành %s?", getSelectedId(), role.name());

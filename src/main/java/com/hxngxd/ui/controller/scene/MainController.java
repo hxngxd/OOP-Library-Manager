@@ -4,6 +4,7 @@ import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
@@ -167,7 +168,8 @@ public final class MainController extends NavigateController {
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-        if (BookPreviewController.getInstance().isPreviewing()) {
+        BookPreviewController bpc = BookPreviewController.getInstance();
+        if (bpc.isPreviewing() && BookService.bookMap.get(bpc.getBook().getId()) != null) {
             root.getItems().add(UIManager.getRootOnce(UI.BOOK_PREVIEW));
         }
     }

@@ -47,7 +47,6 @@ public final class BookDetailController extends BookPreviewController {
     private void displayReviews() {
         reviewsVbox.getChildren().clear();
         book.loadReviews();
-        System.out.println(book.getReviews().size());
         if (book.getNumberOfReviews() == 0) {
             return;
         }
