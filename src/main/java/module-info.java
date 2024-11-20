@@ -15,4 +15,5 @@ module com.hxngxd.libraryManager {
     opens com.hxngxd.ui.controller.scene to javafx.fxml;
     opens com.hxngxd.ui.controller.tab to javafx.fxml;
     opens com.hxngxd.ui.controller.book to javafx.fxml;
+    opens com.hxngxd.ui.controller.tab.manage to javafx.fxml;
 }

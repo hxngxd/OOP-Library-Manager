@@ -250,23 +250,33 @@ public final class Book extends EntityWithPhoto {
     }
 
     public void genresToString(StringBuilder info) {
+        info.append(genresToString()).append("\n");
+    }
+
+    public void authorsToString(StringBuilder info) {
+        info.append(authorsToString()).append("\n");
+    }
+
+    public String genresToString() {
+        StringBuilder info = new StringBuilder();
         for (int i = 0; i < this.genres.size(); i++) {
             info.append(this.genres.get(i).getName());
             if (i < this.genres.size() - 1) {
                 info.append(", ");
             }
         }
-        info.append("\n");
+        return info.toString();
     }
 
-    public void authorsToString(StringBuilder info) {
+    public String authorsToString() {
+        StringBuilder info = new StringBuilder();
         for (int i = 0; i < this.authors.size(); i++) {
             info.append(this.authors.get(i).getFullNameFirstThenLast());
             if (i < this.authors.size() - 1) {
                 info.append(", ");
             }
         }
-        info.append("\n");
+        return info.toString();
     }
 
     public void loadReviews() {

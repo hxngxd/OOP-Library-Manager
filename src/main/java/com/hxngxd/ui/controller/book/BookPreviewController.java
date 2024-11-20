@@ -93,7 +93,7 @@ public class BookPreviewController extends PreviewController {
     }
 
     @FXML
-    private void showDetail() {
+    public void showDetail() {
         UI ui = UI.BOOK_DETAIL;
         MainController mainController = MainController.getInstance();
         if (mainController.getCurrentTab() == ui) {
@@ -108,4 +108,7 @@ public class BookPreviewController extends PreviewController {
         return UIManager.getControllerOnce(UI.BOOK_PREVIEW);
     }
 
+    public Book getBook() {
+        return book;
+    }
 }
