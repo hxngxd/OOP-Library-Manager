@@ -302,4 +302,5 @@ public final class Book extends EntityWithPhoto {
     public List<Review> getReviews() {
         return reviews;
     }
+
 }
