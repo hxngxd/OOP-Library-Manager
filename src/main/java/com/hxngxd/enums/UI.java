@@ -11,6 +11,7 @@ public enum UI {
     BOOK_DETAIL,
     ACCOUNT,
     MANAGE_USER,
+    MANAGE_BOOK,
     USER_REVIEW,
     POPUP;
 

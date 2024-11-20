@@ -51,10 +51,10 @@ create table book
     shortDescription  text,
     coverImage        mediumblob,
     numberOfPages     int,
-    dateAdded         datetime default current_timestamp,
-    lastUpdated       datetime default current_timestamp on update current_timestamp,
-    availableCopies   int  not null,
-    totalCopies       int  not null
+    dateAdded         datetime      default current_timestamp,
+    lastUpdated       datetime      default current_timestamp on update current_timestamp,
+    availableCopies   int  not null default 100,
+    totalCopies       int  not null default 100
 );
 
 create index idxBookYear on book (yearOfPublication);
@@ -235,36 +235,28 @@ VALUES ('Alexis', 'Barnes', '1970-10-10', 'user1', 'user1@example.com', 'Holderv
        ('Grace', 'Dao', '2000-06-12', 'user59', 'user59@example.com', 'Giabury', 'USER', ''),
        ('Henry', 'Do', '1997-10-19', 'user60', 'user60@example.com', 'Anhtown', 'MODERATOR', '');
 
-INSERT INTO book (title, numberOfPages, yearOfPublication, shortDescription, availableCopies,
-                  totalCopies, coverImage)
-VALUES ('1984', 328, 1949, 'Winston Smith sống trong một xã hội bị kiểm soát nghiêm ngặt.', 120,
-        150, LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/1984.png')),
-       ('A Clockwork Orange', 192, 1962, 'Cuốn sách xoay quanh Alex, một thanh niên bạo lực.', 95,
-        100,
+INSERT INTO book (title, numberOfPages, yearOfPublication, shortDescription, coverImage)
+VALUES ('1984', 328, 1949, 'Winston Smith sống trong một xã hội bị kiểm soát nghiêm ngặt.', 
+        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/1984.png')),
+       ('A Clockwork Orange', 192, 1962, 'Cuốn sách xoay quanh Alex, một thanh niên bạo lực.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/A Clockwork Orange.png')),
-       ('A Farewell to Arms', 332, 1929, 'Câu chuyện tình yêu giữa Trung úy Henry và Catherine.',
-        80, 120,
+       ('A Farewell to Arms', 332, 1929, 'Câu chuyện tình yêu giữa Trung úy Henry và Catherine.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/A Farewell to Arms.png')),
-       ('A Tale of Two Cities', 489, 1859, 'Câu chuyện về hai thành phố, London và Paris.', 100,
-        150,
+       ('A Tale of Two Cities', 489, 1859, 'Câu chuyện về hai thành phố, London và Paris.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/A Tale of Two Cities.png')),
-       ('Altered Carbon', 540, 2002, 'Một tương lai nơi ý thức con người có thể được chuyển đổi.',
-        110, 130,
+       ('Altered Carbon', 540, 2002, 'Một tương lai nơi ý thức con người có thể được chuyển đổi.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Altered Carbon.png')),
-       ('Anna Karenina', 864, 1877, 'Một tác phẩm kinh điển của văn học Nga.', 75, 100,
+       ('Anna Karenina', 864, 1877, 'Một tác phẩm kinh điển của văn học Nga.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Anna Karenina.png')),
-       ('Atlas Shrugged', 1168, 1957, 'Tác phẩm phiêu lưu chính trị-kinh tế.', 50, 80,
+       ('Atlas Shrugged', 1168, 1957, 'Tác phẩm phiêu lưu chính trị-kinh tế.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Atlas Shrugged.png')),
-       ('Beloved', 324, 1987, 'Câu chuyện kể về Sethe, một phụ nữ nô lệ.', 60, 90,
+       ('Beloved', 324, 1987, 'Câu chuyện kể về Sethe, một phụ nữ nô lệ.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Beloved.png')),
-       ('Brave New World', 288, 1932, 'Xã hội tương lai với công nghệ và kiểm soát tâm trí.', 130,
-        150,
+       ('Brave New World', 288, 1932, 'Xã hội tương lai với công nghệ và kiểm soát tâm trí.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Brave New World.png')),
-       ('Crime and Punishment', 617, 1866, 'Cuốn tiểu thuyết về Raskolnikov, một sinh viên nghèo.',
-        70, 120,
+       ('Crime and Punishment', 617, 1866, 'Cuốn tiểu thuyết về Raskolnikov, một sinh viên nghèo.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Crime and Punishment.png')),
-       ('The Great Gatsby', 180, 1925, 'Câu chuyện về sự phù hoa và sự sụp đổ của Jay Gatsby.', 85,
-        100,
+       ('The Great Gatsby', 180, 1925, 'Câu chuyện về sự phù hoa và sự sụp đổ của Jay Gatsby.', 
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Great Gatsby.png'));
 
 INSERT INTO author (firstName, lastName, dateOfBirth, biography)

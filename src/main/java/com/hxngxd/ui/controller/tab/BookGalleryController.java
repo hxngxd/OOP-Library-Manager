@@ -43,13 +43,13 @@ public final class BookGalleryController {
 
     @FXML
     private void initialize() {
-        loadBookCards();
         searchBook();
         onActive();
     }
 
     public void onActive() {
         currentUser = UserService.getInstance().getCurrentUser();
+        loadBookCards();
         showBookCards();
     }
 
@@ -71,6 +71,7 @@ public final class BookGalleryController {
     }
 
     private void showBookCards(String info) {
+        bookCardContainer.getChildren().clear();
         if (info == null || info.isEmpty()) {
             for (FXMLLoader bookCard : bookCards) {
                 BookCardController bookCardController = bookCard.getController();

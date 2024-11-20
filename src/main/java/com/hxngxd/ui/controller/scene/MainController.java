@@ -4,6 +4,7 @@ import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
@@ -11,7 +12,8 @@ import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.tab.AccountController;
 import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.controller.tab.ManageUserController;
+import com.hxngxd.ui.controller.tab.manage.ManageBookController;
+import com.hxngxd.ui.controller.tab.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +24,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -142,6 +143,13 @@ public final class MainController extends NavigateController {
             }
         }));
         btns.add(new Pair<>("SÁCH", () -> {
+            UI ui = UI.MANAGE_BOOK;
+            PopupManager.closePopup();
+            if (currentTab != ui) {
+                currentTab = ui;
+                navigate(UIManager.getRootOnce(ui));
+                ManageBookController.getInstance().update();
+            }
         }));
         btns.add(new Pair<>("MƯỢN SÁCH", () -> {
         }));
@@ -160,7 +168,8 @@ public final class MainController extends NavigateController {
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-        if (BookPreviewController.getInstance().isPreviewing()) {
+        BookPreviewController bpc = BookPreviewController.getInstance();
+        if (bpc.isPreviewing() && BookService.bookMap.get(bpc.getBook().getId()) != null) {
             root.getItems().add(UIManager.getRootOnce(UI.BOOK_PREVIEW));
         }
     }

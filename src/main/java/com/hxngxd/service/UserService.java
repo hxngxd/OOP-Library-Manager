@@ -119,6 +119,7 @@ public final class UserService {
         currentUser.setPasswordHash(passwordHash);
         currentUser.setRole(Role.USER);
         currentUser.setAccountStatus(AccountStatus.ACTIVE);
+        currentUser.setImage(ImageHandler.loadImageFromResource("profileImage.jpg"));
 
         log.info(LogMessages.General.SUCCESS.getMSG("create account"));
     }

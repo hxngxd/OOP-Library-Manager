@@ -4,15 +4,25 @@ import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
+import com.hxngxd.enums.LogMessages;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class BookService {
+
+    private static final Logger log = LogManager.getLogger(BookService.class);
+    private final DatabaseManager db = DatabaseManager.getInstance();
+
+    public static final List<Book> bookList = new ArrayList<>();
 
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
@@ -29,6 +39,7 @@ public final class BookService {
 
     public static void initialize()
             throws DatabaseException {
+        bookList.clear();
         bookMap.clear();
 
         String query = "select book.*, bookauthor.authorId, bookgenre.genreId from book" +
@@ -84,5 +95,19 @@ public final class BookService {
             }
             return null;
         });
+        bookList.addAll(bookMap.values());
     }
+
+    public void deleteBook(int bookId)
+            throws DatabaseException {
+        Book book = bookMap.get(bookId);
+        if (book == null) {
+            throw new DatabaseException("Book not found");
+        }
+        db.delete("book", "id", bookId);
+        bookMap.remove(bookId);
+        bookList.remove(book);
+        log.info(LogMessages.General.SUCCESS.getMSG("delete book"));
+    }
+
 }
