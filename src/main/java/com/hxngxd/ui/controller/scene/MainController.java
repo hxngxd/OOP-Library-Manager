@@ -155,8 +155,6 @@ public final class MainController extends NavigateController {
         }));
         btns.add(new Pair<>("TÁC GIẢ", () -> {
         }));
-        btns.add(new Pair<>("THỂ LOẠI", () -> {
-        }));
         btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
         PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", btns);
     }
