@@ -13,16 +13,12 @@ import java.util.Properties;
 
 public final class DatabaseManager {
 
-    private final Logger log = LogManager.getLogger(DatabaseManager.class);
+    private static final Logger log = LogManager.getLogger(DatabaseManager.class);
 
     private Connection connection = null;
-
     private String databaseUrl = null;
-
     private String username = null;
-
     private String password = null;
-
     private int generatedId;
 
     private DatabaseManager() {
@@ -41,22 +37,20 @@ public final class DatabaseManager {
     }
 
     public boolean connect() {
-        try {
-            if (!isConnected()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                loadDatabaseConfig();
-                connection = DriverManager.getConnection(databaseUrl, username, password);
-                log.info(LogMessages.General.SUCCESS.getMSG("connect to the database"));
-                return true;
-            } else {
-                log.info("The database is already connected");
-                return false;
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            log.info(LogMessages.General.FAIL.getMSG("connect to the database"), e.getMessage());
+        if (isConnected()) {
+            log.info("The database is already connected");
+            return false;
         }
-        return false;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            loadDatabaseConfig();
+            connection = DriverManager.getConnection(databaseUrl, username, password);
+            log.info(LogMessages.General.SUCCESS.getMSG("connect to the database"));
+            return true;
+        } catch (SQLException | ClassNotFoundException e) {
+            log.info(LogMessages.General.FAIL.getMSG("connect to the database"), e);
+            return false;
+        }
     }
 
     public boolean disconnect() {
@@ -69,18 +63,17 @@ public final class DatabaseManager {
             log.info(LogMessages.General.SUCCESS.getMSG("disconnect from database"));
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMSG("disconnect from database"), e.getMessage());
+            log.error(LogMessages.General.FAIL.getMSG("disconnect from database"), e);
             return false;
         }
     }
 
     public static boolean isConnected() {
         try {
-            return DatabaseManager.getInstance().connection != null
-                    && !DatabaseManager.getInstance().connection.isClosed();
+            DatabaseManager instance = DatabaseManager.getInstance();
+            return instance.connection != null && !instance.connection.isClosed();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Failed to check database connection", e);
             return false;
         }
     }
@@ -109,51 +102,33 @@ public final class DatabaseManager {
 
             log.info(LogMessages.General.SUCCESS.getMSG("load database configuration"));
         } catch (IOException e) {
-            e.printStackTrace();
-            log.info(LogMessages.General.FAIL.getMSG("load database configuration"), e.getMessage());
+            log.info(LogMessages.General.FAIL.getMSG("load database configuration"), e);
         }
     }
 
     public void update(String table, String updateField, Object updateValue,
                        String conditionField, Object conditionValue)
             throws DatabaseException {
-        update(table, List.of(updateField), List.of(updateValue),
-                List.of(conditionField), List.of(conditionValue));
+        update(table, List.of(updateField), List.of(updateValue), List.of(conditionField), List.of(conditionValue));
     }
 
     public void update(String table, List<String> updateFields, List<Object> updateValues,
                        List<String> conditionFields, List<Object> conditionValues)
             throws DatabaseException {
-        StringBuilder query = new StringBuilder("update ");
-        query.append(table).append(" set ");
-        for (int i = 0; i < updateFields.size(); i++) {
-            query.append(updateFields.get(i)).append(" = ?");
-            if (i < updateFields.size() - 1) {
-                query.append(", ");
-            }
-        }
-        query.append(" where ");
-        for (int i = 0; i < conditionFields.size(); i++) {
-            query.append(conditionFields.get(i)).append(" = ?");
-            if (i < conditionFields.size() - 1) {
-                query.append(" and ");
-            }
-        }
-        try (PreparedStatement pStatement = connection.prepareStatement(query.toString())) {
+        String updatePart = String.join(", ", updateFields.stream().map(f -> f + " = ?").toList());
+        String conditionPart = String.join(" and ", conditionFields.stream().map(f -> f + " = ?").toList());
+        String query = String.format("update %s set %s where %s", table, updatePart, conditionPart);
+
+        try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             int paramId = 1;
             for (Object value : updateValues) {
-                pStatement.setObject(paramId, value);
-                paramId++;
+                pStatement.setObject(paramId++, value);
             }
             for (Object condition : conditionValues) {
-                pStatement.setObject(paramId, condition);
-                paramId++;
+                pStatement.setObject(paramId++, condition);
             }
-            int updates = pStatement.executeUpdate();
-            if (updates < 1) {
-                throw new SQLException(
-                        LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing update query")
-                );
+            if (pStatement.executeUpdate() < 1) {
+                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing update query"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,41 +136,21 @@ public final class DatabaseManager {
         }
     }
 
-    public void insert(String table, boolean getId, List<String> fields, Object... values)
-            throws DatabaseException {
-        StringBuilder query = new StringBuilder("insert into ");
-        query.append(table).append("(");
-        for (int i = 0; i < fields.size(); i++) {
-            query.append(fields.get(i));
-            if (i != fields.size() - 1) {
-                query.append(", ");
-            } else {
-                query.append(")");
-            }
-        }
-        query.append(" values (");
-        for (int i = 0; i < fields.size(); i++) {
-            query.append("?");
-            if (i != fields.size() - 1) {
-                query.append(", ");
-            } else {
-                query.append(")");
-            }
-        }
-        try (PreparedStatement pStatement = connection.prepareStatement(query.toString(),
-                Statement.RETURN_GENERATED_KEYS)) {
+    public void insert(String table, boolean getId, List<String> fields, Object... values) throws DatabaseException {
+        String fieldsPart = String.join(", ", fields);
+        String valuesPart = String.join(", ", fields.stream().map(f -> "?").toList());
+        String query = String.format("insert into %s (%s) values (%s)", table, fieldsPart, valuesPart);
+
+        try (PreparedStatement pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setParameters(pStatement, values);
             int updates = pStatement.executeUpdate();
+
             if (updates < 1) {
-                throw new SQLException(
-                        LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing insert query")
-                );
-            } else {
-                if (getId) {
-                    try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
-                        if (resultSet.next()) {
-                            generatedId = resultSet.getInt(1);
-                        }
+                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing insert query"));
+            } else if (getId) {
+                try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        generatedId = resultSet.getInt(1);
                     }
                 }
             }
@@ -210,23 +165,16 @@ public final class DatabaseManager {
         delete(table, List.of(conditionField), conditionValue);
     }
 
-    public void delete(String table, List<String> conditionFields, Object... conditionValues)
-            throws DatabaseException {
-        StringBuilder query = new StringBuilder("delete from ");
-        query.append(table).append(" where ");
-        for (int i = 0; i < conditionFields.size(); i++) {
-            query.append(conditionFields.get(i)).append(" = ?");
-            if (i < conditionFields.size() - 1) {
-                query.append(" and ");
-            }
-        }
-        try (PreparedStatement pStatement = connection.prepareStatement(query.toString())) {
+    public void delete(String table, List<String> conditionFields, Object... conditionValues) throws DatabaseException {
+        String conditionPart = String.join(" and ", conditionFields.stream().map(f -> f + " = ?").toList());
+        String query = String.format("delete from %s where %s", table, conditionPart);
+
+        try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             setParameters(pStatement, conditionValues);
             int updates = pStatement.executeUpdate();
+
             if (updates < 1) {
-                throw new SQLException(
-                        LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing delete query")
-                );
+                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing delete query"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -234,18 +182,15 @@ public final class DatabaseManager {
         }
     }
 
-    public <T> T select(String action, String query, ResultSetMapper<T> mapper, Object... params)
-            throws DatabaseException {
+    public <T> T select(String action, String query, ResultSetMapper<T> mapper, Object... params) throws DatabaseException {
         try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             setParameters(pStatement, params);
             try (ResultSet resultSet = pStatement.executeQuery()) {
                 return mapper.map(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new DatabaseException(
-                    LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing query")
-            );
+            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMSG(action), e);
+            throw new DatabaseException(e.getMessage());
         }
     }
 
