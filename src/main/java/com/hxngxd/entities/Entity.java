@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 public abstract class Entity {
 
     protected int id;
-
     protected LocalDateTime dateAdded;
-
     protected LocalDateTime lastUpdated;
 
     public Entity() {

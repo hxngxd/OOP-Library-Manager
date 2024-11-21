@@ -13,13 +13,11 @@ import java.util.List;
 public final class Author extends Person {
 
     private String biography;
-
     private LocalDate dayOfDeath;
 
     private final List<Book> books = new ArrayList<>();
 
     public static final List<Author> authorList = new ArrayList<>();
-
     public static final HashMap<Integer, Author> authorMap = new HashMap<>();
 
     public static void loadAll()
