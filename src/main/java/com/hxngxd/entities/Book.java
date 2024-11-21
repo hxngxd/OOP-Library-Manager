@@ -2,13 +2,11 @@ package com.hxngxd.entities;
 
 import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
 import com.hxngxd.utils.Formatter;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class Book extends EntityWithPhoto {
@@ -22,11 +20,11 @@ public final class Book extends EntityWithPhoto {
     private double averageRating;
     private int numberOfReviews;
 
-    private final List<Author> authors = new ArrayList<>();
-    private final List<Genre> genres = new ArrayList<>();
-    private final List<Review> reviews = new ArrayList<>();
+    private final Set<Author> authors = new HashSet<>();
+    private final Set<Genre> genres = new HashSet<>();
+    private final Set<Review> reviews = new HashSet<>();
 
-    public static final List<Book> bookList = new ArrayList<>();
+    public static final Set<Book> bookSet = new HashSet<>();
     public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
     public Book() {
@@ -46,6 +44,11 @@ public final class Book extends EntityWithPhoto {
         this.availableCopies = availableCopies;
         this.totalCopies = totalCopies;
         setReviews();
+    }
+
+    public static void loadAll()
+            throws DatabaseException {
+
     }
 
     public String getTitle() {
@@ -100,7 +103,7 @@ public final class Book extends EntityWithPhoto {
         return averageRating;
     }
 
-    public List<Review> getReviews() {
+    public Set<Review> getReviews() {
         return reviews;
     }
 
@@ -128,7 +131,6 @@ public final class Book extends EntityWithPhoto {
             }
             return null;
         }, id);
-        reviews.sort(Comparator.comparing(Review::getTimestamp).reversed());
     }
 
     private String getRatingStars() {
@@ -151,34 +153,19 @@ public final class Book extends EntityWithPhoto {
     }
 
     public void addAuthor(Author author) {
-        if (!this.authors.contains(author)) {
-            this.authors.add(author);
-        }
+        authors.add(author);
     }
 
     public void addGenre(Genre genre) {
-        if (!this.genres.contains(genre)) {
-            this.genres.add(genre);
-        }
+        genres.add(genre);
     }
 
-    public List<Author> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    public List<Genre> getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof Book)) {
-            return false;
-        }
-        return this.id == ((Book) other).getId();
     }
 
     @Override

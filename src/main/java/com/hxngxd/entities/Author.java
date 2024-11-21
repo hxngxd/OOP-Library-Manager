@@ -6,23 +6,21 @@ import com.hxngxd.utils.ImageHandler;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public final class Author extends Person {
 
     private String biography;
     private LocalDate dayOfDeath;
 
-    private final List<Book> books = new ArrayList<>();
+    private final Set<Book> books = new HashSet<>();
 
-    public static final List<Author> authorList = new ArrayList<>();
+    public static final Set<Author> authorSet = new HashSet<>();
     public static final HashMap<Integer, Author> authorMap = new HashMap<>();
 
     public static void loadAll()
             throws DatabaseException {
-        authorList.clear();
+        authorSet.clear();
         authorMap.clear();
 
         String query = "select * from author";
@@ -57,7 +55,7 @@ public final class Author extends Person {
             }
             return null;
         });
-        authorList.addAll(authorMap.values());
+        authorSet.addAll(authorMap.values());
     }
 
     public Author() {
@@ -91,24 +89,7 @@ public final class Author extends Person {
     }
 
     public void addBook(Book book) {
-        if (!this.books.contains(book)) {
-            this.books.add(book);
-        }
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof Author)) {
-            return false;
-        }
-        return this.id == ((Author) other).getId();
+        books.add(book);
     }
 
 }

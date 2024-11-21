@@ -3,33 +3,26 @@ package com.hxngxd.entities;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public final class Genre extends Entity {
 
     private String name;
-
     private String description;
 
-    private final List<Book> books = new ArrayList<>();
+    private final Set<Book> books = new HashSet<>();
 
     public static final HashMap<Integer, Genre> genreMap = new HashMap<>();
 
-    public static void initialize()
+    public static void loadAll()
             throws DatabaseException {
         genreMap.clear();
-
         String query = "select * from genre";
         DatabaseManager.getInstance().select("getting genres", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                if (genreMap.containsKey(id)) {
-                    continue;
-                }
                 Genre genre = new Genre(
-                        resultSet.getInt("id"),
+                        id,
                         resultSet.getString("name"),
                         resultSet.getString("description")
                 );
@@ -53,31 +46,11 @@ public final class Genre extends Entity {
     }
 
     public void addBook(Book book) {
-        if (!this.books.contains(book)) {
-            this.books.add(book);
-        }
-    }
-
-    public List<Book> getBooks() {
-        return books;
+        this.books.add(book);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof Genre)) {
-            return false;
-        }
-        return this.id == ((Genre) other).getId();
-    }
 }
