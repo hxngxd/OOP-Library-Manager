@@ -10,7 +10,9 @@ import com.hxngxd.utils.Formatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class Book extends EntityWithPhoto {
 
@@ -35,6 +37,10 @@ public final class Book extends EntityWithPhoto {
     private final List<Genre> genres = new ArrayList<>();
 
     private final List<Review> reviews = new ArrayList<>();
+
+    public static final List<Book> bookList = new ArrayList<>();
+
+    public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
     public Book() {
     }
@@ -189,64 +195,39 @@ public final class Book extends EntityWithPhoto {
 
     @Override
     public String toString() {
-        StringBuilder info = new StringBuilder();
-        info.append(this.yearOfPublication).append("\n");
-        authorsToString(info);
-        genresToString(info);
-        info.append(this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview());
-        return info.toString();
+        return this.yearOfPublication + "\n" +
+                authorsToString() + "\n" +
+                genresToString() + "\n" +
+                (this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview());
     }
 
     public String toStringDetail() {
-        String bullet = "• ";
-        StringBuilder info = new StringBuilder();
-        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
-
-        info.append(bullet).append("Năm phát hành: ").append(this.yearOfPublication).append("\n");
-
-        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
-
-        info.append(bullet).append("Tác giả: ");
-        authorsToString(info);
-
-        info.append(bullet).append("Thể loại: ");
-        genresToString(info);
-
-        info.append(bullet).append("Mô tả ngắn: ").append(this.shortDescription).append("\n");
-
-        info.append(bullet).append("Đánh giá: ").append(
-                this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview()).append("\n");
-
-        info.append(bullet).append("Thêm vào lúc: ").append(
-                Formatter.formatDateTime(this.dateAdded)).append("\n");
-
-        info.append(bullet).append("Cập nhật cuối cùng: ").append(
-                Formatter.formatDateTime(this.lastUpdated)).append("\n");
-
-        info.append(bullet).append("Số bản sao có sẵn: ").append(
-                this.availableCopies).append("/").append(this.totalCopies);
-
-        return info.toString();
+        return createInfo(
+                "Mã sách: " + this.id,
+                "Năm phát hành: " + this.yearOfPublication,
+                "Số trang: " + this.numberOfPages,
+                "Tác giả: " + authorsToString(),
+                "Thể loại: " + genresToString(),
+                "Mô tả ngắn: " + this.shortDescription,
+                "Đánh giá: " + (this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview()),
+                "Thêm vào lúc: " + Formatter.formatDateTime(this.dateAdded),
+                "Cập nhật cuối cùng: " + Formatter.formatDateTime(this.lastUpdated),
+                "Số bản sao có sẵn: " + this.availableCopies + "/" + this.totalCopies
+        );
     }
 
     public String toStringHalfDetail() {
-        String bullet = "• ";
-        StringBuilder info = new StringBuilder();
+        return createInfo(
+                "Mã sách: " + this.id,
+                "Số trang: " + this.numberOfPages,
+                "Thêm vào lúc: " + Formatter.formatDateTime(this.dateAdded),
+                "Cập nhật cuối cùng: " + Formatter.formatDateTime(this.lastUpdated),
+                "Số bản sao có sẵn: " + this.availableCopies + "/" + this.totalCopies
+        );
+    }
 
-        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
-
-        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
-
-        info.append(bullet).append("Thêm vào lúc: ").append(
-                Formatter.formatDateTime(this.dateAdded)).append("\n");
-
-        info.append(bullet).append("Cập nhật cuối cùng: ").append(
-                Formatter.formatDateTime(this.lastUpdated)).append("\n");
-
-        info.append(bullet).append("Số bản sao có sẵn: ").append(
-                this.availableCopies).append("/").append(this.totalCopies);
-
-        return info.toString();
+    private String createInfo(String... lines) {
+        return "• " + String.join("\n• ", lines);
     }
 
     public void genresToString(StringBuilder info) {
@@ -258,25 +239,11 @@ public final class Book extends EntityWithPhoto {
     }
 
     public String genresToString() {
-        StringBuilder info = new StringBuilder();
-        for (int i = 0; i < this.genres.size(); i++) {
-            info.append(this.genres.get(i).getName());
-            if (i < this.genres.size() - 1) {
-                info.append(", ");
-            }
-        }
-        return info.toString();
+        return this.genres.stream().map(Genre::getName).collect(Collectors.joining(", "));
     }
 
     public String authorsToString() {
-        StringBuilder info = new StringBuilder();
-        for (int i = 0; i < this.authors.size(); i++) {
-            info.append(this.authors.get(i).getFullNameFirstThenLast());
-            if (i < this.authors.size() - 1) {
-                info.append(", ");
-            }
-        }
-        return info.toString();
+        return this.authors.stream().map(Author::getFullNameFirstThenLast).collect(Collectors.joining(", "));
     }
 
     public void loadReviews() {

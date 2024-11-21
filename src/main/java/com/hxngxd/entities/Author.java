@@ -18,36 +18,48 @@ public final class Author extends Person {
 
     private final List<Book> books = new ArrayList<>();
 
+    public static final List<Author> authorList = new ArrayList<>();
+
     public static final HashMap<Integer, Author> authorMap = new HashMap<>();
 
-    public static void initialize()
+    public static void loadAll()
             throws DatabaseException {
+        authorList.clear();
         authorMap.clear();
 
         String query = "select * from author";
         DatabaseManager.getInstance().select("getting authors", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                if (authorMap.containsKey(id)) {
-                    continue;
-                }
+
                 Author author = new Author(id);
+
                 author.setFirstName(resultSet.getString("firstName"));
+
                 author.setLastName(resultSet.getString("lastName"));
-                author.setDayOfDeath(resultSet.getDate("dateOfBirth").toLocalDate());
+
+                Date dob = resultSet.getDate("dateOfBirth");
+                if (dob != null) {
+                    author.setDayOfDeath(dob.toLocalDate());
+                }
+
                 byte[] photo = resultSet.getBytes("photo");
                 if (photo != null) {
                     author.setImage(ImageHandler.byteArrayToImage(photo));
                 }
+
                 author.setBiography(resultSet.getString("biography"));
+
                 Date dod = resultSet.getDate("dayOfDeath");
                 if (dod != null) {
                     author.setDayOfDeath(dod.toLocalDate());
                 }
+
                 authorMap.put(id, author);
             }
             return null;
         });
+        authorList.addAll(authorMap.values());
     }
 
     public Author() {

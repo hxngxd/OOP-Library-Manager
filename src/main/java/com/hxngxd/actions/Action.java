@@ -7,9 +7,7 @@ import java.time.LocalDateTime;
 public abstract class Action {
 
     protected int id;
-
     protected User user;
-
     protected LocalDateTime timestamp;
 
     public Action() {
@@ -38,4 +36,5 @@ public abstract class Action {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
 }
