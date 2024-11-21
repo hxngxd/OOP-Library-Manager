@@ -10,20 +10,35 @@ import java.time.LocalDateTime;
 public final class Borrowing extends Action {
 
     private Book book;
-
     private User handler;
 
-    private final LocalDateTime requestDate = null;
-
+    private LocalDateTime requestDate;
     private LocalDateTime approvalDate;
-
     private LocalDateTime borrowDate;
-
     private LocalDate estimatedReturnDate;
-
     private LocalDate actualReturnDate;
 
     private BorrowStatus status;
+
+    public Borrowing(int id) {
+        super(id);
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public User getHandler() {
+        return handler;
+    }
+
+    public void setHandler(User handler) {
+        this.handler = handler;
+    }
 
     public LocalDateTime getRequestDate() {
         return requestDate;

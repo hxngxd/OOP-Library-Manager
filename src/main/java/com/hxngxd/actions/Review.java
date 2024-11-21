@@ -7,7 +7,6 @@ public final class Review extends Action {
     private Book book;
 
     private int rating;
-
     private String comment;
 
     public Review(int id) {
@@ -41,4 +40,5 @@ public final class Review extends Action {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
 }
