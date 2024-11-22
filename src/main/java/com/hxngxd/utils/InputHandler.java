@@ -85,7 +85,7 @@ public final class InputHandler {
 
     private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    public static final double similarThresHold = 0.8;
+    public static final double minSimilar = 0.8;
 
     private InputHandler() {
     }
@@ -173,7 +173,7 @@ public final class InputHandler {
     }
 
     public static double similarity(String info, String search) {
-        info = info.toLowerCase().replaceAll("\\s+", "");
+        info = info.toLowerCase();
         search = search.toLowerCase().replaceAll("\\s+", "");
 
         int bound = 3;
@@ -219,15 +219,11 @@ public final class InputHandler {
     }
 
     public static boolean isSimilar(String info, String search) {
-        return similarity(info, search) >= similarThresHold;
+        return similarity(info, search) >= minSimilar;
     }
 
     public static boolean isUnidecodeSimilar(String info, String search) {
-        return similarity(unidecode(info), unidecode(search)) >= similarThresHold;
-    }
-
-    public static boolean unidecodedPrefixMatching(String text, String prefix) {
-        return exactPrefixMatching(unidecode(text), unidecode(prefix));
+        return similarity(unidecode(info), unidecode(search)) >= minSimilar;
     }
 
     public static boolean lowerPrefixMatching(String text, String prefix) {
