@@ -6,7 +6,7 @@ import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.controller.PopupManager;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.MainController;
 import com.hxngxd.ui.controller.BookGalleryController;
@@ -105,7 +105,7 @@ public class BookPreviewController extends PreviewController {
     }
 
     public static BookPreviewController getInstance() {
-        return UIManager.getControllerOnce(UI.BOOK_PREVIEW);
+        return UIManager.getActivableController(UI.BOOK_PREVIEW);
     }
 
     public Book getBook() {

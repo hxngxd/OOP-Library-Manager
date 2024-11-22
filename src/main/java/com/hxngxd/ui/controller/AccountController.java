@@ -6,6 +6,7 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
@@ -152,7 +153,7 @@ public final class AccountController {
     }
 
     public static AccountController getInstance() {
-        return UIManager.getControllerOnce(UI.ACCOUNT);
+        return UIManager.getActivableController(UI.ACCOUNT);
     }
 
 }

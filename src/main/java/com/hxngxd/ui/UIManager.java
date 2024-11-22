@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Objects;
 
 public final class UIManager {
@@ -56,7 +55,15 @@ public final class UIManager {
         return loader;
     }
 
-    public static <T extends Activable> T getControllerOnce(UI ui) {
+    public static <T extends Activable> T getActivableController(UI ui) {
+        return loadOnce(ui).getController();
+    }
+
+    public static <T extends Updatable> T getUpdatableController(UI ui) {
+        return loadOnce(ui).getController();
+    }
+
+    public static <T> T getController(UI ui) {
         return loadOnce(ui).getController();
     }
 

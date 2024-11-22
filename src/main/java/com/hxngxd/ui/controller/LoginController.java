@@ -9,6 +9,7 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
@@ -58,7 +59,7 @@ public final class LoginController extends AuthenticationController {
             userService.loadSavedBooks(User.getCurrent());
 
             StageManager.getInstance().setScene(UI.MAIN);
-            UIManager.getControllerOnce(UI.MAIN).onActive();
+            UIManager.getActivableController(UI.MAIN).onActive();
         } catch (DatabaseException | UserException | ValidationException e) {
             log.error(LogMsg.GENERAL_FAIL.msg("log in"), e);
             PopupManager.info(e.getMessage());
@@ -68,7 +69,7 @@ public final class LoginController extends AuthenticationController {
     @FXML
     private void goToRegister(ActionEvent event) {
         StageManager.getInstance().setScene(UI.REGISTER);
-        UIManager.getControllerOnce(UI.REGISTER).onActive();
+        UIManager.getActivableController(UI.REGISTER).onActive();
     }
 
     @FXML

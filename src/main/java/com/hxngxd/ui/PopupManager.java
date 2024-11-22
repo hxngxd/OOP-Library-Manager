@@ -1,8 +1,6 @@
-package com.hxngxd.ui.controller;
+package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
-import com.hxngxd.ui.StageManager;
-import com.hxngxd.ui.UIManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

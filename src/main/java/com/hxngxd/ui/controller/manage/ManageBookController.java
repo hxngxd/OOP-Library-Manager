@@ -5,7 +5,7 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
-import com.hxngxd.ui.controller.PopupManager;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
@@ -193,7 +193,7 @@ public final class ManageBookController extends ManageController<Book> {
     }
 
     public static ManageBookController getInstance() {
-        return UIManager.getControllerOnce(UI.MANAGE_BOOK);
+        return UIManager.getActivableController(UI.MANAGE_BOOK);
     }
 
 }

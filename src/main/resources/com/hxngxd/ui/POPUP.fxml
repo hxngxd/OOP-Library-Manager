@@ -11,7 +11,7 @@
 
 <AnchorPane prefWidth="300.0" xmlns="http://javafx.com/javafx/23"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.controller.PopupManager">
+            fx:controller="com.hxngxd.ui.PopupManager">
     <children>
         <VBox fx:id="mainVbox" spacing="10.0" AnchorPane.bottomAnchor="15.0"
               AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0"

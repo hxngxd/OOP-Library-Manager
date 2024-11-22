@@ -8,6 +8,7 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
@@ -85,7 +86,7 @@ public final class RegisterController extends AuthenticationController {
             BookService.getInstance().loadAll();
 
             StageManager.getInstance().setScene(UI.MAIN);
-            UIManager.getControllerOnce(UI.MAIN).onActive();
+            UIManager.getActivableController(UI.MAIN).onActive();
         } catch (DatabaseException | UserException | ValidationException e) {
             log.error(LogMsg.GENERAL_FAIL.msg("create account"), e);
             PopupManager.info(e.getMessage());
@@ -95,7 +96,7 @@ public final class RegisterController extends AuthenticationController {
     @FXML
     private void goToLogin(ActionEvent event) {
         StageManager.getInstance().setScene(UI.LOGIN);
-        UIManager.getControllerOnce(UI.LOGIN).onActive();
+        UIManager.getActivableController(UI.LOGIN).onActive();
     }
 
 }

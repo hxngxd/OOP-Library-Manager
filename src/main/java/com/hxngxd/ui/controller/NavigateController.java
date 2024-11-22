@@ -2,6 +2,7 @@ package com.hxngxd.ui.controller;
 
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.Activable;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -7,7 +7,7 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.controller.PopupManager;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
@@ -293,7 +293,7 @@ public final class ManageUserController extends ManageController<User> {
     }
 
     public static ManageUserController getInstance() {
-        return UIManager.getControllerOnce(UI.MANAGE_USER);
+        return UIManager.getActivableController(UI.MANAGE_USER);
     }
 
 }

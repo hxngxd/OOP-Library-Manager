@@ -148,7 +148,7 @@ public final class BookGalleryController {
     }
 
     public static BookGalleryController getInstance() {
-        return UIManager.getControllerOnce(UI.BOOK_GALLERY);
+        return UIManager.getActivableController(UI.BOOK_GALLERY);
     }
 
 }
