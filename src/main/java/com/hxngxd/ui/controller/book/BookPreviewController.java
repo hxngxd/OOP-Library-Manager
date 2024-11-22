@@ -2,14 +2,14 @@ package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.scene.MainController;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
+import com.hxngxd.ui.MainController;
+import com.hxngxd.ui.BookGalleryController;
 import com.hxngxd.utils.ImageHandler;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
@@ -64,7 +64,7 @@ public class BookPreviewController extends PreviewController {
                 PopupManager.info("Đã lưu sách");
             } catch (DatabaseException e) {
 //                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("save book"), e.getMessage());
+                log.error(LogMsg.General.FAIL.getMSG("save book"), e.getMessage());
                 PopupManager.info("Lỗi khi lưu sách");
             }
         } else {
@@ -75,7 +75,7 @@ public class BookPreviewController extends PreviewController {
                 PopupManager.info("Đã bỏ lưu sách");
             } catch (DatabaseException e) {
 //                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("unsave book"), e.getMessage());
+                log.error(LogMsg.General.FAIL.getMSG("unsave book"), e.getMessage());
                 PopupManager.info("Lỗi khi bỏ lưu sách");
             }
         }

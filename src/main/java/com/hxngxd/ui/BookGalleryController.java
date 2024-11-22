@@ -1,14 +1,13 @@
-package com.hxngxd.ui.controller.tab;
+package com.hxngxd.ui;
 
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookCardController;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;
@@ -65,7 +64,7 @@ public final class BookGalleryController {
                 ((BookCardController) loader.getController()).setBook(book);
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("create book card"), e.getMessage());
+                log.error(LogMsg.General.FAIL.getMSG("create book card"), e.getMessage());
             }
         }
     }

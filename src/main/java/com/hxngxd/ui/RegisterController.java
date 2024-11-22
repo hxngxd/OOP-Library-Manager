@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui;
 
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
@@ -8,10 +8,6 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
-import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
-import com.hxngxd.ui.StageManager;
-import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -72,7 +68,6 @@ public final class RegisterController extends AuthenticationController {
     @Override
     @FXML
     protected void authenticate(ActionEvent event) {
-        UserService userService = UserService.getInstance();
         try {
             String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
             String confirmedPassword = isPasswordVisible ? confirmPasswordVisibleField.getText() : confirmPasswordField.getText();

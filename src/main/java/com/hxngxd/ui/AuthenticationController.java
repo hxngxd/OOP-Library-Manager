@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.FXML;
@@ -43,5 +43,5 @@ public abstract class AuthenticationController extends NavigateController {
             event.consume();
         }
     }
-    
+
 }

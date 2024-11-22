@@ -1,19 +1,16 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui;
 
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
-import com.hxngxd.ui.StageManager;
-import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.tab.AccountController;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.controller.tab.manage.ManageBookController;
-import com.hxngxd.ui.controller.tab.manage.ManageUserController;
+import com.hxngxd.ui.manage.ManageBookController;
+import com.hxngxd.ui.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,15 +22,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class MainController extends NavigateController {
-
-    private static final Logger log = LogManager.getLogger(MainController.class);
 
     private static UI currentTab = null;
 
@@ -99,7 +92,7 @@ public final class MainController extends NavigateController {
     }
 
     @FXML
-    private void showAccount(ActionEvent event) {
+    private void showAccount() {
         UI ui = UI.ACCOUNT;
         if (currentTab == ui) {
             return;
@@ -107,11 +100,6 @@ public final class MainController extends NavigateController {
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
         AccountController.getInstance().onActive();
-    }
-
-    @FXML
-    private void showAccount2() {
-        showAccount(null);
     }
 
     @FXML
@@ -191,24 +179,19 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void logOut() {
-        PopupManager.confirm("Đăng xuất?", () -> {
+        PopupManager.confirm("Log out?", () -> {
             try {
-                UserService.getInstance().logout();
-                PopupManager.info(LogMessages.General.SUCCESS.getMSG("log out"));
+                userService.logout();
+                PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("log out"));
                 StageManager.getInstance().setScene(UI.LOGIN);
-                LoginController.getInstance().onActive();
-            } catch (Exception e) {
-//                e.printStackTrace();
-                log.error(e.getMessage());
+                UIManager.getControllerOnce(UI.LOGIN).onActive();
+            } catch (DatabaseException | UserException e) {
+                log.error(e);
                 PopupManager.info(e.getMessage());
             } finally {
                 PopupManager.closePopup();
             }
         });
-    }
-
-    public static MainController getInstance() {
-        return UIManager.getControllerOnce(UI.MAIN);
     }
 
 }

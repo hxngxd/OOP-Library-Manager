@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab;
+package com.hxngxd.ui;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
@@ -6,16 +6,12 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
-import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.scene.MainController;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
-import javafx.scene.shape.Circle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

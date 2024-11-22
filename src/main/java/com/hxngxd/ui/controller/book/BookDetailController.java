@@ -4,7 +4,7 @@ import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
@@ -116,9 +116,9 @@ public final class BookDetailController extends BookPreviewController {
                     userService.getCurrentUser().getId(), book.getId(), currentStar, userComment.getText());
             PopupManager.info("Đã đánh giá sách!");
             onActive(this.book);
-            log.info(LogMessages.General.SUCCESS.getMSG("review"));
+            log.info(LogMsg.General.SUCCESS.getMSG("review"));
         } catch (DatabaseException e) {
-            log.info(LogMessages.General.FAIL.getMSG("review"));
+            log.info(LogMsg.General.FAIL.getMSG("review"));
             PopupManager.info("Đánh giá thất bại!");
         }
     }
@@ -135,10 +135,10 @@ public final class BookDetailController extends BookPreviewController {
                 PopupManager.closePopup();
                 PopupManager.closePopup();
                 onActive(this.book);
-                log.info(LogMessages.General.SUCCESS.getMSG("edit comment"));
+                log.info(LogMsg.General.SUCCESS.getMSG("edit comment"));
                 PopupManager.info("Chỉnh sửa bình luận thành công!");
             } catch (DatabaseException e) {
-                log.info(LogMessages.General.FAIL.getMSG("edit comment"));
+                log.info(LogMsg.General.FAIL.getMSG("edit comment"));
                 PopupManager.info("Chỉnh sửa bình luận thất bại!");
             }
         });
@@ -150,9 +150,9 @@ public final class BookDetailController extends BookPreviewController {
             DatabaseManager.getInstance().delete("review", "id", review.getId());
             PopupManager.info("Đã xoá đánh giá!");
             onActive(this.book);
-            log.info(LogMessages.General.SUCCESS.getMSG("delete review"));
+            log.info(LogMsg.General.SUCCESS.getMSG("delete review"));
         } catch (DatabaseException e) {
-            log.info(LogMessages.General.FAIL.getMSG("delete review"));
+            log.info(LogMsg.General.FAIL.getMSG("delete review"));
             PopupManager.info("Xoá đánh giá thất bại!");
         }
     }

@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab.manage;
+package com.hxngxd.ui.manage;
 
 import com.hxngxd.entities.Entity;
 import com.hxngxd.ui.PopupManager;

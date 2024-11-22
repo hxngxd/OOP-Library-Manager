@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMsg;
@@ -9,10 +9,6 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
-import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
-import com.hxngxd.ui.StageManager;
-import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -44,7 +40,6 @@ public final class LoginController extends AuthenticationController {
     @Override
     @FXML
     protected void authenticate(ActionEvent event) {
-        UserService userService = UserService.getInstance();
         try {
             String username = usernameField.getText();
             String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
@@ -58,7 +53,7 @@ public final class LoginController extends AuthenticationController {
             AuthorService.getInstance().loadAll();
             GenreService.getInstance().loadAll();
             BookService.getInstance().loadAll();
-            UserService.getInstance().loadSavedBooks(User.getCurrent());
+            userService.loadSavedBooks(User.getCurrent());
 
             StageManager.getInstance().setScene(UI.MAIN);
             UIManager.getControllerOnce(UI.MAIN).onActive();

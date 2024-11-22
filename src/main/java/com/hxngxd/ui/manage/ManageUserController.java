@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab.manage;
+package com.hxngxd.ui.manage;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;

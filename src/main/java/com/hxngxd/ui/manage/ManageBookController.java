@@ -1,4 +1,4 @@
-package com.hxngxd.ui.controller.tab.manage;
+package com.hxngxd.ui.manage;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.enums.UI;
