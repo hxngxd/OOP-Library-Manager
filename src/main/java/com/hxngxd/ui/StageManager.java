@@ -47,7 +47,6 @@ public final class StageManager {
     public void setScene(UI ui) {
         this.mainStage.setScene(UIManager.loadScene(ui));
         this.mainStage.show();
-        UIManager.currentScene = ui;
     }
 
     public void setWidth(double minRatio, double prefRatio) {

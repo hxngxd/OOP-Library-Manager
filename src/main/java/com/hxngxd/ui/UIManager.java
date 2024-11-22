@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -15,11 +16,8 @@ public final class UIManager {
 
     private static final Logger log = LogManager.getLogger(UIManager.class);
 
-    public static final HashMap<UI, Scene> Scenes = new HashMap<>();
-
-    public static final HashMap<UI, FXMLLoader> Loaders = new HashMap<>();
-
-    public static UI currentScene = null;
+    public static final EnumMap<UI, Scene> Scenes = new EnumMap<>(UI.class);
+    public static final EnumMap<UI, FXMLLoader> Loaders = new EnumMap<>(UI.class);
 
     private UIManager() {
     }
@@ -48,9 +46,7 @@ public final class UIManager {
     }
 
     public static FXMLLoader load(UI ui) {
-        FXMLLoader loader = new FXMLLoader(
-                UIManager.class.getResource(ui.getPath())
-        );
+        FXMLLoader loader = new FXMLLoader(UIManager.class.getResource(ui.getPath()));
         try {
             loader.load();
         } catch (IOException e) {
@@ -60,11 +56,12 @@ public final class UIManager {
         return loader;
     }
 
-    public static <T> T getControllerOnce(UI ui) {
+    public static <T extends Activable> T getControllerOnce(UI ui) {
         return loadOnce(ui).getController();
     }
 
     public static <T> T getRootOnce(UI ui) {
         return loadOnce(ui).getRoot();
     }
+
 }
