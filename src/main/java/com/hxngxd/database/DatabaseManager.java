@@ -1,6 +1,6 @@
 package com.hxngxd.database;
 
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.DatabaseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,25 +45,25 @@ public final class DatabaseManager {
             Class.forName("com.mysql.cj.jdbc.Driver");
             loadDatabaseConfig();
             connection = DriverManager.getConnection(databaseUrl, username, password);
-            log.info(LogMessages.General.SUCCESS.getMSG("connect to the database"));
+            log.info(LogMsg.GENERAL_SUCCESS.msg("connect to the database"));
             return true;
         } catch (SQLException | ClassNotFoundException e) {
-            log.info(LogMessages.General.FAIL.getMSG("connect to the database"), e);
+            log.info(LogMsg.GENERAL_FAIL.msg("connect to the database"), e);
             return false;
         }
     }
 
     public boolean disconnect() {
         if (!isConnected()) {
-            log.info(LogMessages.Database.NO_DB_CONNECTION);
+            log.info(LogMsg.DATABASE_NO_CONNECTION);
             return false;
         }
         try {
             connection.close();
-            log.info(LogMessages.General.SUCCESS.getMSG("disconnect from database"));
+            log.info(LogMsg.GENERAL_SUCCESS.msg("disconnect from database"));
             return true;
         } catch (SQLException e) {
-            log.error(LogMessages.General.FAIL.getMSG("disconnect from database"), e);
+            log.error(LogMsg.GENERAL_FAIL.msg("disconnect from database"), e);
             return false;
         }
     }
@@ -89,7 +89,7 @@ public final class DatabaseManager {
         String config = "config.properties";
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(config)) {
             if (input == null) {
-                log.error("Unable to find config.properties");
+                log.error(LogMsg.FILE_NOT_FOUND.msg("config.properties"));
                 return;
             }
 
@@ -100,9 +100,9 @@ public final class DatabaseManager {
             username = prop.getProperty("database.username");
             password = prop.getProperty("database.password");
 
-            log.info(LogMessages.General.SUCCESS.getMSG("load database configuration"));
+            log.info(LogMsg.GENERAL_SUCCESS.msg("load database configuration"));
         } catch (IOException e) {
-            log.info(LogMessages.General.FAIL.getMSG("load database configuration"), e);
+            log.info(LogMsg.GENERAL_FAIL.msg("load database configuration"), e);
         }
     }
 
@@ -128,10 +128,9 @@ public final class DatabaseManager {
                 pStatement.setObject(paramId++, condition);
             }
             if (pStatement.executeUpdate() < 1) {
-                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing update query"));
+                throw new SQLException(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg("executing update query"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -146,7 +145,7 @@ public final class DatabaseManager {
             int updates = pStatement.executeUpdate();
 
             if (updates < 1) {
-                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing insert query"));
+                throw new SQLException(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg("executing insert query"));
             } else if (getId) {
                 try (ResultSet resultSet = pStatement.getGeneratedKeys()) {
                     if (resultSet.next()) {
@@ -155,7 +154,6 @@ public final class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -174,10 +172,9 @@ public final class DatabaseManager {
             int updates = pStatement.executeUpdate();
 
             if (updates < 1) {
-                throw new SQLException(LogMessages.General.SOMETHING_WENT_WRONG.getMSG("executing delete query"));
+                throw new SQLException(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg("executing delete query"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -189,7 +186,6 @@ public final class DatabaseManager {
                 return mapper.map(resultSet);
             }
         } catch (SQLException e) {
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMSG(action), e);
             throw new DatabaseException(e.getMessage());
         }
     }
