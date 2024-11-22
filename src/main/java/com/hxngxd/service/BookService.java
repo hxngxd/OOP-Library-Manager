@@ -1,30 +1,18 @@
 package com.hxngxd.service;
 
+import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.Genre;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.entities.User;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.utils.ImageHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-public final class BookService {
-
-    private static final Logger log = LogManager.getLogger(BookService.class);
-    private final DatabaseManager db = DatabaseManager.getInstance();
-
-    public static final List<Book> bookList = new ArrayList<>();
-
-    public static final HashMap<Integer, Book> bookMap = new HashMap<>();
+public final class BookService extends Service<Book> {
 
     private BookService() {
     }
@@ -37,10 +25,11 @@ public final class BookService {
         return BookService.SingletonHolder.instance;
     }
 
-    public static void initialize()
+    @Override
+    public void loadAll()
             throws DatabaseException {
-        bookList.clear();
-        bookMap.clear();
+        Book.bookSet.clear();
+        Book.bookMap.clear();
 
         String query = "select book.*, bookauthor.authorId, bookgenre.genreId from book" +
                 " join bookauthor on bookauthor.bookId = book.id" +
@@ -48,13 +37,12 @@ public final class BookService {
         DatabaseManager.getInstance().select("getting books", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                Book book = null;
+                Book book;
 
-                if (!bookMap.containsKey(id)) {
-                    book = new Book(
-                            resultSet.getInt("id"),
-                            resultSet.getTimestamp("dateAdded").toLocalDateTime()
-                    );
+                if (!Book.bookMap.containsKey(id)) {
+                    book = new Book(id);
+
+                    book.setDateAdded(resultSet.getTimestamp("dateAdded").toLocalDateTime());
 
                     Timestamp lastUpdated = resultSet.getTimestamp("lastUpdated");
                     if (lastUpdated != null) {
@@ -81,33 +69,64 @@ public final class BookService {
                         book.setImage(ImageHandler.byteArrayToImage(coverImage));
                     }
 
-                    bookMap.put(id, book);
+                    Book.bookMap.put(id, book);
                 } else {
-                    book = bookMap.get(id);
+                    book = Book.bookMap.get(id);
                 }
 
                 Author author = Author.authorMap.get(resultSet.getInt("authorId"));
                 Genre genre = Genre.genreMap.get(resultSet.getInt("genreId"));
+
                 book.addAuthor(author);
                 book.addGenre(genre);
+
                 author.addBook(book);
                 genre.addBook(book);
             }
             return null;
         });
-        bookList.addAll(bookMap.values());
+        Book.bookSet.addAll(Book.bookMap.values());
+    }
+
+    public void setReviews(Book book) {
+        book.getReviews().clear();
+        String query = "select * from review where bookId = ?";
+        try {
+            DatabaseManager.getInstance().select("load reviews", query, resultSet -> {
+                double totalRating = 0;
+                int reviewCount = 0;
+                while (resultSet.next()) {
+                    Review review = new Review(resultSet.getInt("id"));
+                    review.setUser(User.userMap.get(resultSet.getInt("userId")));
+                    review.setBook(book);
+                    int rating = resultSet.getInt("rating");
+                    review.setRating(rating);
+                    review.setComment(resultSet.getString("comment"));
+                    review.setTimestamp(resultSet.getTimestamp("reviewTime").toLocalDateTime());
+                    book.addReviews(review);
+                    totalRating += rating;
+                    reviewCount++;
+                }
+                if (reviewCount > 0) {
+                    book.setAverageRating(Math.round((totalRating / reviewCount) * 100.0) / 100.0);
+                    book.setNumberOfReviews(reviewCount);
+                }
+                return null;
+            }, book.getId());
+        } catch (DatabaseException e) {
+            log.error(LogMsg.GENERAL_FAIL.msg("set reviews"), e);
+        }
     }
 
     public void deleteBook(int bookId)
             throws DatabaseException {
-        Book book = bookMap.get(bookId);
-        if (book == null) {
-            throw new DatabaseException("Book not found");
+        if (!Book.bookMap.containsKey(bookId)) {
+            return;
         }
-        db.delete("book", "id", bookId);
-        bookMap.remove(bookId);
-        bookList.remove(book);
-        log.info(LogMessages.General.SUCCESS.getMSG("delete book"));
+        Book.bookSet.remove(Book.bookMap.get(bookId));
+        Book.bookMap.remove(bookId);
+        DatabaseManager.getInstance().delete("book", "id", bookId);
+        log.info(LogMsg.GENERAL_SUCCESS.msg("delete book"));
     }
 
 }
