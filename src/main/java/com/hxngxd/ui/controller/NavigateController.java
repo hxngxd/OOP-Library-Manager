@@ -13,7 +13,7 @@ public abstract class NavigateController implements Activable {
 
     protected static final Logger log = LogManager.getLogger(NavigateController.class);
 
-    UserService userService = UserService.getInstance();
+    protected final UserService userService = UserService.getInstance();
 
     @FXML
     protected void exit(ActionEvent event) {

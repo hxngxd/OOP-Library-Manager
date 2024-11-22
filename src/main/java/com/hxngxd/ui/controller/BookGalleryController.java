@@ -6,30 +6,24 @@ import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookCardController;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Duration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public final class BookGalleryController {
+public final class BookGalleryController extends NavigateController {
 
-    private static final Logger log = LogManager.getLogger(BookGalleryController.class);
-
-    private static final List<FXMLLoader> bookCards = new ArrayList<>();
+    private final List<FXMLLoader> bookCards = new ArrayList<>();
 
     @FXML
     private FlowPane bookCardContainer;
@@ -37,9 +31,7 @@ public final class BookGalleryController {
     @FXML
     private TextField searchField;
 
-    public static boolean isShowingSavedBook = false;
-
-    private User currentUser = null;
+    private boolean showSaved = false;
 
     @FXML
     private void initialize() {
@@ -47,88 +39,59 @@ public final class BookGalleryController {
         onActive();
     }
 
+    @Override
     public void onActive() {
-        currentUser = UserService.getInstance().getCurrentUser();
+        searchField.clear();
         loadBookCards();
-        showBookCards();
+        showBookCards(null);
     }
 
     private void loadBookCards() {
         bookCards.clear();
 
-        List<Book> bookList = new ArrayList<>(BookService.bookMap.values());
-        Collections.shuffle(bookList);
-        for (Book book : bookList) {
+        for (Book book : Book.bookSet) {
             try {
                 FXMLLoader loader = UIManager.load(UI.BOOK_CARD);
                 bookCards.add(loader);
                 ((BookCardController) loader.getController()).setBook(book);
             } catch (NullPointerException e) {
-                e.printStackTrace();
-                log.error(LogMsg.General.FAIL.getMSG("create book card"), e.getMessage());
+                log.error(LogMsg.GENERAL_FAIL.msg("load book card"), e);
             }
         }
     }
 
-    private void showBookCards(String info) {
+    private void showBookCards(String search) {
         bookCardContainer.getChildren().clear();
-        if (info == null || info.isEmpty()) {
-            for (FXMLLoader bookCard : bookCards) {
-                BookCardController bookCardController = bookCard.getController();
-                Book book = bookCardController.getBook();
-                Parent root = bookCard.getRoot();
-                if (isShowingSavedBook) {
-                    if (!currentUser.getSavedBooks().contains(book)) {
-                        bookCardContainer.getChildren().remove(root);
-                        continue;
-                    }
-                }
-                if (!bookCardContainer.getChildren().contains(root)) {
-                    bookCardContainer.getChildren().add(root);
-                }
-            }
-            return;
-        }
 
+        User user = User.getCurrent();
         for (FXMLLoader bookCard : bookCards) {
             BookCardController bookCardController = bookCard.getController();
             Book book = bookCardController.getBook();
-            if (isShowingSavedBook) {
-                if (!currentUser.getSavedBooks().contains(book)) {
-                    bookCardContainer.getChildren().remove(bookCard.getRoot());
-                    continue;
-                }
+            if (showSaved && !user.getSavedBooks().contains(book)) {
+                continue;
             }
-            Parent card = bookCard.getRoot();
-            boolean approxMatch = false;
-            List<String> bookInfos = new ArrayList<>();
-            bookInfos.add(book.getTitle());
-            bookInfos.add(book.getShortDescription());
-            for (Author author : book.getAuthors()) {
-                bookInfos.add(author.getFullNameFirstThenLast());
-            }
-            for (Genre genre : book.getGenres()) {
-                bookInfos.add(genre.getName());
-            }
-            for (String bookInfo : bookInfos) {
-                approxMatch = approxMatch || (InputHandler.isUnidecodeSimilar(bookInfo, info));
-            }
-            if (approxMatch) {
-                if (!bookCardContainer.getChildren().contains(card)) {
-                    bookCardContainer.getChildren().add(bookCard.getRoot());
-                }
+
+            boolean match = false;
+            if (search == null || search.isEmpty()) {
+                match = true;
             } else {
-                bookCardContainer.getChildren().remove(card);
+                Set<String> infos = new HashSet<>();
+                infos.add(book.getTitle());
+                infos.add(book.getShortDescription());
+                for (Author author : book.getAuthors()) {
+                    infos.add(author.getFullNameFirstThenLast());
+                }
+                for (Genre genre : book.getGenres()) {
+                    infos.add(genre.getName());
+                }
+                String combinedInfos = String.join(" ", infos);
+                match = InputHandler.isUnidecodeSimilar(combinedInfos, search);
+            }
+
+            if (match) {
+                bookCardContainer.getChildren().add(bookCard.getRoot());
             }
         }
-    }
-
-    public void showBookCards() {
-        showBookCards(null);
-    }
-
-    public void showBookCardsBySearch() {
-        showBookCards(searchField.getText());
     }
 
     public void searchBook() {
@@ -137,18 +100,20 @@ public final class BookGalleryController {
             if (newValue.length() > 63) {
                 searchField.setText(newValue.substring(0, 63));
             } else {
-                pause.setOnFinished(event -> showBookCardsBySearch());
+                pause.setOnFinished(event -> {
+                    showBookCards(searchField.getText());
+                });
                 pause.playFromStart();
             }
         });
     }
 
-    public void setIsShowingSavedBook(boolean isShowingSavedBook) {
-        BookGalleryController.isShowingSavedBook = isShowingSavedBook;
+    public boolean isShowSaved() {
+        return showSaved;
     }
 
-    public static BookGalleryController getInstance() {
-        return UIManager.getActivableController(UI.BOOK_GALLERY);
+    public void setShowSaved(boolean showSaved) {
+        this.showSaved = showSaved;
     }
 
 }

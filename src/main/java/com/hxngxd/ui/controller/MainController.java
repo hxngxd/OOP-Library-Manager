@@ -157,9 +157,8 @@ public final class MainController extends NavigateController {
         navigate(UIManager.getRootOnce(ui));
 
         BookGalleryController bookGalleryController = UIManager.getController(UI.BOOK_GALLERY);
+        bookGalleryController.setShowSaved(save);
         bookGalleryController.onActive();
-        bookGalleryController.setIsShowingSavedBook(save);
-        bookGalleryController.showBookCards();
 
         BookPreviewController bookPreviewController = UIManager.getController(UI.BOOK_PREVIEW);
         if (!bookPreviewController.isPreviewing()) {

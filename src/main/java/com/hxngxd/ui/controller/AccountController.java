@@ -1,11 +1,11 @@
 package com.hxngxd.ui.controller;
 
 import com.hxngxd.entities.User;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
-import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
@@ -14,17 +14,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-public final class AccountController {
-
-    private static final Logger log = LogManager.getLogger(AccountController.class);
-    private final UserService userService = UserService.getInstance();
-
-    private User currentUser = null;
+public final class AccountController extends NavigateController {
 
     @FXML
     private ImageView profileImage;
@@ -70,12 +63,13 @@ public final class AccountController {
 
     @FXML
     private void initialize() {
-        onActive();
-        idField.setText(String.valueOf(currentUser.getId()));
-        roleField.setText(currentUser.getRole().name());
-        joinDateField.setText(Formatter.formatDateTime(currentUser.getDateAdded()));
-        usernameField.setText(currentUser.getUsername());
+        User user = User.getCurrent();
+        idField.setText(String.valueOf(user.getId()));
+        roleField.setText(user.getRole().name());
+        joinDateField.setText(Formatter.formatDateTime(user.getDateAdded()));
+        usernameField.setText(user.getUsername());
         birthdayField.setStyle("-fx-font-size: 16px;");
+        onActive();
     }
 
     @FXML
@@ -85,9 +79,9 @@ public final class AccountController {
             return;
         }
         Image cropped = ImageHandler.cropImageByRatio(ImageHandler.loadImageFromFile(file), 1, 1);
-        MainController.getInstance().setProfileImage(cropped);
+        ((MainController) UIManager.getController(UI.MAIN)).setProfileImage(cropped);
         setProfileImage(cropped);
-        UserService.getInstance().updateProfilePicture(file);
+        userService.updateProfilePicture(file);
     }
 
     private void setProfileImage(Image profileImage) {
@@ -95,28 +89,31 @@ public final class AccountController {
         this.profileImage.setImage(profileImage);
     }
 
+    @Override
     public void onActive() {
-        currentUser = userService.getCurrentUser();
-        setProfileImage(ImageHandler.cropImageByRatio(currentUser.getImage(), 1, 1));
-        lastNameField.setText(currentUser.getLastName());
-        firstNameField.setText(currentUser.getFirstName());
-        emailField.setText(currentUser.getEmail());
-        addressField.setText(currentUser.getAddress());
-        birthdayField.setValue(currentUser.getDateOfBirth());
-        saveBookField.setText(String.valueOf(currentUser.getSavedBooks().size()));
+        User user = User.getCurrent();
+        setProfileImage(ImageHandler.cropImageByRatio(user.getImage(), 1, 1));
+        lastNameField.setText(user.getLastName());
+        firstNameField.setText(user.getFirstName());
+        emailField.setText(user.getEmail());
+        addressField.setText(user.getAddress());
+        birthdayField.setValue(user.getDateOfBirth());
+        saveBookField.setText(String.valueOf(user.getSavedBooks().size()));
         borrowBookField.setText(String.valueOf(0));
     }
 
     @FXML
     private void changePassword() {
         if (oldPasswordField.getText().isEmpty() || newPasswordField.getText().isEmpty()) {
+            PopupManager.info("Please enter password!");
             return;
         }
-        PopupManager.confirm("Xác nhận đổi mật khẩu?", () -> {
+        PopupManager.confirm("Change password?", () -> {
             try {
                 userService.changePassword(oldPasswordField.getText(), newPasswordField.getText());
-                PopupManager.info("Đổi mật khẩu thành công!");
+                PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("change password"));
             } catch (DatabaseException | UserException e) {
+                log.error(e);
                 PopupManager.info(e.getMessage());
             } finally {
                 PopupManager.closePopup();
@@ -126,14 +123,14 @@ public final class AccountController {
 
     @FXML
     private void saveInformation() {
-        PopupManager.confirm("Xác nhận lưu thông tin?", () -> {
+        PopupManager.confirm("Save profile?", () -> {
             try {
                 PopupManager.closePopup();
                 changeEmail();
                 changeProfile();
-                PopupManager.info("Lưu thông tin thành công");
+                PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("save profile"));
             } catch (DatabaseException | UserException | ValidationException e) {
-                log.error(e.getMessage());
+                log.error(e);
                 PopupManager.info(e.getMessage());
             }
         });
@@ -141,7 +138,7 @@ public final class AccountController {
 
     private void changeEmail()
             throws DatabaseException, UserException, ValidationException {
-        if (!emailField.getText().equals(currentUser.getEmail())) {
+        if (!emailField.getText().equals(User.getCurrent().getEmail())) {
             userService.changeEmail(emailField.getText());
         }
     }
@@ -150,10 +147,6 @@ public final class AccountController {
             throws DatabaseException, UserException, ValidationException {
         userService.updateProfile(firstNameField.getText(), lastNameField.getText(),
                 birthdayField.getValue(), addressField.getText());
-    }
-
-    public static AccountController getInstance() {
-        return UIManager.getActivableController(UI.ACCOUNT);
     }
 
 }
