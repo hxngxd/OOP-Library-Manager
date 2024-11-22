@@ -13,5 +13,6 @@ module com.hxngxd.libraryManager {
     exports com.hxngxd.libraryManager;
     opens com.hxngxd.ui to javafx.fxml;
     opens com.hxngxd.ui.controller.book to javafx.fxml;
-    opens com.hxngxd.ui.manage to javafx.fxml;
+    opens com.hxngxd.ui.controller.manage to javafx.fxml;
+    opens com.hxngxd.ui.controller to javafx.fxml;
 }
