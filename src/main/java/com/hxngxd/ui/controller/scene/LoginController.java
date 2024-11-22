@@ -1,24 +1,13 @@
 package com.hxngxd.ui.controller.scene;
 
-import com.hxngxd.entities.Author;
-import com.hxngxd.entities.Genre;
-import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class LoginController extends AuthenticationController {
-
-    private static final Logger log = LogManager.getLogger(LoginController.class);
 
     @Override
     @FXML
@@ -35,69 +24,52 @@ public final class LoginController extends AuthenticationController {
         isPasswordVisible = !isPasswordVisible;
     }
 
-    private void authenticateOnEnter(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            logIn(null);
-            event.consume();
-        }
-    }
-
     @FXML
     private void initialize() {
-        usernameField.setOnKeyPressed(this::authenticateOnEnter);
-        passwordField.setOnKeyPressed(this::authenticateOnEnter);
-        passwordVisibleField.setOnKeyPressed(this::authenticateOnEnter);
+        usernameField.setOnKeyPressed(super::authenticateOnEnter);
+        passwordField.setOnKeyPressed(super::authenticateOnEnter);
+        passwordVisibleField.setOnKeyPressed(super::authenticateOnEnter);
         onActive();
     }
 
-    public void onActive() {
-        usernameField.setText("");
-        passwordField.setText("");
-        passwordVisibleField.setText("");
-    }
-
+    @Override
     @FXML
-    private void logIn(ActionEvent event) {
-        UserService userService = UserService.getInstance();
-        try {
-            String username = usernameField.getText();
-            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
-//            userService.login(username, username, password);
-            if (username.equals("2")) {
-                userService.login("23020111", "23020111", "Minh@07092005");
-            } else {
-                userService.login("23020078", "23020078", "Hung@07112005");
-            }
-            PopupManager.info(LogMessages.General.SUCCESS.getMSG("log in"));
-
-            Author.initialize();
-            Genre.initialize();
-            BookService.initialize();
-            UserService.initialize();
-
-            StageManager.getInstance().setScene(UI.MAIN);
-            MainController.getInstance().onActive();
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-            log.error(e.getMessage());
-            PopupManager.info(e.getMessage());
-        }
+    protected void authenticate(ActionEvent event) {
+//        UserService userService = UserService.getInstance();
+//        try {
+//            String username = usernameField.getText();
+//            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
+////            userService.login(username, username, password);
+//            if (username.equals("2")) {
+//                userService.login("23020111", "23020111", "Minh@07092005");
+//            } else {
+//                userService.login("23020078", "23020078", "Hung@07112005");
+//            }
+//            PopupManager.info(LogMsg.General.SUCCESS.getMSG("log in"));
+//
+//            Author.initialize();
+//            Genre.loadAll();
+//            BookService.initialize();
+//            UserService.initialize();
+//
+//            StageManager.getInstance().setScene(UI.MAIN);
+//            MainController.getInstance().onActive();
+//
+//        } catch (Exception e) {
+//            log.error(LogMsg.GENERAL_FAIL.msg("log in"), e);
+//            PopupManager.info(e.getMessage());
+//        }
     }
 
     @FXML
     private void goToRegister(ActionEvent event) {
         StageManager.getInstance().setScene(UI.REGISTER);
-        RegisterController.getInstance().onActive();
+        UIManager.getControllerOnce(UI.REGISTER).onActive();
     }
 
     @FXML
     private void forgotPassword() {
-        PopupManager.info("Liên hệ ADMIN để cấp lại mật khẩu");
-    }
-
-    public static LoginController getInstance() {
-        return UIManager.getControllerOnce(UI.LOGIN);
+        PopupManager.info("Contact ADMIN to reset your password");
     }
 
 }
