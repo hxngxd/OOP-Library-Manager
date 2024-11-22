@@ -1,7 +1,7 @@
 package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +29,7 @@ public final class UIManager {
             try {
                 Scenes.put(ui, new Scene(Objects.requireNonNull(loadOnce(ui)).getRoot()));
             } catch (NullPointerException e) {
-                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("load scene: " + ui.name()), e.getMessage());
+                log.error(LogMsg.GENERAL_FAIL.msg("load scene: " + ui.name()), e);
                 return null;
             }
         }
@@ -55,8 +54,7 @@ public final class UIManager {
         try {
             loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMSG("load ui: " + ui.name()), e.getMessage());
+            log.error(LogMsg.GENERAL_FAIL.msg("load ui: " + ui.name()), e);
             return null;
         }
         return loader;
