@@ -1,6 +1,6 @@
 package com.hxngxd.utils;
 
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.ValidationException;
 
@@ -94,10 +94,10 @@ public final class InputHandler {
             throws ValidationException {
         for (String input : inputs) {
             if (input == null || input.isEmpty()) {
-                throw new ValidationException(LogMessages.Validation.INFO_IS_MISSING.getMSG());
+                throw new ValidationException(LogMsg.VALIDATION_INFO_IS_MISSING.msg());
             }
             if (input.length() > 127) {
-                throw new ValidationException(LogMessages.Validation.INFO_TOO_LONG.getMSG());
+                throw new ValidationException(LogMsg.VALIDATION_INFO_TOO_LONG.msg());
             }
         }
     }
@@ -106,7 +106,7 @@ public final class InputHandler {
             throws ValidationException {
         Matcher matcher = emailPattern.matcher(email);
         if (!matcher.matches()) {
-            throw new ValidationException(LogMessages.Validation.EMAIL_NOT_VALID.getMSG());
+            throw new ValidationException(LogMsg.VALIDATION_EMAIL_NOT_VALID.msg());
         }
     }
 
