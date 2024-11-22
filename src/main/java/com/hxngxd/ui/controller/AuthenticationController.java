@@ -1,4 +1,4 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.FXML;

@@ -16,7 +16,7 @@
 
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.AccountController">
+            fx:controller="com.hxngxd.ui.controller.AccountController">
     <children>
         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER"
                     layoutX="24.799999237060547" layoutY="10.399999618530273"

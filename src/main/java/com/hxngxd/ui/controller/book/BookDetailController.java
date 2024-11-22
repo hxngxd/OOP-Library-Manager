@@ -9,7 +9,7 @@ import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.controller.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;

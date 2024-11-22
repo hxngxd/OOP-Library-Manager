@@ -1,7 +1,7 @@
-package com.hxngxd.ui.manage;
+package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.entities.Entity;
-import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.controller.PopupManager;
 import com.hxngxd.utils.Formatter;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;

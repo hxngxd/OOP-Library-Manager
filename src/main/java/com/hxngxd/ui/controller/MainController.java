@@ -1,4 +1,4 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMsg;
@@ -8,9 +8,11 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.StageManager;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.manage.ManageBookController;
-import com.hxngxd.ui.manage.ManageUserController;
+import com.hxngxd.ui.controller.manage.ManageBookController;
+import com.hxngxd.ui.controller.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

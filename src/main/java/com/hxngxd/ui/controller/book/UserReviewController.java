@@ -2,7 +2,7 @@ package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.actions.Review;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.controller.PopupManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;

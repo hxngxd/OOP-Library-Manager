@@ -16,7 +16,8 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.LoginController">
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hxngxd.ui.controller.LoginController">
     <children>
         <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308"
               maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0"

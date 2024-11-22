@@ -1,4 +1,4 @@
-package com.hxngxd.ui.manage;
+package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.actions.Borrowing;
 

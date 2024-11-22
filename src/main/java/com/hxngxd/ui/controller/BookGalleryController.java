@@ -1,4 +1,4 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import com.hxngxd.entities.Author;
 import com.hxngxd.entities.Book;
@@ -8,6 +8,7 @@ import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookCardController;
 import com.hxngxd.utils.InputHandler;
 import javafx.animation.PauseTransition;

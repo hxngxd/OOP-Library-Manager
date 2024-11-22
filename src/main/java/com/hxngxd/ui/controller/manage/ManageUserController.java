@@ -1,4 +1,4 @@
-package com.hxngxd.ui.manage;
+package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
@@ -7,7 +7,7 @@ import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
-import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.controller.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;

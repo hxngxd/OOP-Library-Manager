@@ -1,4 +1,4 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
@@ -8,6 +8,8 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
+import com.hxngxd.ui.StageManager;
+import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;

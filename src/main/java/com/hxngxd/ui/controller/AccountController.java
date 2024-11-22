@@ -1,4 +1,4 @@
-package com.hxngxd.ui;
+package com.hxngxd.ui.controller;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
@@ -6,6 +6,7 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;

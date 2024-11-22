@@ -1,11 +1,11 @@
-package com.hxngxd.ui.manage;
+package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.entities.Book;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
-import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.controller.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
