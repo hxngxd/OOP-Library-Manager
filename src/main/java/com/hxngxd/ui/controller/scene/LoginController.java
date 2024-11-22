@@ -1,6 +1,15 @@
 package com.hxngxd.ui.controller.scene;
 
+import com.hxngxd.entities.User;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
+import com.hxngxd.exceptions.ValidationException;
+import com.hxngxd.service.AuthorService;
+import com.hxngxd.service.BookService;
+import com.hxngxd.service.GenreService;
+import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
@@ -35,30 +44,28 @@ public final class LoginController extends AuthenticationController {
     @Override
     @FXML
     protected void authenticate(ActionEvent event) {
-//        UserService userService = UserService.getInstance();
-//        try {
-//            String username = usernameField.getText();
-//            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
-////            userService.login(username, username, password);
-//            if (username.equals("2")) {
-//                userService.login("23020111", "23020111", "Minh@07092005");
-//            } else {
-//                userService.login("23020078", "23020078", "Hung@07112005");
-//            }
-//            PopupManager.info(LogMsg.General.SUCCESS.getMSG("log in"));
-//
-//            Author.initialize();
-//            Genre.loadAll();
-//            BookService.initialize();
-//            UserService.initialize();
-//
-//            StageManager.getInstance().setScene(UI.MAIN);
-//            MainController.getInstance().onActive();
-//
-//        } catch (Exception e) {
-//            log.error(LogMsg.GENERAL_FAIL.msg("log in"), e);
-//            PopupManager.info(e.getMessage());
-//        }
+        UserService userService = UserService.getInstance();
+        try {
+            String username = usernameField.getText();
+            String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
+            if (username.equals("2")) {
+                userService.login("23020111", "23020111", "Minh@07092005");
+            } else {
+                userService.login("23020078", "23020078", "Hung@07112005");
+            }
+            PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("log in"));
+
+            AuthorService.getInstance().loadAll();
+            GenreService.getInstance().loadAll();
+            BookService.getInstance().loadAll();
+            UserService.getInstance().loadSavedBooks(User.getCurrent());
+
+            StageManager.getInstance().setScene(UI.MAIN);
+            UIManager.getControllerOnce(UI.MAIN).onActive();
+        } catch (DatabaseException | UserException | ValidationException e) {
+            log.error(LogMsg.GENERAL_FAIL.msg("log in"), e);
+            PopupManager.info(e.getMessage());
+        }
     }
 
     @FXML
