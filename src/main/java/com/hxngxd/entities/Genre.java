@@ -1,8 +1,5 @@
 package com.hxngxd.entities;
 
-import com.hxngxd.database.DatabaseManager;
-import com.hxngxd.exceptions.DatabaseException;
-
 import java.util.*;
 
 public final class Genre extends Entity {
@@ -13,24 +10,6 @@ public final class Genre extends Entity {
     private final Set<Book> books = new HashSet<>();
 
     public static final HashMap<Integer, Genre> genreMap = new HashMap<>();
-
-    public static void loadAll()
-            throws DatabaseException {
-        genreMap.clear();
-        String query = "select * from genre";
-        DatabaseManager.getInstance().select("getting genres", query, resultSet -> {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                Genre genre = new Genre(
-                        id,
-                        resultSet.getString("name"),
-                        resultSet.getString("description")
-                );
-                genreMap.put(id, genre);
-            }
-            return null;
-        });
-    }
 
     public Genre() {
     }
@@ -51,6 +30,22 @@ public final class Genre extends Entity {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Book> getBooks() {
+        return books;
     }
 
 }

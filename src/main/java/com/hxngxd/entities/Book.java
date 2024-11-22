@@ -1,15 +1,18 @@
 package com.hxngxd.entities;
 
 import com.hxngxd.actions.Review;
-import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
-import com.hxngxd.service.UserService;
+import com.hxngxd.service.BookService;
 import com.hxngxd.utils.Formatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public final class Book extends EntityWithPhoto {
+
+    private static final Logger log = LogManager.getLogger(Book.class);
 
     private String title;
     private short yearOfPublication;
@@ -43,12 +46,11 @@ public final class Book extends EntityWithPhoto {
         this.numberOfPages = numberOfPages;
         this.availableCopies = availableCopies;
         this.totalCopies = totalCopies;
-        setReviews();
-    }
-
-    public static void loadAll()
-            throws DatabaseException {
-
+        try {
+            BookService.getInstance().setReviews(this);
+        } catch (DatabaseException e) {
+            log.error(e);
+        }
     }
 
     public String getTitle() {
@@ -99,38 +101,12 @@ public final class Book extends EntityWithPhoto {
         this.totalCopies = totalCopies;
     }
 
-    public double getAverageRating() {
-        return averageRating;
+    public void addReviews(Review review) {
+        reviews.add(review);
     }
 
     public Set<Review> getReviews() {
         return reviews;
-    }
-
-    public void setReviews() {
-        reviews.clear();
-        String query = "select * from review where bookId = ?";
-        DatabaseManager.getInstance().select("load reviews", query, resultSet -> {
-            double totalRating = 0;
-            int reviewCount = 0;
-            while (resultSet.next()) {
-                Review review = new Review(resultSet.getInt("id"));
-                review.setUser(UserService.userMap.get(resultSet.getInt("userId")));
-                review.setBook(this);
-                int rating = resultSet.getInt("rating");
-                review.setRating(rating);
-                review.setComment(resultSet.getString("comment"));
-                review.setTimestamp(resultSet.getTimestamp("reviewTime").toLocalDateTime());
-                reviews.add(review);
-                totalRating += rating;
-                reviewCount++;
-            }
-            if (reviewCount > 0) {
-                this.averageRating = Math.round((totalRating / reviewCount) * 100.0) / 100.0;
-                this.numberOfReviews = reviewCount;
-            }
-            return null;
-        }, id);
     }
 
     private String getRatingStars() {
@@ -148,8 +124,20 @@ public final class Book extends EntityWithPhoto {
                 String.format("%s %.1f • %d lượt đánh giá", getRatingStars(), averageRating, numberOfReviews);
     }
 
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
     public int getNumberOfReviews() {
         return numberOfReviews;
+    }
+
+    public void setNumberOfReviews(int numberOfReviews) {
+        this.numberOfReviews = numberOfReviews;
     }
 
     public void addAuthor(Author author) {

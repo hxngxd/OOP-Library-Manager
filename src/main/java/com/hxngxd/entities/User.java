@@ -4,6 +4,7 @@ import com.hxngxd.enums.AccountStatus;
 import com.hxngxd.enums.Role;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,10 @@ public final class User extends Person {
     private AccountStatus accountStatus;
 
     private final Set<Book> savedBooks = new HashSet<>();
+
+    public static final Set<User> userSet = new HashSet<>();
+    public static final HashMap<Integer, User> userMap = new HashMap<>();
+    private static User current = null;
 
     public User() {
     }
@@ -90,8 +95,24 @@ public final class User extends Person {
                 "Role: " + this.role.name() + "\n";
     }
 
+    public void addSavedBook(Book book) {
+        savedBooks.add(book);
+    }
+
     public Set<Book> getSavedBooks() {
         return savedBooks;
+    }
+
+    public static User getCurrent() {
+        return current;
+    }
+
+    public static void setCurrent(User current) {
+        User.current = current;
+    }
+
+    public static void clearCurrent() {
+        User.current = null;
     }
 
 }
