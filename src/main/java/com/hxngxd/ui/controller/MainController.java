@@ -11,8 +11,6 @@ import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.controller.manage.ManageBookController;
-import com.hxngxd.ui.controller.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

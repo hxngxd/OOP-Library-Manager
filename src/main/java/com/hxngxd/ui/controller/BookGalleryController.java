@@ -94,6 +94,10 @@ public final class BookGalleryController extends NavigateController {
         }
     }
 
+    public void showBookCards() {
+        showBookCards(null);
+    }
+
     public void searchBook() {
         PauseTransition pause = new PauseTransition(Duration.millis(250));
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
