@@ -3,15 +3,11 @@ package com.hxngxd.ui.controller.book;
 import com.hxngxd.entities.Book;
 import com.hxngxd.enums.UI;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.ItemDisplayController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-
-import java.awt.*;
 
 public final class BookCardController extends BookDisplayController {
 
