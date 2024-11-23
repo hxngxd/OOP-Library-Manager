@@ -1,11 +1,9 @@
 package com.hxngxd.ui.controller;
 
+import com.hxngxd.actions.Borrowing;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.AuthorService;
-import com.hxngxd.service.BookService;
-import com.hxngxd.service.GenreService;
-import com.hxngxd.service.UserService;
+import com.hxngxd.service.*;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -50,6 +48,7 @@ public abstract class AuthenticationController extends NavigateController {
         UserService.getInstance().loadAll();
         BookService.getInstance().setAllReviews();
         userService.loadSavedBooks(User.getCurrent());
+        BorrowService.getInstance().loadAll();
 
         StageManager.getInstance().setScene(UI.MAIN);
         UIManager.getActivableController(UI.MAIN).onActive();

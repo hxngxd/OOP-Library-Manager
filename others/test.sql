@@ -53,8 +53,8 @@ create table book
     numberOfPages     int,
     dateAdded         datetime      default current_timestamp,
     lastUpdated       datetime      default current_timestamp on update current_timestamp,
-    availableCopies   int  not null default 100,
-    totalCopies       int  not null default 100
+    availableCopies   int  not null default 1,
+    totalCopies       int  not null default 3
 );
 
 create index idxBookYear on book (yearOfPublication);
@@ -106,11 +106,11 @@ create table borrowing
     requesterId         int                                                                                                  not null,
     bookId              int                                                                                                  not null,
     handlerId           int                                                                                                  not null,
-    requestDate         datetime                                                                                                      default current_timestamp,
+    requestDate         datetime default current_timestamp,
     approvalDate        datetime,
     borrowDate          datetime,
     estimatedReturnDate date,
-    actualReturnDate    date,
+    actualReturnDate    datetime,
     status              enum ('PENDING', 'APPROVED', 'BORROWED', 'RETURNED_ON_TIME', 'OVERDUE', 'RETURNED_LATE', 'REJECTED') not null default 'PENDING',
     foreign key (requesterId) references user (id) on delete cascade,
     foreign key (bookId) references book (id) on delete cascade,

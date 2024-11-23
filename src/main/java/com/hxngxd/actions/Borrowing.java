@@ -6,7 +6,6 @@ import com.hxngxd.enums.BorrowStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,12 +18,11 @@ public final class Borrowing extends Action {
     private LocalDateTime approvalDate;
     private LocalDateTime borrowDate;
     private LocalDate estimatedReturnDate;
-    private LocalDate actualReturnDate;
+    private LocalDateTime actualReturnDate;
 
     private BorrowStatus status;
 
     public static final Set<Borrowing> borrowingSet = new HashSet<>();
-    public static final HashMap<Integer, Borrowing> borrowingMap = new HashMap<>();
 
     public Borrowing(int id) {
         super(id);
@@ -74,11 +72,11 @@ public final class Borrowing extends Action {
         this.estimatedReturnDate = estimatedReturnDate;
     }
 
-    public LocalDate getActualReturnDate() {
+    public LocalDateTime getActualReturnDate() {
         return actualReturnDate;
     }
 
-    public void setActualReturnDate(LocalDate actualReturnDate) {
+    public void setActualReturnDate(LocalDateTime actualReturnDate) {
         this.actualReturnDate = actualReturnDate;
     }
 

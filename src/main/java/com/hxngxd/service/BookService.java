@@ -12,7 +12,7 @@ import com.hxngxd.utils.ImageHandler;
 
 import java.sql.Timestamp;
 
-public final class BookService extends Service<Book> {
+public final class BookService extends Service {
 
     private BookService() {
     }

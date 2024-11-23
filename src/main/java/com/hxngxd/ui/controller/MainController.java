@@ -98,7 +98,7 @@ public final class MainController extends NavigateController {
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-        UIManager.getActivableController(UI.ACCOUNT).onActive();
+        UIManager.getActivableController(ui).onActive();
     }
 
     @FXML
@@ -109,6 +109,17 @@ public final class MainController extends NavigateController {
     @FXML
     private void showSavedBook(ActionEvent event) {
         showBookGallery(true);
+    }
+
+    @FXML
+    private void showBorrowing(ActionEvent event) {
+        UI ui = UI.MANAGE_BORROWING_0;
+        if (currentTab == ui) {
+            return;
+        }
+        currentTab = ui;
+        navigate(UIManager.getRootOnce(ui));
+        UIManager.getActivableController(ui).onActive();
     }
 
     @FXML

@@ -7,7 +7,7 @@ import com.hxngxd.utils.ImageHandler;
 
 import java.sql.Date;
 
-public class AuthorService extends Service<Author> {
+public class AuthorService extends Service {
 
     private AuthorService() {
     }
@@ -27,7 +27,7 @@ public class AuthorService extends Service<Author> {
         Author.authorMap.clear();
 
         String query = "select * from author";
-        DatabaseManager.getInstance().select("getting authors", query, resultSet -> {
+        db.select("getting authors", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
 

@@ -231,6 +231,11 @@ public final class BookDetailController extends BookPreviewController {
 
     @FXML
     private void requestBorrowing() {
+        if (book.getAvailableCopies() == 0) {
+            PopupManager.info("There isn't any available copies, try again later");
+            return;
+        }
+        
         UI ui = UI.BORROWING_REQUEST;
         MainController mainController = UIManager.getController(UI.MAIN);
         if (mainController.getCurrentTab() == ui) {

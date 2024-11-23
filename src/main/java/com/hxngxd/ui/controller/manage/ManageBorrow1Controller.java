@@ -1,6 +1,5 @@
 package com.hxngxd.ui.controller.manage;
 
-
-public class ManageBorrowController {
+public class ManageBorrow1Controller {
 
 }

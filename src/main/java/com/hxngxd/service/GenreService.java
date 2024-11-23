@@ -4,7 +4,7 @@ import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.exceptions.DatabaseException;
 
-public class GenreService extends Service<Genre> {
+public class GenreService extends Service {
 
     private GenreService() {
     }
@@ -22,7 +22,7 @@ public class GenreService extends Service<Genre> {
             throws DatabaseException {
         Genre.genreMap.clear();
         String query = "select * from genre";
-        DatabaseManager.getInstance().select("getting genres", query, resultSet -> {
+        db.select("getting genres", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 Genre genre = new Genre(

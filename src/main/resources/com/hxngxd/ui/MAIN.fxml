@@ -81,7 +81,7 @@
                                                 <FontAwesomeIconView glyphName="BOOKMARK" size="20" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="borrowButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="100.0" stylesheets="@style.css" text="MƯỢN SÁCH">
+                                        <Button fx:id="borrowButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showBorrowing" prefHeight="100.0" stylesheets="@style.css" text="MƯỢN SÁCH">
                                             <font>
                                                 <Font name="System Italic" size="16.0" />
                                             </font>

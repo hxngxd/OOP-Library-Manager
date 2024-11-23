@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.hxngxd.ui.MANAGEBORROWING0"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.manage.ManageBorrow0Controller">
+    <children>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="34.79999923706055" layoutY="20.399999618530273" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <content>
+                <VBox fx:id="borrowCardContainer" alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308">
+                    <children>
+                        <Label fx:id="header" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="LỊCH SỬ MƯỢN SÁCH">
+                            <font>
+                                <Font name="System Bold" size="28.0" />
+                            </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="50.0" top="15.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
 </AnchorPane>
