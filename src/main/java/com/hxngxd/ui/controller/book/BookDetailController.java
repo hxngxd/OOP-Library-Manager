@@ -10,7 +10,6 @@ import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.BorrowingRequestController;
@@ -28,6 +27,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class BookDetailController extends BookPreviewController {
@@ -213,7 +214,10 @@ public final class BookDetailController extends BookPreviewController {
             return;
         }
 
-        for (Review review : book.getReviews()) {
+        List<Review> sortedReviews = new ArrayList<>(book.getReviews());
+        sortedReviews.sort(Comparator.comparing(Review::getTimestamp).reversed());
+
+        for (Review review : sortedReviews) {
             FXMLLoader loader = UIManager.load(UI.USER_REVIEW);
             UserReviewController urc = loader.getController();
 

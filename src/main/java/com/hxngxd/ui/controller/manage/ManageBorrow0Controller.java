@@ -3,6 +3,7 @@ package com.hxngxd.ui.controller.manage;
 import com.hxngxd.actions.Borrowing;
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BorrowService;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.NavigateController;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ManageBorrow0Controller extends NavigateController {
@@ -25,11 +27,14 @@ public class ManageBorrow0Controller extends NavigateController {
 
     @Override
     public void onActive() {
+        BorrowService.getInstance().loadAll();
         borrowCards.clear();
         borrowCardContainer.getChildren().clear();
         borrowCardContainer.getChildren().add(header);
 
-        for (Borrowing borrowing : Borrowing.borrowingSet) {
+        List<Borrowing> sortedBorrowings = new ArrayList<>(Borrowing.borrowingSet);
+        sortedBorrowings.sort(Comparator.comparing(Borrowing::getTimestamp).reversed());
+        for (Borrowing borrowing : sortedBorrowings) {
             try {
                 FXMLLoader loader = UIManager.load(UI.BORROW_CARD);
                 borrowCards.add(loader);
