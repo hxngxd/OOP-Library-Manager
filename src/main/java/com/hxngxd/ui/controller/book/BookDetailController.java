@@ -1,5 +1,6 @@
 package com.hxngxd.ui.controller.book;
 
+import com.hxngxd.actions.Borrowing;
 import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
@@ -87,7 +88,7 @@ public final class BookDetailController extends BookPreviewController {
         displayReviews();
         ratingLabel.setText(book.getDetailedRating());
 
-//        borrrowButton.setVisible(User.getCurrent().getRole() == Role.USER);
+        borrrowButton.setVisible(User.getCurrent().getRole() == Role.USER);
     }
 
     private void commentBox() {
@@ -235,7 +236,23 @@ public final class BookDetailController extends BookPreviewController {
             PopupManager.info("There isn't any available copies, try again later");
             return;
         }
-        
+
+        boolean canBorrowAgain = true;
+        for (Borrowing borrowing : Borrowing.borrowingSet) {
+            if (!borrowing.getBook().equals(book)) {
+                continue;
+            }
+            if (!borrowing.getStatus().canBorrowAgain()) {
+                canBorrowAgain = false;
+                break;
+            }
+        }
+
+        if (!canBorrowAgain) {
+            PopupManager.info("You can't not borrow this book for now, try again later");
+            return;
+        }
+
         UI ui = UI.BORROWING_REQUEST;
         MainController mainController = UIManager.getController(UI.MAIN);
         if (mainController.getCurrentTab() == ui) {

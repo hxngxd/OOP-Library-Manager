@@ -3,6 +3,7 @@ package com.hxngxd.actions;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.BorrowStatus;
+import com.hxngxd.utils.Formatter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +15,6 @@ public final class Borrowing extends Action {
     private Book book;
     private User handler;
 
-    private LocalDateTime requestDate;
     private LocalDateTime approvalDate;
     private LocalDateTime borrowDate;
     private LocalDate estimatedReturnDate;
@@ -42,10 +42,6 @@ public final class Borrowing extends Action {
 
     public void setHandler(User handler) {
         this.handler = handler;
-    }
-
-    public LocalDateTime getRequestDate() {
-        return requestDate;
     }
 
     public LocalDateTime getApprovalDate() {
@@ -88,4 +84,12 @@ public final class Borrowing extends Action {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return String.format("• Ngày yêu cầu: %s\n• Ngày nhận sách: %s\n• Ngày trả dự kiến: %s\n• Ngày trả thực tế: %s",
+                Formatter.formatDateTime(timestamp),
+                borrowDate == null ? "Chưa nhận sách" : Formatter.formatDateTime(borrowDate),
+                Formatter.formatDateDash(estimatedReturnDate),
+                actualReturnDate == null ? "Chưa trả sách" : Formatter.formatDateTime(actualReturnDate));
+    }
 }

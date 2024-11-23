@@ -34,6 +34,7 @@ public class ManageBorrow0Controller extends NavigateController {
                 FXMLLoader loader = UIManager.load(UI.BORROW_CARD);
                 borrowCards.add(loader);
                 ((BorrowCardController) loader.getController()).setBook(borrowing.getBook());
+                ((BorrowCardController) loader.getController()).setBorrowing(borrowing);
                 borrowCardContainer.getChildren().add(loader.getRoot());
             } catch (NullPointerException e) {
                 log.error(LogMsg.GENERAL_FAIL.msg("load borrow card"), e);
