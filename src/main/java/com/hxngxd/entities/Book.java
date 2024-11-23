@@ -1,52 +1,40 @@
 package com.hxngxd.entities;
 
 import com.hxngxd.actions.Review;
-import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
 import com.hxngxd.utils.Formatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Book extends EntityWithPhoto {
 
+    private static final Logger log = LogManager.getLogger(Book.class);
+
     private String title;
-
     private short yearOfPublication;
-
     private String shortDescription;
-
     private int numberOfPages;
-
     private int availableCopies;
-
     private int totalCopies;
-
     private double averageRating;
-
     private int numberOfReviews;
 
-    private final List<Author> authors = new ArrayList<>();
+    private final Set<Author> authors = new HashSet<>();
+    private final Set<Genre> genres = new HashSet<>();
+    private final Set<Review> reviews = new HashSet<>();
 
-    private final List<Genre> genres = new ArrayList<>();
-
-    private final List<Review> reviews = new ArrayList<>();
+    public static final Set<Book> bookSet = new HashSet<>();
+    public static final HashMap<Integer, Book> bookMap = new HashMap<>();
 
     public Book() {
     }
 
     public Book(int id) {
         super(id);
-    }
-
-    public Book(int id, LocalDateTime dateAdded) {
-        super(id);
-        this.dateAdded = dateAdded;
-        setReview();
     }
 
     public Book(int id, String title, short yearOfPublication, String shortDescription,
@@ -58,8 +46,6 @@ public final class Book extends EntityWithPhoto {
         this.numberOfPages = numberOfPages;
         this.availableCopies = availableCopies;
         this.totalCopies = totalCopies;
-        this.averageRating = 0.0;
-        setReview();
     }
 
     public String getTitle() {
@@ -110,197 +96,105 @@ public final class Book extends EntityWithPhoto {
         this.totalCopies = totalCopies;
     }
 
+    public void addReviews(Review review) {
+        reviews.add(review);
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    private String getRatingStars() {
+        int fullStars = (int) averageRating;
+        return "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
+    }
+
+    public String getRating() {
+        return numberOfReviews == 0 ? "Chưa được đánh giá" :
+                String.format("%.1f %s (%d)", averageRating, getRatingStars(), numberOfReviews);
+    }
+
+    public String getDetailedRating() {
+        return numberOfReviews == 0 ? "Chưa được đánh giá" :
+                String.format("%s %.1f • %d lượt đánh giá", getRatingStars(), averageRating, numberOfReviews);
+    }
+
     public double getAverageRating() {
         return averageRating;
     }
 
-    public void setReview() {
-        this.averageRating = this.numberOfReviews = 0;
-        DatabaseManager db = DatabaseManager.getInstance();
-        String query = String.format(
-                "select bookid, round(sum(rating) * 1.0 / count(rating), 2) as averagerating, " +
-                        "count(rating) as numberofreviews " +
-                        "from review where bookid = %d group by bookid;", this.id);
-        try {
-            db.select("calculating rating", query, resultSet -> {
-                if (resultSet.next()) {
-                    this.averageRating = resultSet.getDouble("averageRating");
-                    this.numberOfReviews = resultSet.getInt("numberOfReviews");
-                }
-                return null;
-            });
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String getReview() {
-        if (numberOfReviews == 0) {
-            return "Chưa được đánh giá";
-        }
-        int fullStars = (int) averageRating;
-        String ratingStars = "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
-        return String.format("%.1f %s (%d)", averageRating, ratingStars, numberOfReviews);
-    }
-
-    public String getDetailReview() {
-        if (numberOfReviews == 0) {
-            return "Chưa được đánh giá";
-        }
-        int fullStars = (int) averageRating;
-        String ratingStars = "★".repeat(fullStars) + "☆".repeat(5 - fullStars);
-        return String.format("%s %.1f • %d lượt đánh giá", ratingStars, averageRating, numberOfReviews);
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
     }
 
     public int getNumberOfReviews() {
         return numberOfReviews;
     }
 
+    public void setNumberOfReviews(int numberOfReviews) {
+        this.numberOfReviews = numberOfReviews;
+    }
+
     public void addAuthor(Author author) {
-        if (!this.authors.contains(author)) {
-            this.authors.add(author);
-        }
+        authors.add(author);
     }
 
     public void addGenre(Genre genre) {
-        if (!this.genres.contains(genre)) {
-            this.genres.add(genre);
-        }
+        genres.add(genre);
     }
 
-    public List<Author> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    public List<Genre> getGenres() {
+    public Set<Genre> getGenres() {
         return genres;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof Book)) {
-            return false;
-        }
-        return this.id == ((Book) other).getId();
-    }
-
-    @Override
     public String toString() {
-        StringBuilder info = new StringBuilder();
-        info.append(this.yearOfPublication).append("\n");
-        authorsToString(info);
-        genresToString(info);
-        info.append(this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview());
-        return info.toString();
+        return String.format("%d\n%s\n%s\n%s",
+                yearOfPublication,
+                authorsToString(),
+                genresToString(),
+                getRating());
     }
 
     public String toStringDetail() {
-        String bullet = "• ";
-        StringBuilder info = new StringBuilder();
-        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
-
-        info.append(bullet).append("Năm phát hành: ").append(this.yearOfPublication).append("\n");
-
-        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
-
-        info.append(bullet).append("Tác giả: ");
-        authorsToString(info);
-
-        info.append(bullet).append("Thể loại: ");
-        genresToString(info);
-
-        info.append(bullet).append("Mô tả ngắn: ").append(this.shortDescription).append("\n");
-
-        info.append(bullet).append("Đánh giá: ").append(
-                this.averageRating == 0.0 ? "Chưa được đánh giá" : getReview()).append("\n");
-
-        info.append(bullet).append("Thêm vào lúc: ").append(
-                Formatter.formatDateTime(this.dateAdded)).append("\n");
-
-        info.append(bullet).append("Cập nhật cuối cùng: ").append(
-                Formatter.formatDateTime(this.lastUpdated)).append("\n");
-
-        info.append(bullet).append("Số bản sao có sẵn: ").append(
-                this.availableCopies).append("/").append(this.totalCopies);
-
-        return info.toString();
+        return createInfo(
+                "Mã sách: " + id,
+                "Năm phát hành: " + yearOfPublication,
+                "Số trang: " + numberOfPages,
+                "Tác giả: " + authorsToString(),
+                "Thể loại: " + genresToString(),
+                "Mô tả ngắn: " + shortDescription,
+                "Đánh giá: " + getRating(),
+                "Thêm vào lúc: " + Formatter.formatDateTime(dateAdded),
+                "Cập nhật cuối cùng: " + Formatter.formatDateTime(lastUpdated),
+                "Số bản sao có sẵn: " + availableCopies + "/" + totalCopies
+        );
     }
 
     public String toStringHalfDetail() {
-        String bullet = "• ";
-        StringBuilder info = new StringBuilder();
-
-        info.append(bullet).append("Mã sách: ").append(this.id).append("\n");
-
-        info.append(bullet).append("Số trang: ").append(this.numberOfPages).append("\n");
-
-        info.append(bullet).append("Thêm vào lúc: ").append(
-                Formatter.formatDateTime(this.dateAdded)).append("\n");
-
-        info.append(bullet).append("Cập nhật cuối cùng: ").append(
-                Formatter.formatDateTime(this.lastUpdated)).append("\n");
-
-        info.append(bullet).append("Số bản sao có sẵn: ").append(
-                this.availableCopies).append("/").append(this.totalCopies);
-
-        return info.toString();
+        return createInfo(
+                "Mã sách: " + id,
+                "Số trang: " + numberOfPages,
+                "Thêm vào lúc: " + Formatter.formatDateTime(dateAdded),
+                "Cập nhật cuối cùng: " + Formatter.formatDateTime(lastUpdated),
+                "Số bản sao có sẵn: " + availableCopies + "/" + totalCopies
+        );
     }
 
-    public void genresToString(StringBuilder info) {
-        info.append(genresToString()).append("\n");
-    }
-
-    public void authorsToString(StringBuilder info) {
-        info.append(authorsToString()).append("\n");
+    private String createInfo(String... lines) {
+        return "• " + String.join("\n• ", lines);
     }
 
     public String genresToString() {
-        StringBuilder info = new StringBuilder();
-        for (int i = 0; i < this.genres.size(); i++) {
-            info.append(this.genres.get(i).getName());
-            if (i < this.genres.size() - 1) {
-                info.append(", ");
-            }
-        }
-        return info.toString();
+        return genres.stream().map(Genre::getName).collect(Collectors.joining(", "));
     }
 
     public String authorsToString() {
-        StringBuilder info = new StringBuilder();
-        for (int i = 0; i < this.authors.size(); i++) {
-            info.append(this.authors.get(i).getFullNameFirstThenLast());
-            if (i < this.authors.size() - 1) {
-                info.append(", ");
-            }
-        }
-        return info.toString();
-    }
-
-    public void loadReviews() {
-        reviews.clear();
-        UserService.getInstance().getAllUsers();
-        String query = "select * from review where bookId = ?";
-        DatabaseManager.getInstance().select("load reviews", query, resultSet -> {
-            while (resultSet.next()) {
-                Review review = new Review(resultSet.getInt("id"));
-                review.setUser(UserService.userMap.get(resultSet.getInt("userId")));
-                review.setBook(BookService.bookMap.get(resultSet.getInt("bookId")));
-                review.setRating(resultSet.getInt("rating"));
-                review.setComment(resultSet.getString("comment"));
-                review.setTimestamp(resultSet.getTimestamp("reviewTime").toLocalDateTime());
-                reviews.add(review);
-            }
-            return null;
-        }, id);
-        reviews.sort(Comparator.comparing(Review::getTimestamp).reversed());
-        setReview();
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
+        return authors.stream().map(Author::getFullNameFirstThenLast).collect(Collectors.joining(", "));
     }
 
 }

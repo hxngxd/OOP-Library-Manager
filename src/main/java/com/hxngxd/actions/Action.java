@@ -3,13 +3,12 @@ package com.hxngxd.actions;
 import com.hxngxd.entities.User;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public abstract class Action {
 
     protected int id;
-
     protected User user;
-
     protected LocalDateTime timestamp;
 
     public Action() {
@@ -38,4 +37,18 @@ public abstract class Action {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Action action = (Action) o;
+        return id == action.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+    
 }

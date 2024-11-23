@@ -1,14 +1,18 @@
-package com.hxngxd.ui.controller.book;
+package com.hxngxd.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public abstract class PreviewController {
+public abstract class ItemDisplayController {
+
+    protected static final Logger log = LogManager.getLogger(ItemDisplayController.class);
 
     @FXML
-    protected ImageView image;
+    protected ImageView imageView;
 
     @FXML
     protected Label nameLabel;
@@ -16,8 +20,8 @@ public abstract class PreviewController {
     @FXML
     protected Label informationLabel;
 
-    protected void setImage(Image image) {
-        this.image.setImage(image);
+    protected void setImageView(Image imageView) {
+        this.imageView.setImage(imageView);
     }
 
     protected String getName() {
@@ -28,12 +32,8 @@ public abstract class PreviewController {
         this.nameLabel.setText(name);
     }
 
-    protected String getInformation() {
-        return informationLabel.getText();
-    }
-
     protected void setInformation(String information) {
         this.informationLabel.setText(information);
     }
-    
+
 }

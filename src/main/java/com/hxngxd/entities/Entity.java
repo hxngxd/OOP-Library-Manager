@@ -1,13 +1,12 @@
 package com.hxngxd.entities;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public abstract class Entity {
 
     protected int id;
-
     protected LocalDateTime dateAdded;
-
     protected LocalDateTime lastUpdated;
 
     public Entity() {
@@ -41,4 +40,17 @@ public abstract class Entity {
         this.lastUpdated = lastUpdated;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return id == entity.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+    
 }

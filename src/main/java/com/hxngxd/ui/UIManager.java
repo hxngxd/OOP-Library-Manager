@@ -1,25 +1,22 @@
 package com.hxngxd.ui;
 
 import com.hxngxd.enums.UI;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Objects;
 
 public final class UIManager {
 
     private static final Logger log = LogManager.getLogger(UIManager.class);
 
-    public static final HashMap<UI, Scene> Scenes = new HashMap<>();
-
-    public static final HashMap<UI, FXMLLoader> Loaders = new HashMap<>();
-
-    public static UI currentScene = null;
+    public static final EnumMap<UI, Scene> Scenes = new EnumMap<>(UI.class);
+    public static final EnumMap<UI, FXMLLoader> Loaders = new EnumMap<>(UI.class);
 
     private UIManager() {
     }
@@ -29,8 +26,7 @@ public final class UIManager {
             try {
                 Scenes.put(ui, new Scene(Objects.requireNonNull(loadOnce(ui)).getRoot()));
             } catch (NullPointerException e) {
-                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("load scene: " + ui.name()), e.getMessage());
+                log.error(LogMsg.GENERAL_FAIL.msg("load scene: " + ui.name()), e);
                 return null;
             }
         }
@@ -49,24 +45,30 @@ public final class UIManager {
     }
 
     public static FXMLLoader load(UI ui) {
-        FXMLLoader loader = new FXMLLoader(
-                UIManager.class.getResource(ui.getPath())
-        );
+        FXMLLoader loader = new FXMLLoader(UIManager.class.getResource(ui.getPath()));
         try {
             loader.load();
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error(LogMessages.General.FAIL.getMSG("load ui: " + ui.name()), e.getMessage());
+            log.error(LogMsg.GENERAL_FAIL.msg("load ui: " + ui.name()), e);
             return null;
         }
         return loader;
     }
 
-    public static <T> T getControllerOnce(UI ui) {
+    public static <T extends Activable> T getActivableController(UI ui) {
+        return loadOnce(ui).getController();
+    }
+
+    public static <T extends Updatable> T getUpdatableController(UI ui) {
+        return loadOnce(ui).getController();
+    }
+
+    public static <T> T getController(UI ui) {
         return loadOnce(ui).getController();
     }
 
     public static <T> T getRootOnce(UI ui) {
         return loadOnce(ui).getRoot();
     }
+
 }

@@ -6,24 +6,45 @@ import com.hxngxd.enums.BorrowStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Borrowing extends Action {
 
     private Book book;
-
     private User handler;
 
-    private final LocalDateTime requestDate = null;
-
+    private LocalDateTime requestDate;
     private LocalDateTime approvalDate;
-
     private LocalDateTime borrowDate;
-
     private LocalDate estimatedReturnDate;
-
     private LocalDate actualReturnDate;
 
     private BorrowStatus status;
+
+    public static final Set<Borrowing> borrowingSet = new HashSet<>();
+    public static final HashMap<Integer, Borrowing> borrowingMap = new HashMap<>();
+
+    public Borrowing(int id) {
+        super(id);
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public User getHandler() {
+        return handler;
+    }
+
+    public void setHandler(User handler) {
+        this.handler = handler;
+    }
 
     public LocalDateTime getRequestDate() {
         return requestDate;

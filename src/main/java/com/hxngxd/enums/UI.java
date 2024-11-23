@@ -15,7 +15,6 @@ public enum UI {
     USER_REVIEW,
     POPUP;
 
-
     public String getPath() {
         return this.name() + ".fxml";
     }

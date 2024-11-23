@@ -3,7 +3,7 @@
 
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] %-5level --> %msg%n%throwable"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] %-5level [%C{1}.%M:%L] --> %msg%n%throwable"/>
         </Console>
     </Appenders>
 

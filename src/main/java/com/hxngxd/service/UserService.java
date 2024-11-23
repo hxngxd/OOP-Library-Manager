@@ -1,9 +1,10 @@
 package com.hxngxd.service;
 
 import com.hxngxd.database.DatabaseManager;
+import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Permission;
 import com.hxngxd.enums.Role;
 import com.hxngxd.exceptions.DatabaseException;
@@ -13,8 +14,6 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.utils.ImageHandler;
 import com.hxngxd.utils.InputHandler;
 import com.hxngxd.utils.PasswordEncoder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.sql.Date;
@@ -23,28 +22,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public final class UserService {
-
-    private static final Logger log = LogManager.getLogger(UserService.class);
-
-    private final DatabaseManager db = DatabaseManager.getInstance();
-
-    public static final List<User> userList = new ArrayList<>();
-
-    public static final HashMap<Integer, User> userMap = new HashMap<>();
-
-    private User currentUser = null;
+public final class UserService extends Service<User> {
 
     private UserService() {
-    }
-
-    public static void initialize()
-            throws DatabaseException, UserException {
-        UserService.getInstance().loadSavedBooks();
     }
 
     private static class SingletonHolder {
@@ -55,47 +37,37 @@ public final class UserService {
         return SingletonHolder.instance;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public static boolean isLoggedIn() {
-        return UserService.getInstance().getCurrentUser() != null;
-    }
-
-    public static void checkLoggedInAndConnected()
+    public void isLoggedIn()
             throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMSG());
+            throw new DatabaseException(LogMsg.DATABASE_NO_CONNECTION.msg());
         }
-        if (!UserService.isLoggedIn()) {
-            throw new UserException(LogMessages.User.USER_NOT_LOGGED_IN.getMSG());
+        if (User.getCurrent() == null) {
+            throw new UserException(LogMsg.USER_NOT_LOGGED_IN.msg());
         }
     }
 
-    public static void checkLoggedOutAndConnected()
+    public void isLoggedOut()
             throws DatabaseException, UserException {
         if (!DatabaseManager.isConnected()) {
-            throw new DatabaseException(LogMessages.Database.NO_DB_CONNECTION.getMSG());
+            throw new DatabaseException(LogMsg.DATABASE_NO_CONNECTION.msg());
         }
-        if (UserService.isLoggedIn()) {
-            throw new UserException(LogMessages.User.USER_NOT_LOGGED_OUT.getMSG());
+        if (User.getCurrent() != null) {
+            throw new UserException(LogMsg.USER_NOT_LOGGED_OUT.msg());
         }
     }
 
     public void register(String firstName, String lastName, String username,
                          String email, String password, String confirmedPassword)
             throws DatabaseException, UserException, ValidationException {
-        checkLoggedOutAndConnected();
+        isLoggedOut();
 
         InputHandler.validateInput(firstName, lastName, username, email,
                 password, confirmedPassword);
 
         InputHandler.validateEmail(email);
 
-        if (getUserByUsernameOrEmail(false, username, email) != null) {
-            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
-        }
+        userNotExist(username, email);
 
         InputHandler.validatePassword(password);
 
@@ -111,234 +83,244 @@ public final class UserService {
                 firstName, lastName, username, email,
                 passwordHash, AccountStatus.ACTIVE.name());
 
-        currentUser = new User(db.getGeneratedId());
-        currentUser.setFirstName(firstName);
-        currentUser.setLastName(lastName);
-        currentUser.setUsername(username);
-        currentUser.setEmail(email);
-        currentUser.setPasswordHash(passwordHash);
-        currentUser.setRole(Role.USER);
-        currentUser.setAccountStatus(AccountStatus.ACTIVE);
-        currentUser.setImage(ImageHandler.loadImageFromResource("profileImage.jpg"));
+        User user = new User(db.getGeneratedId());
+        User.setCurrent(user);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("create account"));
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPasswordHash(passwordHash);
+        user.setRole(Role.USER);
+        user.setAccountStatus(AccountStatus.ACTIVE);
+        user.setImage(ImageHandler.loadImageFromResource("profileImage.jpg"));
+
+        log.info(LogMsg.GENERAL_SUCCESS.msg("create account"));
     }
 
     public void login(String username, String email, String password)
             throws DatabaseException, UserException, ValidationException {
-        checkLoggedOutAndConnected();
+        isLoggedOut();
 
         InputHandler.validateInput(username, email, password);
 
-        User user = getUserByUsernameOrEmail(false, username, email);
-        if (user == null) {
-            throw new UserException(LogMessages.User.USER_NOT_FOUND.getMSG());
-        }
+        User user = userExist(username, email);
 
         PasswordEncoder.compare(password, user.getPasswordHash());
 
         if (user.getAccountStatus() == AccountStatus.SUSPENDED) {
-            throw new UserException(LogMessages.User.USER_SUSPENDED.getMSG());
+            throw new UserException(LogMsg.USER_SUSPENDED.msg());
         }
 
         if (user.getAccountStatus() == AccountStatus.BANNED) {
-            throw new UserException(LogMessages.User.USER_BANNED.getMSG());
+            throw new UserException(LogMsg.USER_BANNED.msg());
         }
 
-        user = getUserByUsernameOrEmail(true, username, email);
+        user = getUser(true, username, email);
         db.update("user", "accountStatus", AccountStatus.ACTIVE.name(), "id", user.getId());
-        currentUser = user;
+        User.setCurrent(user);
 
-        currentUser.setAccountStatus(AccountStatus.ACTIVE);
+        User.getCurrent().setAccountStatus(AccountStatus.ACTIVE);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("log in"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("log in"));
     }
 
     public void logout()
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
         db.update("user",
                 List.of("lastActive", "accountStatus"),
                 List.of(Timestamp.valueOf(LocalDateTime.now()), AccountStatus.INACTIVE.name()),
                 List.of("id"),
-                List.of(currentUser.getId()));
-        currentUser.setAccountStatus(AccountStatus.INACTIVE);
-        currentUser = null;
-        userList.clear();
-        userMap.clear();
+                List.of(User.getCurrent().getId()));
+        User.clearCurrent();
 
-        log.info(LogMessages.General.SUCCESS.getMSG("log out"));
+        User.userSet.clear();
+        User.userMap.clear();
+
+        log.info(LogMsg.GENERAL_SUCCESS.msg("log out"));
     }
 
     public void updateProfilePicture(File imageFile)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
         if (imageFile == null) {
-            log.info(LogMessages.File.FILE_IS_NULL.getMSG());
+            log.info(LogMsg.FILE_IS_NULL.msg());
             return;
         }
 
         byte[] toByte = ImageHandler.fileToByteArray(imageFile);
 
-        db.update("user", "photo", toByte, "id", currentUser.getId());
+        db.update("user", "photo", toByte, "id", User.getCurrent().getId());
 
-        currentUser.setImage(ImageHandler.loadImageFromFile(imageFile));
+        User.getCurrent().setImage(ImageHandler.loadImageFromFile(imageFile));
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change profile picture"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change profile picture"));
     }
 
     public void updateProfile(String newFirstName, String newLastName,
                               LocalDate newDateOfBirth, String newAddress)
             throws DatabaseException, UserException, ValidationException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
         InputHandler.validateInput(newFirstName, newLastName, newAddress);
 
         db.update("user",
                 List.of("firstName", "lastName", "dateOfBirth", "address"),
                 List.of(newFirstName, newLastName, Date.valueOf(newDateOfBirth), newAddress),
-                List.of("id"), List.of(currentUser.getId()));
+                List.of("id"), List.of(User.getCurrent().getId()));
 
-        currentUser.setFirstName(newFirstName);
-        currentUser.setLastName(newLastName);
-        currentUser.setDateOfBirth(newDateOfBirth);
-        currentUser.setAddress(newAddress);
+        User.getCurrent().setFirstName(newFirstName);
+        User.getCurrent().setLastName(newLastName);
+        User.getCurrent().setDateOfBirth(newDateOfBirth);
+        User.getCurrent().setAddress(newAddress);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("update profile"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("update profile"));
     }
 
     public void changeEmail(String newEmail)
             throws DatabaseException, UserException, ValidationException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
         InputHandler.validateEmail(newEmail);
 
-        if (getUserByUsernameOrEmail(false, " ", newEmail) != null) {
-            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
-        }
+        userNotExist("", newEmail);
 
-        db.update("user", "email", newEmail, "id", currentUser.getId());
+        db.update("user", "email", newEmail, "id", User.getCurrent().getId());
 
-        currentUser.setEmail(newEmail);
+        User.getCurrent().setEmail(newEmail);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change email"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change email"));
     }
 
     public void changeRole(int userId, Role role)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ROLE)) {
-            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("change others' role"));
+        if (!User.getCurrent().getRole().hasPermission(Permission.CHANGE_OTHERS_ROLE)) {
+            throw new UserException(LogMsg.USER_NOT_ALLOWED.msg("change others' role"));
         }
 
-        User user = getUserbyId(false, userId);
+        User user = userExist(userId);
 
         if (user.getRole() == Role.ADMIN) {
-            throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin role"));
+            throw new UserException(LogMsg.USER_CANNOT.msg("change others' Admin role"));
         }
 
         db.update("user", "role", role.name(), "id", userId);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change role"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change role"));
     }
 
     public void changeAccountStatus(int userId, AccountStatus status)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHERS_ACCOUNT_STATUS)) {
-            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("change others' account status"));
+        if (!User.getCurrent().getRole().hasPermission(Permission.CHANGE_OTHERS_ACCOUNT_STATUS)) {
+            throw new UserException(LogMsg.USER_NOT_ALLOWED.msg("change others' account status"));
         }
 
-        if (userId == currentUser.getId()) {
-            throw new UserException(LogMessages.User.USER_CANNOT.getMSG("set their own account status to SUSPENDED or BANNED"));
+        if (userId == User.getCurrent().getId()) {
+            throw new UserException(LogMsg.USER_CANNOT.msg("set their own account status to SUSPENDED or BANNED"));
         }
 
-        User user = getUserbyId(false, userId);
+        User user = userExist(userId);
 
         if (user.getRole() == Role.ADMIN) {
-            throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin account status"));
+            throw new UserException(LogMsg.USER_CANNOT.msg("change others' Admin account status"));
         }
 
         db.update("user", "accountStatus", status.name(), "id", userId);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change account status"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change account status"));
     }
 
     public void changePassword(String oldPassword, String newPassword)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
         InputHandler.validatePassword(newPassword);
 
-        PasswordEncoder.compare(oldPassword, currentUser.getPasswordHash());
+        PasswordEncoder.compare(oldPassword, User.getCurrent().getPasswordHash());
 
         String newHashedPassword = PasswordEncoder.encode(newPassword);
-        db.update("user", "passwordHash", newHashedPassword, "id", currentUser.getId());
-        currentUser.setPasswordHash(newHashedPassword);
+        db.update("user", "passwordHash", newHashedPassword, "id", User.getCurrent().getId());
+        User.getCurrent().setPasswordHash(newHashedPassword);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change own password"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change own password"));
     }
 
     public void changePassword(int userId, String newPassword)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
-        if (!currentUser.getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
-            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("change others' password"));
+        if (!User.getCurrent().getRole().hasPermission(Permission.CHANGE_OTHER_PASSWORD_EMAIL)) {
+            throw new UserException(LogMsg.USER_NOT_ALLOWED.msg("change others' password"));
         }
 
-        User user = getUserbyId(false, userId);
+        User user = userExist(userId);
 
         if (user.getRole() == Role.ADMIN) {
-            throw new UserException(LogMessages.User.USER_CANNOT.getMSG("change others' Admin password"));
+            throw new UserException(LogMsg.USER_CANNOT.msg("change others' Admin password"));
         }
 
         InputHandler.validatePassword(newPassword);
 
         db.update("user", "passwordHash", PasswordEncoder.encode(newPassword), "id", userId);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("change password"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("change password"));
     }
 
     public void deleteAccount(int userId)
             throws DatabaseException, UserException {
-        checkLoggedInAndConnected();
+        isLoggedIn();
 
-        if (userId == currentUser.getId()) {
-            throw new UserException("Password is required to delete your own account");
+        if (!User.getCurrent().getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
+            throw new UserException(LogMsg.USER_NOT_ALLOWED.msg("delete others' account"));
         }
 
-        if (!currentUser.getRole().hasPermission(Permission.DELETE_LOWER_ACCOUNT)) {
-            throw new UserException(LogMessages.User.USER_NOT_ALLOWED.getMSG("delete others' account"));
-        }
-
-        getUserbyId(false, userId);
+        userExist(userId);
 
         db.delete("user", "id", userId);
 
-        log.info(LogMessages.General.SUCCESS.getMSG("delete account"));
+        log.info(LogMsg.GENERAL_SUCCESS.msg("delete account"));
     }
 
-    private User getUserbyId(Boolean inDetail, int id)
+    private User userExist(Object... identifiers)
             throws DatabaseException, UserException {
-        User user = getUser(inDetail, id, "", "");
+        User user = getUser(false, identifiers);
         if (user == null) {
-            throw new UserException(LogMessages.User.USER_EXIST.getMSG());
+            throw new UserException(LogMsg.USER_NOT_FOUND.msg());
         }
         return user;
     }
 
-    private User getUserByUsernameOrEmail(Boolean inDetail, String username, String email) {
-        return getUser(inDetail, -1, username, email);
+    private void userNotExist(Object... identifiers)
+            throws DatabaseException, UserException {
+        try {
+            userExist(identifiers);
+            throw new UserException(LogMsg.USER_EXIST.msg());
+        } catch (UserException e) {
+            return;
+        }
     }
 
-    private User getUser(Boolean inDetail, Object... params)
+    private User getUser(Boolean inDetail, Object... identifiers)
             throws DatabaseException, UserException {
-        String query = "select * from user where id = ? or username = ? or email = ?";
+        String query;
+        Object[] params;
+        if (identifiers.length == 1 && identifiers[0] instanceof Integer) {
+            query = "select * from user where id = ?";
+            params = new Object[]{identifiers[0]};
+        } else if (identifiers.length == 2 && identifiers[0] instanceof String && identifiers[1] instanceof String) {
+            query = "select * from user where username = ? or email = ?";
+            params = new Object[]{identifiers[0], identifiers[1]};
+        } else {
+            throw new IllegalArgumentException("Identifiers must be either an Integer id or a pair of Strings (username, email)");
+        }
+
         return db.select("getting user", query, resultSet -> {
             if (resultSet.next()) {
                 return loadUserInformation(inDetail, resultSet);
@@ -347,25 +329,27 @@ public final class UserService {
         }, params);
     }
 
-    public void getAllUsers()
+    @Override
+    public void loadAll()
             throws DatabaseException {
-        userList.clear();
-        userMap.clear();
+        User.userSet.clear();
+        User.userMap.clear();
+        User user = User.getCurrent();
 
         String query = "select * from user";
         db.select("getting user", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                if (currentUser.getId() != id) {
-                    User user = loadUserInformation(true, resultSet);
-                    userList.add(user);
-                    userMap.put(id, user);
+                if (user.getId() != id) {
+                    User.userMap.put(id, loadUserInformation(true, resultSet));
                 } else {
-                    userMap.put(currentUser.getId(), currentUser);
+                    User.userMap.put(user.getId(), user);
                 }
             }
             return null;
         });
+        User.userSet.addAll(User.userMap.values());
+        User.userSet.remove(user);
     }
 
     private User loadUserInformation(Boolean inDetail, ResultSet rs)
@@ -420,16 +404,42 @@ public final class UserService {
         return user;
     }
 
-    private void loadSavedBooks()
+    public void loadSavedBooks(User user)
             throws DatabaseException, UserException {
-        this.currentUser.getSavedBooks().clear();
+        user.getSavedBooks().clear();
         String query = "select * from userSavedBook where userId = ?";
         db.select("get saved books", query, resultSet -> {
             while (resultSet.next()) {
-                this.currentUser.getSavedBooks().add(BookService.bookMap.get(resultSet.getInt("bookId")));
+                int bookId = resultSet.getInt("bookId");
+                if (Book.bookMap.containsKey(bookId)) {
+                    user.addSavedBook(Book.bookMap.get(bookId));
+                }
             }
             return null;
-        }, this.currentUser.getId());
+        }, user.getId());
+    }
+
+    public void toggleSaveBook(Book book, boolean isSave)
+            throws DatabaseException {
+        User user = User.getCurrent();
+        if (isSave) {
+            if (!user.getSavedBooks().contains(book)) {
+                user.getSavedBooks().add(book);
+                db.insert("userSavedBook", false, List.of("userId", "bookId"), user.getId(), book.getId());
+                log.info(LogMsg.GENERAL_SUCCESS.msg("save book"));
+            } else {
+                throw new DatabaseException("This book is already saved");
+            }
+            return;
+        }
+
+        if (user.getSavedBooks().contains(book)) {
+            user.getSavedBooks().remove(book);
+            db.delete("userSavedBook", List.of("userId", "bookId"), user.getId(), book.getId());
+            log.info(LogMsg.GENERAL_SUCCESS.msg("unsave book"));
+        } else {
+            throw new DatabaseException("The book is not saved");
+        }
     }
 
 }

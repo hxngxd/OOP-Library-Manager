@@ -1,30 +1,24 @@
 package com.hxngxd.ui.controller.book;
 
-import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.UserService;
+import com.hxngxd.ui.Activable;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.scene.MainController;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
+import com.hxngxd.ui.controller.MainController;
+import com.hxngxd.ui.controller.BookGalleryController;
 import com.hxngxd.utils.ImageHandler;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class BookPreviewController extends PreviewController {
-
-    private static final Logger log = LogManager.getLogger(BookPreviewController.class);
+public class BookPreviewController extends BookDisplayController implements Activable {
 
     private boolean isPreviewing = false;
-
-    protected Book book;
 
     @FXML
     private FontAwesomeIconView saveBookIcon;
@@ -32,17 +26,13 @@ public class BookPreviewController extends PreviewController {
     @FXML
     private Button saveBookButton;
 
-    public void previewBook(Book book) {
-        prv(book);
+    @Override
+    public void onActive() {
+        setImageView(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
+        setSaveButtonState();
         setName(book.getTitle());
         setInformation(book.toStringDetail());
-        setPreviewing(true);
-    }
-
-    protected void prv(Book book) {
-        this.book = book;
-        setImage(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
-        setSaveButtonState();
+        isPreviewing = true;
     }
 
     public boolean isPreviewing() {
@@ -54,61 +44,40 @@ public class BookPreviewController extends PreviewController {
     }
 
     @FXML
-    private void savedBook(ActionEvent event) {
-        User currentUser = UserService.getInstance().getCurrentUser();
-        if (!currentUser.getSavedBooks().contains(book)) {
-            try {
-                currentUser.saveBook(book);
-                setSaveButtonState();
-                BookGalleryController.getInstance().showBookCardsBySearch();
-                PopupManager.info("Đã lưu sách");
-            } catch (DatabaseException e) {
-//                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("save book"), e.getMessage());
-                PopupManager.info("Lỗi khi lưu sách");
-            }
-        } else {
-            try {
-                currentUser.unsaveBook(book);
-                setSaveButtonState();
-                BookGalleryController.getInstance().showBookCardsBySearch();
-                PopupManager.info("Đã bỏ lưu sách");
-            } catch (DatabaseException e) {
-//                e.printStackTrace();
-                log.error(LogMessages.General.FAIL.getMSG("unsave book"), e.getMessage());
-                PopupManager.info("Lỗi khi bỏ lưu sách");
-            }
+    private void toggleSaveBook(ActionEvent event) {
+        User user = User.getCurrent();
+        UserService userService = UserService.getInstance();
+        BookGalleryController bookGalleryController = UIManager.getController(UI.BOOK_GALLERY);
+
+        boolean saved = user.getSavedBooks().contains(book);
+        try {
+            userService.toggleSaveBook(book, !saved);
+            setSaveButtonState();
+            bookGalleryController.showBookCards();
+            PopupManager.info(saved ? "Đã bỏ lưu sách" : "Đã lưu sách");
+        } catch (DatabaseException e) {
+            log.error(LogMsg.GENERAL_FAIL.msg(saved ? "unsave book" : "save book"), e);
+            PopupManager.info(saved ? "Lỗi khi bỏ lưu sách" : "Lỗi khi lưu sách");
         }
     }
 
     private void setSaveButtonState() {
-        User currentUser = UserService.getInstance().getCurrentUser();
-        if (currentUser.getSavedBooks().contains(book)) {
-            saveBookIcon.setGlyphName("BOOKMARK");
-            saveBookButton.setText("BỎ LƯU SÁCH");
-        } else {
-            saveBookIcon.setGlyphName("BOOKMARK_ALT");
-            saveBookButton.setText("LƯU SÁCH");
-        }
+        boolean isSaved = User.getCurrent().getSavedBooks().contains(book);
+        saveBookIcon.setGlyphName(isSaved ? "BOOKMARK" : "BOOKMARK_ALT");
+        saveBookButton.setText(isSaved ? "BỎ LƯU SÁCH" : "LƯU SÁCH");
     }
 
     @FXML
     public void showDetail() {
         UI ui = UI.BOOK_DETAIL;
-        MainController mainController = MainController.getInstance();
+        MainController mainController = UIManager.getController(UI.MAIN);
         if (mainController.getCurrentTab() == ui) {
             return;
         }
         mainController.setCurrentTab(ui);
         mainController.navigate(UIManager.getRootOnce(ui));
-        BookDetailController.getInstance().onActive(this.book);
+        ((BookDetailController) UIManager.getController(UI.BOOK_DETAIL)).setBook(book);
+        UIManager.getActivableController(UI.BOOK_DETAIL).onActive();
     }
 
-    public static BookPreviewController getInstance() {
-        return UIManager.getControllerOnce(UI.BOOK_PREVIEW);
-    }
-
-    public Book getBook() {
-        return book;
-    }
 }

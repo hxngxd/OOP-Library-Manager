@@ -1,19 +1,16 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui.controller;
 
+import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
-import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.UserException;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.tab.AccountController;
-import com.hxngxd.ui.controller.tab.BookGalleryController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
-import com.hxngxd.ui.controller.tab.manage.ManageBookController;
-import com.hxngxd.ui.controller.tab.manage.ManageUserController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,15 +22,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class MainController extends NavigateController {
-
-    private static final Logger log = LogManager.getLogger(MainController.class);
 
     private static UI currentTab = null;
 
@@ -57,15 +50,14 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void initialize() {
-        showBookGallery();
+        showHome(null);
     }
 
+    @Override
     public void onActive() {
-        User user = UserService.getInstance().getCurrentUser();
+        User user = User.getCurrent();
         if (user.getImage() != null) {
-            setProfileImage(
-                    ImageHandler.cropImageByRatio(user.getImage(), 1, 1)
-            );
+            setProfileImage(ImageHandler.cropImageByRatio(user.getImage(), 1, 1));
         } else {
             setProfileImage(null);
         }
@@ -90,8 +82,8 @@ public final class MainController extends NavigateController {
         this.profileImage.setImage(profileImage);
     }
 
-    public void setFullNameLabel(String fullname) {
-        this.fullNameLabel.setText(fullname);
+    public void setFullNameLabel(String name) {
+        this.fullNameLabel.setText(name);
     }
 
     public void setUserInfoLabel(String info) {
@@ -99,77 +91,82 @@ public final class MainController extends NavigateController {
     }
 
     @FXML
-    private void showAccount(ActionEvent event) {
+    private void showAccount() {
         UI ui = UI.ACCOUNT;
         if (currentTab == ui) {
             return;
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-        AccountController.getInstance().onActive();
-    }
-
-    @FXML
-    private void showAccount2() {
-        showAccount(null);
+        UIManager.getActivableController(UI.ACCOUNT).onActive();
     }
 
     @FXML
     private void showHome(ActionEvent event) {
-        BookGalleryController.getInstance().onActive();
-        BookGalleryController.getInstance().setIsShowingSavedBook(false);
-        BookGalleryController.getInstance().showBookCards();
-        showBookGallery();
+        showBookGallery(false);
     }
 
     @FXML
     private void showSavedBook(ActionEvent event) {
-        BookGalleryController.getInstance().onActive();
-        BookGalleryController.getInstance().setIsShowingSavedBook(true);
-        BookGalleryController.getInstance().showBookCards();
-        showBookGallery();
+        showBookGallery(true);
     }
 
     @FXML
     private void showManage(ActionEvent event) {
-        List<Pair<String, Runnable>> btns = new ArrayList<>();
-        btns.add(new Pair<>("NGƯỜI DÙNG", () -> {
+        List<Pair<String, Runnable>> buttons = new ArrayList<>();
+
+        buttons.add(new Pair<>("NGƯỜI DÙNG", () -> {
             UI ui = UI.MANAGE_USER;
             PopupManager.closePopup();
             if (currentTab != ui) {
                 currentTab = ui;
                 navigate(UIManager.getRootOnce(ui));
-                ManageUserController.getInstance().update();
+                UIManager.getUpdatableController(UI.MANAGE_USER).onUpdate();
             }
         }));
-        btns.add(new Pair<>("SÁCH", () -> {
+
+        buttons.add(new Pair<>("SÁCH", () -> {
             UI ui = UI.MANAGE_BOOK;
             PopupManager.closePopup();
             if (currentTab != ui) {
                 currentTab = ui;
                 navigate(UIManager.getRootOnce(ui));
-                ManageBookController.getInstance().update();
+                UIManager.getUpdatableController(UI.MANAGE_BOOK).onUpdate();
             }
         }));
-        btns.add(new Pair<>("MƯỢN SÁCH", () -> {
+
+        buttons.add(new Pair<>("MƯỢN SÁCH", () -> {
         }));
-        btns.add(new Pair<>("TÁC GIẢ", () -> {
+
+        buttons.add(new Pair<>("TÁC GIẢ", () -> {
         }));
-        btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
-        PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", btns);
+
+        buttons.add(new Pair<>("HUỶ", PopupManager::closePopup));
+
+        PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", buttons);
     }
 
-    private void showBookGallery() {
+    private void showBookGallery(Boolean save) {
+        BookGalleryController bookGalleryController = UIManager.getController(UI.BOOK_GALLERY);
+        bookGalleryController.setShowSaved(save);
+        bookGalleryController.onActive();
+
         UI ui = UI.BOOK_GALLERY;
         if (currentTab == ui) {
             return;
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-        BookPreviewController bpc = BookPreviewController.getInstance();
-        if (bpc.isPreviewing() && BookService.bookMap.get(bpc.getBook().getId()) != null) {
-            root.getItems().add(UIManager.getRootOnce(UI.BOOK_PREVIEW));
+
+        BookPreviewController bookPreviewController = UIManager.getController(UI.BOOK_PREVIEW);
+        if (!bookPreviewController.isPreviewing()) {
+            return;
         }
+        if (!Book.bookMap.containsKey(bookPreviewController.getBook().getId())) {
+            return;
+        }
+
+        root.getItems().add(UIManager.getRootOnce(UI.BOOK_PREVIEW));
     }
 
     public void navigate(Parent tab) {
@@ -191,24 +188,19 @@ public final class MainController extends NavigateController {
 
     @FXML
     private void logOut() {
-        PopupManager.confirm("Đăng xuất?", () -> {
+        PopupManager.confirm("Log out?", () -> {
             try {
-                UserService.getInstance().logout();
-                PopupManager.info(LogMessages.General.SUCCESS.getMSG("log out"));
+                userService.logout();
+                PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("log out"));
                 StageManager.getInstance().setScene(UI.LOGIN);
-                LoginController.getInstance().onActive();
-            } catch (Exception e) {
-//                e.printStackTrace();
-                log.error(e.getMessage());
+                UIManager.getActivableController(UI.LOGIN).onActive();
+            } catch (DatabaseException | UserException e) {
+                log.error(e);
                 PopupManager.info(e.getMessage());
             } finally {
                 PopupManager.closePopup();
             }
         });
-    }
-
-    public static MainController getInstance() {
-        return UIManager.getControllerOnce(UI.MAIN);
     }
 
 }

@@ -12,110 +12,85 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/22"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hxngxd.ui.controller.scene.RegisterController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.RegisterController">
     <children>
-        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308"
-              maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0"
-              AnchorPane.topAnchor="0.0">
+        <VBox alignment="CENTER" layoutX="200.0" layoutY="24.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
-                       maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ TÀI KHOẢN"
-                       textAlignment="CENTER">
+                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="ĐĂNG KÝ TÀI KHOẢN" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="32.0"/>
+                        <Font name="System Bold" size="32.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="-10.0"/>
+                        <Insets bottom="-10.0" />
                     </VBox.margin>
                 </Label>
-                <HBox alignment="CENTER" layoutX="10.0" layoutY="354.0"
-                      maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                      spacing="20.0">
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="354.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0">
                     <children>
-                        <TextField fx:id="firstNameField" maxHeight="1.7976931348623157E308"
-                                   maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                   promptText="Tên" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="firstNameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Tên" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                             <padding>
-                                <Insets left="25.0"/>
+                                <Insets left="25.0" />
                             </padding>
                         </TextField>
-                        <TextField fx:id="lastNameField" maxHeight="1.7976931348623157E308"
-                                   maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                   promptText="Họ và tên đệm" HBox.hgrow="ALWAYS">
+                        <TextField fx:id="lastNameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Họ và tên đệm" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                             <padding>
-                                <Insets left="25.0"/>
+                                <Insets left="25.0" />
                             </padding>
                         </TextField>
                     </children>
                 </HBox>
-                <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308"
-                           maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                           promptText="Tên đăng nhập">
+                <TextField fx:id="usernameField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Tên đăng nhập">
                     <font>
-                        <Font size="18.0"/>
+                        <Font size="18.0" />
                     </font>
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                     <padding>
-                        <Insets left="25.0"/>
+                        <Insets left="25.0" />
                     </padding>
                 </TextField>
-                <TextField fx:id="emailField" maxHeight="1.7976931348623157E308"
-                           maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Email">
+                <TextField fx:id="emailField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Email">
                     <font>
-                        <Font size="18.0"/>
+                        <Font size="18.0" />
                     </font>
                     <padding>
-                        <Insets left="25.0"/>
+                        <Insets left="25.0" />
                     </padding>
                 </TextField>
                 <HBox alignment="CENTER_LEFT" spacing="15.0">
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                     <children>
                         <StackPane maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                             <children>
-                                <PasswordField fx:id="passwordField"
-                                               maxHeight="1.7976931348623157E308"
-                                               maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                               promptText="Mật khẩu">
+                                <PasswordField fx:id="passwordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Mật khẩu">
                                     <font>
-                                        <Font size="18.0"/>
+                                        <Font size="18.0" />
                                     </font>
                                     <padding>
-                                        <Insets left="25.0"/>
+                                        <Insets left="25.0" />
                                     </padding>
                                 </PasswordField>
-                                <TextField fx:id="passwordVisibleField"
-                                           maxHeight="1.7976931348623157E308"
-                                           maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                           prefWidth="694.0" promptText="Mật khẩu" visible="false">
+                                <TextField fx:id="passwordVisibleField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="694.0" promptText="Mật khẩu" visible="false">
                                     <font>
-                                        <Font size="18.0"/>
+                                        <Font size="18.0" />
                                     </font>
                                     <padding>
-                                        <Insets left="25.0"/>
+                                        <Insets left="25.0" />
                                     </padding>
                                 </TextField>
                             </children>
                         </StackPane>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                mnemonicParsing="false" onAction="#togglePasswordVisibility"
-                                prefWidth="49.0">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#togglePasswordVisibility" prefWidth="49.0">
                             <graphic>
-                                <FontAwesomeIconView fx:id="eye" glyphName="EYE_SLASH" size="20"/>
+                                <FontAwesomeIconView fx:id="eye" glyphName="EYE_SLASH" size="20" />
                             </graphic>
                         </Button>
                     </children>
@@ -124,70 +99,51 @@
                     <children>
                         <StackPane maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                             <children>
-                                <PasswordField fx:id="confirmPasswordField"
-                                               maxHeight="1.7976931348623157E308"
-                                               maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                               promptText="Xác nhận lại mật khẩu">
+                                <PasswordField fx:id="confirmPasswordField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" promptText="Xác nhận lại mật khẩu">
                                     <font>
-                                        <Font size="18.0"/>
+                                        <Font size="18.0" />
                                     </font>
                                     <padding>
-                                        <Insets left="25.0"/>
+                                        <Insets left="25.0" />
                                     </padding>
                                 </PasswordField>
-                                <TextField fx:id="confirmPasswordVisibleField"
-                                           maxHeight="1.7976931348623157E308"
-                                           maxWidth="1.7976931348623157E308" prefHeight="50.0"
-                                           prefWidth="694.0" promptText="Xác nhận lại mật khẩu"
-                                           visible="false">
+                                <TextField fx:id="confirmPasswordVisibleField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="694.0" promptText="Xác nhận lại mật khẩu" visible="false">
                                     <font>
-                                        <Font size="18.0"/>
+                                        <Font size="18.0" />
                                     </font>
                                     <padding>
-                                        <Insets left="25.0"/>
+                                        <Insets left="25.0" />
                                     </padding>
                                 </TextField>
                             </children>
                         </StackPane>
                     </children>
                 </HBox>
-                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308"
-                        maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                        onAction="#register" prefHeight="40.0" stylesheets="@style.css"
-                        text="TẠO TÀI KHOẢN">
+                <Button alignment="CENTER" contentDisplay="RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#authenticate" prefHeight="40.0" stylesheets="@style.css" text="TẠO TÀI KHOẢN">
                     <font>
-                        <Font size="14.0"/>
+                        <Font size="14.0" />
                     </font>
                     <graphic>
-                        <FontAwesomeIconView glyphName="USER_PLUS"/>
+                        <FontAwesomeIconView glyphName="USER_PLUS" />
                     </graphic>
                 </Button>
-                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308"
-                      maxWidth="1.7976931348623157E308">
+                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                     <children>
-                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308" text="Đã có tài khoản?"
-                               textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Đã có tài khoản?" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                         </Label>
-                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308"
-                                maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                onAction="#goToLogin" prefHeight="40.0" stylesheets="@style.css"
-                                text="ĐĂNG NHẬP" HBox.hgrow="ALWAYS">
+                        <Button alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToLogin" prefHeight="40.0" stylesheets="@style.css" text="ĐĂNG NHẬP" HBox.hgrow="ALWAYS">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                         </Button>
                     </children>
                 </HBox>
-                <Button alignment="CENTER" layoutX="10.0" layoutY="420.0"
-                        maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                        mnemonicParsing="false" onAction="#exit" prefHeight="40.0"
-                        stylesheets="@style.css" text="THOÁT">
+                <Button alignment="CENTER" layoutX="10.0" layoutY="420.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefHeight="40.0" stylesheets="@style.css" text="THOÁT">
                     <font>
-                        <Font size="14.0"/>
+                        <Font size="14.0" />
                     </font>
                 </Button>
             </children>

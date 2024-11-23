@@ -1,6 +1,6 @@
 package com.hxngxd.utils;
 
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.ValidationException;
 
@@ -85,7 +85,7 @@ public final class InputHandler {
 
     private static final Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
 
-    public static final double similarThresHold = 0.8;
+    public static final double minSimilar = 0.8;
 
     private InputHandler() {
     }
@@ -94,10 +94,10 @@ public final class InputHandler {
             throws ValidationException {
         for (String input : inputs) {
             if (input == null || input.isEmpty()) {
-                throw new ValidationException(LogMessages.Validation.INFO_IS_MISSING.getMSG());
+                throw new ValidationException(LogMsg.VALIDATION_INFO_IS_MISSING.msg());
             }
             if (input.length() > 127) {
-                throw new ValidationException(LogMessages.Validation.INFO_TOO_LONG.getMSG());
+                throw new ValidationException(LogMsg.VALIDATION_INFO_TOO_LONG.msg());
             }
         }
     }
@@ -106,7 +106,7 @@ public final class InputHandler {
             throws ValidationException {
         Matcher matcher = emailPattern.matcher(email);
         if (!matcher.matches()) {
-            throw new ValidationException(LogMessages.Validation.EMAIL_NOT_VALID.getMSG());
+            throw new ValidationException(LogMsg.VALIDATION_EMAIL_NOT_VALID.msg());
         }
     }
 
@@ -173,7 +173,7 @@ public final class InputHandler {
     }
 
     public static double similarity(String info, String search) {
-        info = info.toLowerCase().replaceAll("\\s+", "");
+        info = info.toLowerCase();
         search = search.toLowerCase().replaceAll("\\s+", "");
 
         int bound = 3;
@@ -219,15 +219,11 @@ public final class InputHandler {
     }
 
     public static boolean isSimilar(String info, String search) {
-        return similarity(info, search) >= similarThresHold;
+        return similarity(info, search) >= minSimilar;
     }
 
     public static boolean isUnidecodeSimilar(String info, String search) {
-        return similarity(unidecode(info), unidecode(search)) >= similarThresHold;
-    }
-
-    public static boolean unidecodedPrefixMatching(String text, String prefix) {
-        return exactPrefixMatching(unidecode(text), unidecode(prefix));
+        return similarity(unidecode(info), unidecode(search)) >= minSimilar;
     }
 
     public static boolean lowerPrefixMatching(String text, String prefix) {

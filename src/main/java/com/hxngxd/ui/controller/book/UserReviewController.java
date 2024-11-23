@@ -1,8 +1,11 @@
 package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.actions.Review;
+import com.hxngxd.entities.User;
+import com.hxngxd.enums.UI;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
@@ -34,33 +37,36 @@ public class UserReviewController {
     @FXML
     private Label userReviewLabel;
 
-    private Review review;
-
     public void display(Review review, boolean deletable, boolean editable) {
         ImageHandler.circleCrop(image, 50);
-        this.review = review;
-        image.setImage(
-                ImageHandler.cropImageByRatio(review.getUser().getImage(), 1, 1)
-        );
+        image.setImage(ImageHandler.cropImageByRatio(review.getUser().getImage(), 1, 1));
+
         userLabel.setText(review.getUser().getFullNameLastThenFirst()
-                + (review.getUser().getId() == UserService.getInstance().getCurrentUser().getId() ? " (Bạn)" : ""));
+                + (review.getUser().getId() == User.getCurrent().getId() ? " (Bạn)" : ""));
+
         elapseLabel.setText(Formatter.timeElapsed(review.getTimestamp()));
+
         userRatingLabel.setText(review.getStringRating());
+
         userReviewLabel.setText(review.getComment());
 
         if (deletable) {
-            List<Pair<String, Runnable>> btns = new ArrayList<>();
+            List<Pair<String, Runnable>> buttons = new ArrayList<>();
+
             if (editable) {
-                btns.add(new Pair<>("SỬA BÌNH LUẬN", () -> {
-                    BookDetailController.getInstance().editReviewComment(this.review);
+                buttons.add(new Pair<>("CHANGE YOUR THOUGHT", () -> {
+                    ((BookDetailController) UIManager.getController(UI.BOOK_DETAIL)).editReview(review);
                 }));
             }
-            btns.add(new Pair<>("XOÁ ĐÁNH GIÁ", () -> {
-                BookDetailController.getInstance().deleteReview(this.review);
+
+            buttons.add(new Pair<>("DELETE REVIEW", () -> {
+                ((BookDetailController) UIManager.getController(UI.BOOK_DETAIL)).deleteReview(review);
             }));
-            btns.add(new Pair<>("HUỶ", PopupManager::closePopup));
+
+            buttons.add(new Pair<>("CANCEL", PopupManager::closePopup));
+
             container.setOnMouseClicked(event -> {
-                PopupManager.navigate("Chỉnh sửa đánh giá", btns);
+                PopupManager.navigate("Edit review", buttons);
             });
         }
     }

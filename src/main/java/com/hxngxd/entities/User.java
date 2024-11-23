@@ -1,34 +1,27 @@
 package com.hxngxd.entities;
 
-import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.LogMessages;
 import com.hxngxd.enums.Role;
-import com.hxngxd.exceptions.DatabaseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class User extends Person {
 
-    private static final Logger log = LogManager.getLogger(User.class);
-
     private String username;
-
     private String email;
-
     private String passwordHash;
-
     private String address;
-
     private Role role;
-
     private AccountStatus accountStatus;
 
-    private final List<Book> savedBooks = new ArrayList<>();
+    private final Set<Book> savedBooks = new HashSet<>();
+
+    public static final Set<User> userSet = new HashSet<>();
+    public static final HashMap<Integer, User> userMap = new HashMap<>();
+    private static User current = null;
 
     public User() {
     }
@@ -96,53 +89,30 @@ public final class User extends Person {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof User)) {
-            return false;
-        }
-        return this.id == ((User) other).getId();
-    }
-
-    @Override
     public String toString() {
         return "Username: " + this.username + "\n" +
                 "ID: " + this.id + "\n" +
                 "Role: " + this.role.name() + "\n";
     }
 
-    public List<Book> getSavedBooks() {
+    public void addSavedBook(Book book) {
+        savedBooks.add(book);
+    }
+
+    public Set<Book> getSavedBooks() {
         return savedBooks;
     }
 
-    public void saveBook(Book book)
-            throws DatabaseException {
-        if (!savedBooks.contains(book)) {
-            savedBooks.add(book);
-            DatabaseManager db = DatabaseManager.getInstance();
-            db.insert("userSavedBook", false,
-                    List.of("userId", "bookId"),
-                    getId(), book.getId());
-            log.info(LogMessages.General.SUCCESS.getMSG("save book"));
-        } else {
-            throw new DatabaseException("This book is already saved");
-        }
+    public static User getCurrent() {
+        return current;
     }
 
-    public void unsaveBook(Book book)
-            throws DatabaseException {
-        if (savedBooks.contains(book)) {
-            savedBooks.remove(book);
-            DatabaseManager db = DatabaseManager.getInstance();
-            db.delete("userSavedBook",
-                    List.of("userId", "bookId"),
-                    getId(), book.getId());
-            log.info(LogMessages.General.SUCCESS.getMSG("unsave book"));
-        } else {
-            throw new DatabaseException("The book is not saved");
-        }
+    public static void setCurrent(User current) {
+        User.current = current;
+    }
+
+    public static void clearCurrent() {
+        User.current = null;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.hxngxd.utils;
 
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import javafx.scene.image.Image;
@@ -32,18 +32,16 @@ public final class ImageHandler {
         try (InputStream inputStream = new FileInputStream(file)) {
             result = inputStream.readAllBytes();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(file.getAbsolutePath()));
+            log.error(LogMsg.FILE_NOT_FOUND.msg(file.getAbsolutePath()), e);
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error(LogMessages.File.FILE_IO_ERROR.getMSG(file.getAbsolutePath()));
+            log.error(LogMsg.FILE_IO_ERROR.msg(file.getAbsolutePath()), e);
         }
         return result;
     }
 
     public static Image cropImageByRatio(Image image, double widthRatio, double heightRatio) {
         if (image == null) {
-            log.info(LogMessages.General.IS_NULL.getMSG("Image"));
+            log.info(LogMsg.GENERAL_IS_NULL.msg("Image"));
             return null;
         }
 
@@ -87,20 +85,17 @@ public final class ImageHandler {
 
     public static Image loadImageFromFile(File file) {
         if (file == null) {
-            log.info(LogMessages.General.IS_NULL.getMSG("File"));
+            log.info(LogMsg.FILE_IS_NULL.msg("File"));
             return null;
         }
         try (InputStream inputStream = new FileInputStream(file)) {
             return new Image(inputStream);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(file.getAbsolutePath()), e.getMessage());
+            log.error(LogMsg.FILE_NOT_FOUND.msg(file.getAbsolutePath()), e);
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error(LogMessages.File.FILE_IO_ERROR.getMSG(file.getAbsolutePath()), e.getMessage());
+            log.error(LogMsg.FILE_IO_ERROR.msg(file.getAbsolutePath()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(LogMessages.General.SOMETHING_WENT_WRONG.getMSG(file.getAbsolutePath()), e.getMessage());
+            log.error(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg(file.getAbsolutePath()), e);
         }
         return null;
     }
@@ -122,12 +117,11 @@ public final class ImageHandler {
             if (resourceURL != null) {
                 return new Image(resourceURL.toExternalForm());
             } else {
-                log.error(LogMessages.File.FILE_NOT_FOUND.getMSG(resourcePath));
+                log.error(LogMsg.FILE_NOT_FOUND.msg(resourcePath));
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error(LogMsg.FILE_IO_ERROR.msg(resourcePath));
             return null;
         }
     }

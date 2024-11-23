@@ -1,13 +1,13 @@
-package com.hxngxd.ui.controller.scene;
+package com.hxngxd.ui.controller;
 
-import com.hxngxd.entities.Author;
-import com.hxngxd.entities.Genre;
-import com.hxngxd.enums.LogMessages;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
+import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
+import com.hxngxd.service.GenreService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
@@ -15,12 +15,8 @@ import com.hxngxd.ui.UIManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public final class RegisterController extends AuthenticationController {
-
-    private static final Logger log = LogManager.getLogger(RegisterController.class);
 
     @FXML
     private TextField firstNameField;
@@ -58,20 +54,24 @@ public final class RegisterController extends AuthenticationController {
 
     @FXML
     private void initialize() {
+        confirmPasswordField.setOnKeyPressed(super::authenticateOnEnter);
+        confirmPasswordVisibleField.setOnKeyPressed(super::authenticateOnEnter);
+        onActive();
     }
 
+    @Override
     public void onActive() {
-        usernameField.setText("");
-        emailField.setText("");
-        passwordField.setText("");
-        passwordVisibleField.setText("");
-        confirmPasswordField.setText("");
-        confirmPasswordVisibleField.setText("");
+        super.onActive();
+        firstNameField.clear();
+        lastNameField.clear();
+        emailField.clear();
+        confirmPasswordField.clear();
+        confirmPasswordVisibleField.clear();
     }
 
+    @Override
     @FXML
-    private void register(ActionEvent event) {
-        UserService userService = UserService.getInstance();
+    protected void authenticate(ActionEvent event) {
         try {
             String password = isPasswordVisible ? passwordVisibleField.getText() : passwordField.getText();
             String confirmedPassword = isPasswordVisible ? confirmPasswordVisibleField.getText() : confirmPasswordField.getText();
@@ -80,18 +80,10 @@ public final class RegisterController extends AuthenticationController {
                     usernameField.getText(), emailField.getText(),
                     password, confirmedPassword
             );
-            PopupManager.info(LogMessages.General.SUCCESS.getMSG("create account"));
-
-            Author.initialize();
-            Genre.initialize();
-            BookService.initialize();
-            UserService.initialize();
-            StageManager.getInstance().setScene(UI.MAIN);
-            MainController.getInstance().onActive();
-
+            PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("create account"));
+            super.authenticate(event);
         } catch (DatabaseException | UserException | ValidationException e) {
-//            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error(LogMsg.GENERAL_FAIL.msg("create account"), e);
             PopupManager.info(e.getMessage());
         }
     }
@@ -99,11 +91,7 @@ public final class RegisterController extends AuthenticationController {
     @FXML
     private void goToLogin(ActionEvent event) {
         StageManager.getInstance().setScene(UI.LOGIN);
-        LoginController.getInstance().onActive();
-    }
-
-    public static RegisterController getInstance() {
-        return UIManager.getControllerOnce(UI.REGISTER);
+        UIManager.getActivableController(UI.LOGIN).onActive();
     }
 
 }
