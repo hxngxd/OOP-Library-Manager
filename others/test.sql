@@ -693,9 +693,24 @@ VALUES (1, 8, 2, 'Cuốn sách này giúp tôi hiểu thêm về lịch sử.'),
        (39, 21, 5, 'Một cuốn sách tuyệt vời, tôi đã học được nhiều điều từ nó.'),
        (40, 22, 2, 'Cuốn sách không thực sự thu hút tôi, mặc dù cốt truyện khá hay.');
 
-INSERT INTO userSavedBook (userId, bookId, savedDate)
-VALUES (1, 2, current_timestamp),
-       (1, 5, current_timestamp),
-       (1, 7, current_timestamp),
-       (1, 9, current_timestamp),
-       (1, 11, current_timestamp);
+INSERT INTO userSavedBook (userId, bookId)
+VALUES (1, 5),
+       (1, 12),
+       (1, 7),
+       (1, 18),
+       (1, 22),
+       (1, 30),
+       (1, 15),
+       (1, 37),
+       (1, 50),
+       (1, 41),
+       (2, 2),
+       (2, 8),
+       (2, 21),
+       (2, 33),
+       (2, 10),
+       (2, 48),
+       (2, 14),
+       (2, 39),
+       (2, 17),
+       (2, 28);
