@@ -265,127 +265,7 @@ VALUES ('1984', 328, 1949, 'Winston Smith sống trong một xã hội bị ki�
         LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Crime and Punishment.png')),
        ('The Great Gatsby', 180, 1925, 'Câu chuyện về sự phù hoa và sự sụp đổ của Jay Gatsby.', 85,
         100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Great Gatsby.png')),
-        ('The Catcher in the Rye', 277, 1951, 'Câu chuyện về Holden Caulfield, một thiếu niên mất phương hướng.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Catcher in the Rye.png')),
-        ('To Kill a Mockingbird', 281, 1960, 'Câu chuyện về một vụ án giết người ở thị trấn nhỏ Maycomb.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/To Kill a Mockingbird.png')),
-        ('Pride and Prejudice', 279, 1813, 'Câu chuyện về tình yêu giữa Elizabeth Bennet và Mr. Darcy.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Pride and Prejudice.png')),
-        ('The Picture of Dorian Gray', 254, 1890, 'Câu chuyện về Dorian Gray, một người trẻ đẹp và giàu có.', 70,
-        90,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Picture of Dorian Gray.png')),
-        ('The Hobbit', 310, 1937, 'Cuộc phiêu lưu của Bilbo Baggins để giành lại một ngôi nhà.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Hobbit.png')),
-        ('The Alchemist', 197, 1988, 'Câu chuyện về Santiago, một người chăn cừu.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Alchemist.png')),
-        ('The Hunger Games', 374, 2008, 'Cuộc thi sinh tồn còn giữa 24 người trẻ từ 12 quận.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Hunger Games.png')),
-        ('The Fault in Our Stars', 313, 2012, 'Câu chuyện tình yêu giữa Hazel Grace Lancaster và Augustus Waters.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Fault in Our Stars.png')),
-        ('War and Peace', 1225, 1869, 'Câu chuyện về cuộc sống của nhiều nhân vật trong thời kỳ chiến tranh Napoleon.', 120,
-        150,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/War and Peace.png')),
-        ('Wuthering Heights', 464, 1847, 'Câu chuyện tình yêu giữa Heathcliff và Catherine Earnshaw.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Wuthering Heights.png')),
-        ('The Little Prince', 96, 1943, 'Câu chuyện về một hoàng tử nhỏ từ hành tinh B-612.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Little Prince.png')),
-        ('Enders Game', 324, 1985, 'Câu chuyện về Ender Wiggin, một thiếu niên thiên tài.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Enders Game.png')),
-        ('The Giver', 208, 1993, 'Câu chuyện về Jonas, một thiếu niên sống trong một xã hội không có cảm xúc.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Giver.png')),
-        ('Fahrenheit 451', 249, 1953, 'Câu chuyện về Guy Montag, một lính cứu hỏa.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Fahrenheit 451.png')),
-        ('The Road', 287, 2006, 'Câu chuyện về một người cha và con trai trong một thế giới hậu tận thế.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Road.png')),
-        ('Harry Potter and the Sorcerers Stone', 309, 1997, 'Câu chuyện về Harry Potter, một phù thủy trẻ.', 120,
-        150,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Harry Potter and the Sorcerers Stone.png')),
-        ('The Adventures of Huckleberry Finn', 366, 1884, 'Câu chuyện về Huckleberry Finn và Jim, một người nô lệ.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Adventures of Huckleberry Finn.png')),
-        ('The Adventures of Sherlock Holmes', 307, 1892, 'Câu chuyện về Sherlock Holmes, một thám tử tài ba.', 100,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Adventures of Sherlock Holmes.png')),
-        ('The Body', 133, 1982, 'Câu chuyện về một nhóm bạn trẻ đi tìm xác chết của một cậu bé.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Body.png')),
-        ('Don Quixote', 863, 1605, 'Câu chuyện về Don Quixote, một hiệp sĩ tưởng tượng.', 120,
-        150,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Don Quixote.png')),
-        ('Dracula', 418, 1897, 'Câu chuyện về Count Dracula, một ma cà rồng.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Dracula.png')),
-        ('Frankenstein', 280, 1818, 'Câu chuyện về Victor Frankenstein và quái vật của ông.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Frankenstein.png')),
-        ('Gone with the Wind', 1037, 1936, 'Câu chuyện về Scarlett O Hara và Rhett Butler.', 120,
-        150,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Gone with the Wind.png')),
-        ('Invisible Man', 581, 1952, 'Câu chuyện về một người đàn ông da màu ẩn mình.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Invisible Man.png')),
-        ('Jane Eyre', 507, 1847, 'Câu chuyện về Jane Eyre, một cô gái mồ côi.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Jane Eyre.png')),
-        ('Life of Pi', 319, 2001, 'Câu chuyện về Pi Patel, một chàng trai Ấn Độ.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Life of Pi.png')),
-        ('Lord of the Flies', 224, 1954, 'Câu chuyện về một nhóm trẻ em mắc kẹt trên một hòn đảo.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Lord of the Flies.png')),
-        ('Rebecca', 380, 1938, 'Câu chuyện về một phụ nữ trẻ kết hôn với một người đàn ông giàu có.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Rebecca.png')),
-        ('The Stranger', 123, 1942, 'Câu chuyện về Meursault, một người đàn ông không có cảm xúc.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Stranger.png')),
-        ('The Glass Castle', 288, 2005, 'Câu chuyện về Jeannette Walls và gia đình cô.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Glass Castle.png')),
-        ('The Grapes of Wrath', 464, 1939, 'Câu chuyện về gia đình Joad trong thời kỳ Đại suy thoái.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Grapes of Wrath.png')),
-        ('The Idiot', 656, 1869, 'Câu chuyện về Prince Myshkin, một người đàn ông ngây thơ.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Idiot.png')),
-        ('The Godfather', 448, 1969, 'Câu chuyện về gia đình Corleone.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Godfather.png')),
-        ('The Jungle', 413, 1906, 'Câu chuyện về Jurgis Rudkus, một người nhập cư Litva.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Jungle.png')),
-        ('The Iliad', 683, 800, 'Câu chuyện về cuộc chiến giữa Hy Lạp và Troia.', 120,
-        150,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Iliad.png')),
-        ('The Metamorphosis', 201, 1915, 'Câu chuyện về Gregor Samsa, một người bị biến thành côn trùng.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Metamorphosis.png')),
-        ('The Trial', 255, 1925, 'Câu chuyện về Josef K., một người bị buộc tội mà không biết tội danh.', 90,
-        110,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Trial.png')),
-        ('Snow Crash', 470, 1992, 'Câu chuyện về Hiro Protagonist, một hacker và samurai.', 100,
-        120,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Snow Crash.png')),
-        ('Native Son', 504, 1940, 'Câu chuyện về Bigger Thomas, một người da màu.', 80,
-        100,
-        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/Native Son.png'));
-
-
-
+        LOAD_FILE('D:/Documents/GitHub/Library Manager/others/coverImage/The Great Gatsby.png'));
 
 INSERT INTO author (firstName, lastName, dateOfBirth, biography)
 VALUES ('George', 'Orwell', '1903-06-25', 'Nhà văn nổi tiếng với các tác phẩm phản địa đàng.'),
@@ -398,49 +278,7 @@ VALUES ('George', 'Orwell', '1903-06-25', 'Nhà văn nổi tiếng với các t�
        ('Toni', 'Morrison', '1931-02-18', 'Nhà văn da màu nổi tiếng với các tác phẩm về nô lệ.'),
        ('Aldous', 'Huxley', '1894-07-26', 'Nhà văn Anh với các tác phẩm về xã hội dystopia.'),
        ('Fyodor', 'Dostoevsky', '1821-11-11', 'Nhà văn Nga với các tác phẩm triết học sâu sắc.'),
-       ('F. Scott', 'Fitzgerald', '1896-09-24', 'Nhà văn nổi tiếng với tác phẩm về Giấc mơ Mỹ.'),
-       ('J.D.', 'Salinger', '1919-01-01', 'Nhà văn nổi tiếng với tác phẩm về tuổi trẻ.'),
-       ('Harper', 'Lee', '1926-04-28', 'Nhà văn nổi tiếng với tác phẩm về phân biệt chủng tộc.'),
-       ('Jane', 'Austen', '1775-12-16', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu và xã hội.'),
-       ('Oscar', 'Wilde', '1854-10-16', 'Nhà văn nổi tiếng với các tác phẩm về xã hội và nghệ thuật.'),
-       ('J.R.R.', 'Tolkien', '1892-01-03', 'Nhà văn nổi tiếng với các tác phẩm về thế giới thần thoại.'),
-       ('Paulo', 'Coelho', '1947-08-24', 'Nhà văn nổi tiếng với các tác phẩm về tâm linh và triết lý sống.'),
-       ('Suzanne', 'Collins', '1962-08-10', 'Nhà văn nổi tiếng với các tác phẩm về cuộc thi sinh tồn và xã hội dystopia.'),
-       ('John', 'Green', '1977-08-24', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu và tuổi trẻ.'),
-       ('Leo', 'Tolstoy', '1828-09-09', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu và xã hội Nga.'),
-       ('Emily', 'Bronte', '1818-07-30', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu và bi kịch.'),
-       ('Antoine de', 'Saint-Exupéry', '1900-06-29', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu.'),
-       ('Orson Scott', 'Card', '1951-08-24', 'Nhà văn nổi tiếng với các tác phẩm về tương lai.'),
-       ('Lois', 'Lowry', '1937-03-20', 'Nhà văn nổi tiếng với các tác phẩm về tương lai.'),
-       ('Ray', 'Bradbury', '1920-08-22', 'Nhà văn nổi tiếng với các tác phẩm về tương lai.'),
-       ('Cormac', 'McCarthy', '1933-07-20', 'Nhà văn nổi tiếng với các tác phẩm về tương lai.'),
-       ('J.K.', 'Rowling', '1965-07-31', 'Nhà văn nổi tiếng với các tác phẩm về phù thủy.'),
-       ('Mark', 'Twain', '1835-11-30', 'Nhà văn nổi tiếng với các tác phẩm về cuộc sống nông thôn.'),
-       ('Arthur Conan', 'Doyle', '1859-05-22', 'Nhà văn nổi tiếng với các tác phẩm về thám tử Sherlock Holmes.'),
-       ('Stephen', 'King', '1947-09-21', 'Nhà văn nổi tiếng với các tác phẩm kinh dị.'),
-       ('Miguel de', 'Cervantes', '1547-09-29', 'Nhà văn nổi tiếng với các tác phẩm hài hước.'),
-       ('Bram', 'Stoker', '1847-11-08', 'Nhà văn nổi tiếng với các tác phẩm kinh dị.'),
-       ('Mary', 'Shelley', '1797-08-30', 'Nhà văn nổi tiếng với các tác phẩm kinh dị.'),
-       ('Margaret', 'Mitchell', '1900-11-08', 'Nhà văn nổi tiếng với các tác phẩm lịch sử.'),
-       ('Ralph', 'Ellison', '1914-03-01', 'Nhà văn nổi tiếng với các tác phẩm về phân biệt chủng tộc.'),
-       ('Charlotte', 'Bronte', '1816-04-21', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu và bi kịch.'),
-       ('Yann', 'Martel', '1963-06-25', 'Nhà văn nổi tiếng với các tác phẩm về tâm linh.'),
-       ('William', 'Golding', '1911-09-19', 'Nhà văn nổi tiếng với các tác phẩm về tâm lý.'),
-       ('Daphne', 'du Maurier', '1907-05-13', 'Nhà văn nổi tiếng với các tác phẩm về tình yêu.'),
-       ('Albert', 'Camus', '1913-11-07', 'Nhà văn nổi tiếng với các tác phẩm về tâm lý.'),
-       ('Jeannette', 'Walls', '1960-04-21', 'Nhà văn nổi tiếng với các tác phẩm về gia đình.'),
-       ('John', 'Steinbeck', '1902-02-27', 'Nhà văn nổi tiếng với các tác phẩm về gia đình.'),
-       ('Fyodor', 'Dostoevsky', '1821-11-11', 'Nhà văn nổi tiếng với các tác phẩm về tâm lý.'),
-       ('Mario', 'Puzo', '1920-10-15', 'Nhà văn nổi tiếng với các tác phẩm về mafia.'),
-       ('Upton', 'Sinclair', '1878-09-20', 'Nhà văn nổi tiếng với các tác phẩm về xã hội.'),
-       ('Homer', '', '800-01-01', 'Nhà văn cổ điển nổi tiếng với các tác phẩm về thần thoại.'),
-       ('Franz', 'Kafka', '1883-07-03', 'Nhà văn nổi tiếng với các tác phẩm về tâm lý.'),
-       ('Franz', 'Kafka', '1883-07-03', 'Nhà văn nổi tiếng với các tác phẩm về tâm lý.'),
-       ('Neal', 'Stephenson', '1959-10-31', 'Nhà văn nổi tiếng với các tác phẩm về tương lai.'),
-       ('Richard', 'Wright', '1908-09-04', 'Nhà văn nổi tiếng với các tác phẩm về phân biệt chủng tộc.');
-
-
-
+       ('F. Scott', 'Fitzgerald', '1896-09-24', 'Nhà văn nổi tiếng với tác phẩm về Giấc mơ Mỹ.');
 
 INSERT INTO genre (name, description)
 VALUES ('novel', 'A long narrative work of fiction with complex characters.'),
@@ -450,15 +288,7 @@ VALUES ('novel', 'A long narrative work of fiction with complex characters.'),
        ('adventure', 'Features exciting journeys and bold actions.'),
        ('historical', 'Set in a past time period, often with real historical figures.'),
        ('romance', 'Focuses on romantic relationships and emotions.'),
-       ('philosophy', 'Explores philosophical concepts through narrative.'),
-       ('dystopia', 'Describes a society that is undesirable or frightening.'),
-       ('crime', 'Involves criminal activities and the justice system.'),
-       ('biography', 'Tells the life story of a real person.'),
-       ('fantasy', 'Features magical elements and mythical creatures.'),
-       ('spiritual', 'Explores religious or spiritual themes.'),
-       ('children', 'Written for children and young readers.'),
-       ('young adult', 'Written for teenagers and young adults.'),
-       ('classic', 'A work that is considered to be of high quality and lasting value.');
+       ('philosophy', 'Explores philosophical concepts through narrative.');
 
 INSERT INTO bookAuthor (bookId, authorId)
 VALUES (1, 1),   -- 1984 by George Orwell
@@ -471,48 +301,7 @@ VALUES (1, 1),   -- 1984 by George Orwell
        (8, 8),   -- Beloved by Toni Morrison
        (9, 9),   -- Brave New World by Aldous Huxley
        (10, 10), -- Crime and Punishment by Fyodor Dostoevsky
-       (11, 11), -- The Great Gatsby by F. Scott Fitzgerald
-       (12, 12), -- The Catcher in the Rye by J.D. Salinger
-       (13, 13), -- To Kill a Mockingbird by Harper Lee
-       (14, 14), -- Pride and Prejudice by Jane Austen
-       (15, 15), -- The Picture of Dorian Gray by Oscar Wilde
-       (16, 16), -- The Hobbit by J.R.R. Tolkien
-       (17, 17), -- The Alchemist by Paulo Coelho
-       (18, 18), -- The Hunger Games by Suzanne Collins
-       (19, 19), -- The Fault in Our Stars by John Green
-       (20, 20), -- War and Peace by Leo Tolstoy
-       (21, 21), -- Wuthering Heights by Emily Bronte
-       (22, 22), -- The Little Prince by Antoine de Saint-Exupéry
-       (23, 23), -- Enders Game by Orson Scott Card
-       (24, 24), -- The Giver by Lois Lowry
-       (25, 25), -- Fahrenheit 451 by Ray Bradbury
-       (26, 26), -- The Road by Cormac McCarthy
-       (27, 27), -- Harry Potter and the Sorcerers Stone by J.K. Rowling
-       (28, 28), -- The Adventures of Huckleberry Finn by Mark Twain
-       (29, 29), -- The Adventures of Sherlock Holmes by Arthur Conan Doyle
-       (30, 30), -- The Body by Stephen King
-       (31, 31), -- Don Quixote by Miguel de Cervantes
-       (32, 32), -- Dracula by Bram Stoker
-       (33, 33), -- Frankenstein by Mary Shelley
-       (34, 34), -- Gone with the Wind by Margaret Mitchell
-       (35, 35), -- Invisible by Ralph Ellison
-       (36, 36), -- Jane Eyre by Charlotte Bronte
-       (37, 37), -- Life of Pi by Yann Martel
-       (38, 38), -- Lord of the Flies by William Golding
-       (39, 39), -- Rebecca by Daphne du Maurier
-       (40, 40), -- The Stranger by Albert Camus
-       (41, 41), -- The Glass Castle by Jeannette Walls
-       (42, 42), -- The Grapes of Wrath by John Steinbeck
-       (43, 43), -- The Idiot by Fyodor Dostoevsky
-       (44, 44), -- The Godfather by Mario Puzo
-       (45, 45), -- The Jungle by Upton Sinclair
-       (46, 46), -- The Iliad by Homer
-       (47, 47), -- The Metamorphosis by Franz Kafka
-       (48, 48), -- The Trial by Franz Kafka
-       (49, 49), -- Snow Crash by Neal Stephenson
-       (50, 50); -- Native Son by Richard Wright;
-
-
+       (11, 11); -- The Great Gatsby by F. Scott Fitzgerald
 
 INSERT INTO bookGenre (bookId, genreId)
 VALUES (1, 1),
@@ -537,84 +326,7 @@ VALUES (1, 1),
        (9, 3),  -- Brave New World
        (10, 1), -- Crime and Punishment
        (11, 1),
-       (11, 6), -- The Great Gatsby
-       (12, 1),
-       (12, 6), -- The Catcher in the Rye
-       (13, 1),
-       (13, 6), -- To Kill a Mockingbird
-       (14, 1),
-       (14, 6), -- Pride and Prejudice
-       (15, 1),
-       (15, 6), -- The Picture of Dorian Gray
-       (16, 1),
-       (16, 6), -- The Hobbit
-       (17, 1),
-       (17, 6), -- The Alchemist
-       (18, 1),
-       (18, 6), -- The Hunger Games
-       (19, 1),
-       (19, 6), -- The Fault in Our Stars
-       (20, 1),
-       (20, 6), -- War and Peace
-       (21, 1),
-       (21, 6), -- Wuthering Heights
-       (22, 1),
-       (22, 6), -- The Little Prince
-       (23, 1),
-       (23, 6), -- Enders Game
-       (24, 1),
-       (24, 6), -- The Giver
-       (25, 1),
-       (25, 6), -- Fahrenheit 451
-       (26, 1),
-       (26, 6), -- The Road
-       (27, 1),
-       (27, 6), -- Harry Potter and the Sorcerers Stone
-       (28, 1),
-       (28, 6), -- The Adventures of Huckleberry Finn
-       (29, 1),
-       (29, 6), -- The Adventures of Sherlock Holmes
-       (30, 1),
-       (30, 6), -- The Body
-       (31, 1),
-       (31, 6), -- Don Quixote
-       (32, 1),
-       (32, 6), -- Dracula
-       (33, 1),
-       (33, 6), -- Frankenstein
-       (34, 1),
-       (34, 6), -- Gone with the Wind
-       (35, 1),
-       (35, 6), -- Invisible Man
-       (36, 1),
-       (36, 6), -- Jane Eyre
-       (37, 1),
-       (37, 6), -- Life of Pi
-       (38, 1),
-       (38, 6), -- Lord of the Flies
-       (39, 1),
-       (39, 6), -- Rebecca
-       (40, 1),
-       (40, 6), -- The Stranger
-     (41, 1),
-     (41, 6), -- The Glass Castle
-     (42, 1),
-     (42, 6), -- The Grapes of Wrath
-     (43, 1),
-     (43, 6), -- The Idiot
-     (44, 1),
-     (44, 6), -- The Godfather
-     (45, 1),
-     (45, 6), -- The Jungle
-     (46, 1),
-     (46, 6), -- The Iliad
-     (47, 1),
-     (47, 6), -- The Metamorphosis
-     (48, 1),
-     (48, 6), -- The Trial
-     (49, 1),
-     (49, 6), -- Snow Crash
-     (50, 1); -- Native Son
+       (11, 6); -- The Great Gatsby
 
 INSERT INTO review (userId, bookId, rating, comment)
 VALUES (1, 8, 2, 'Cuốn sách này giúp tôi hiểu thêm về lịch sử.'),
@@ -694,47 +406,52 @@ VALUES (1, 8, 2, 'Cuốn sách này giúp tôi hiểu thêm về lịch sử.'),
        (36, 3, 4, 'Cốt truyện phát triển rất hợp lý và tự nhiên.'),
        (37, 10, 2, 'Không thực sự hay như tôi đã kỳ vọng.'),
        (38, 6, 5, 'Đây là một trong những tác phẩm hay nhất tôi từng đọc.'),
+       (15, 3, 5, 'Cuốn sách rất sâu sắc, tôi rất thích cách viết.'),
        (40, 8, 5, 'Tôi rất thích cách viết của tác giả, đầy cảm xúc và sâu sắc.'),
-       (1, 12, 4, 'Cuốn sách này rất hay, tôi đã học được nhiều điều từ nó.'),
-       (2, 13, 5, 'Một cuốn sách tuyệt vời, rất sâu sắc và cảm động.'),
-       (3, 14, 3, 'Câu chuyện ổn, nhưng không để lại ấn tượng mạnh.'),
-       (4, 15, 2, 'Cuốn sách này không hợp với tôi, cốt truyện khá nhàm chán.'),
-       (5, 16, 4, 'Tôi rất thích cách viết của tác giả, câu chuyện rất hấp dẫn.'),
-       (6, 17, 5, 'Một tác phẩm đáng đọc, tôi không thể bỏ xuống.'),
-       (7, 18, 3, 'Cốt truyện khá hay, nhưng có phần lặp lại và dễ đoán.'),
-       (8, 19, 4, 'Tác giả xây dựng nhân vật rất tốt, câu chuyện rất dễ hiểu.'),
-       (9, 20, 5, 'Tôi yêu cuốn sách này, rất thú vị và đầy cảm hứng.'),
-       (10, 21, 2, 'Tôi cảm thấy không có gì đặc biệt trong cuốn sách này.'),
-       (11, 22, 4, 'Một cuốn sách rất thú vị, với nhiều bài học quý giá.'),
-       (12, 23, 5, 'Tác phẩm này rất ấn tượng và đầy cảm xúc, tôi không thể dừng lại.'),
-       (13, 24, 3, 'Tôi không thực sự thích cuốn sách này, nhưng vẫn có vài điểm hay.'),
-       (14, 25, 5, 'Cuốn sách này thật sự tuyệt vời, tôi sẽ đọc lại nhiều lần.'),
-       (15, 26, 4, 'Câu chuyện rất sâu sắc, mặc dù có một số đoạn hơi dài dòng.'),
-       (16, 27, 2, 'Tôi không thể tiếp tục đọc cuốn sách này, cảm thấy khá thất vọng.'),
-       (17, 28, 5, 'Một tác phẩm tuyệt vời, tôi rất thích cách tác giả xây dựng cốt truyện.'),
-       (18, 29, 3, 'Câu chuyện khá thú vị, nhưng tôi cảm thấy một số chi tiết hơi thừa.'),
-       (19, 30, 4, 'Tôi rất thích cuốn sách này, tuy nhiên có một số phần hơi dài.'),
-       (20, 31, 5, 'Cuốn sách thật sự rất đáng đọc, tôi đã học được rất nhiều điều.'),
-       (21, 32, 3, 'Nội dung ổn, nhưng tôi không thấy quá ấn tượng với cuốn sách này.'),
-       (22, 33, 4, 'Một cuốn sách hay, có nhiều tình tiết hấp dẫn.'),
-       (23, 34, 5, 'Tôi rất thích cách viết của tác giả, câu chuyện rất sâu sắc.'),
-       (24, 35, 3, 'Cuốn sách này hơi dài dòng, nhưng vẫn có vài phần thú vị.'),
-       (25, 36, 4, 'Tôi thích cuốn sách này, nhưng có một số tình tiết thiếu hấp dẫn.'),
-       (26, 37, 5, 'Câu chuyện này thực sự rất tuyệt vời, tôi rất ấn tượng.'),
-       (27, 38, 2, 'Cuốn sách không thể làm tôi hài lòng, khá thất vọng.'),
-       (28, 39, 4, 'Một cuốn sách thú vị, nhưng có phần dễ đoán trước.'),
-       (29, 40, 5, 'Tôi rất thích cuốn sách này, rất đáng đọc và suy ngẫm.'),
-       (30, 12, 3, 'Cuốn sách này khá ổn, nhưng không phải là tác phẩm tôi yêu thích.'),
-       (31, 13, 4, 'Tôi đã học được rất nhiều từ cuốn sách này, rất đáng đọc.'),
-       (32, 14, 5, 'Cuốn sách tuyệt vời, không thể rời mắt khỏi trang sách.'),
-       (33, 15, 2, 'Tôi không thích cuốn sách này, cảm thấy khá nhàm chán.'),
-       (34, 16, 4, 'Câu chuyện khá hấp dẫn, mặc dù có một vài đoạn hơi dài.'),
-       (35, 17, 5, 'Một tác phẩm xuất sắc, tôi sẽ giới thiệu cho mọi người.'),
-       (36, 18, 3, 'Cuốn sách này ổn, nhưng tôi không thể cảm nhận được hết ý nghĩa của nó.'),
-       (37, 19, 5, 'Tôi rất thích cuốn sách này, rất cảm động và đầy ý nghĩa.'),
-       (38, 20, 4, 'Câu chuyện rất thú vị, nhưng một vài chi tiết vẫn chưa rõ ràng.'),
-       (39, 21, 5, 'Một cuốn sách tuyệt vời, tôi đã học được nhiều điều từ nó.'),
-       (40, 22, 2, 'Cuốn sách không thực sự thu hút tôi, mặc dù cốt truyện khá hay.');
+       (22, 10, 4, 'Một tác phẩm rất bổ ích, đáng để đọc và suy ngẫm.'),
+       (9, 20, 2, 'Nội dung hơi khó hiểu nhưng vẫn mang lại nhiều giá trị.'),
+       (31, 15, 3, 'Một cuốn sách ổn, phù hợp để đọc vào thời gian rảnh.'),
+       (14, 25, 5, 'Thật tuyệt vời, tôi sẽ giới thiệu cho bạn bè cùng đọc.'),
+       (27, 8, 4, 'Câu chuyện hấp dẫn, tôi đã đọc một mạch không dừng lại.'),
+       (6, 30, 2, 'Tôi không thích phong cách viết trong cuốn sách này.'),
+       (18, 50, 3, 'Cuốn sách này giúp tôi hiểu thêm về nhiều điều trong cuộc sống.'),
+       (3, 12, 4, 'Một câu chuyện ý nghĩa, phù hợp với những ai yêu thích lịch sử.'),
+       (35, 35, 1, 'Thật thất vọng, tôi mong đợi nhiều hơn ở cuốn sách này.'),
+       (11, 40, 5, 'Cuốn sách này khiến tôi suy ngẫm rất nhiều về cuộc sống.'),
+       (29, 7, 4, 'Tác giả đã viết rất tốt, lời văn rất mượt mà và sâu sắc.'),
+       (32, 22, 3, 'Một cuốn sách hay nhưng chưa thực sự xuất sắc.'),
+       (24, 48, 2, 'Nội dung lặp lại và không thu hút như tôi mong đợi.'),
+       (20, 15, 1, 'Quá nhàm chán, tôi không thể đọc hết cuốn sách này.'),
+       (8, 61, 4, 'Một câu chuyện đáng nhớ, tôi đã học được rất nhiều điều.'),
+       (13, 1, 5, 'Tác phẩm này thật tuyệt vời, tôi sẽ đọc lại nhiều lần.'),
+       (36, 20, 3, 'Câu chuyện ổn nhưng không quá nổi bật.'),
+       (16, 25, 4, 'Tôi rất thích cuốn sách này, thật sự rất bổ ích.'),
+       (2, 40, 5, 'Một trong những cuốn sách hay nhất mà tôi từng đọc.'),
+       (30, 55, 2, 'Câu chuyện hơi dài và mất đi sự hấp dẫn ban đầu.'),
+       (25, 10, 3, 'Một tác phẩm rất đáng để đọc để hiểu thêm về cuộc sống.'),
+       (19, 5, 1, 'Thật sự thất vọng, tôi mong đợi nhiều hơn ở cuốn này.'),
+       (34, 18, 4, 'Câu chuyện hấp dẫn, tôi không thể rời mắt khỏi từng trang sách.'),
+       (7, 2, 5, 'Lời văn chạm đến trái tim, tôi thực sự cảm động.'),
+       (40, 8, 3, 'Cuốn sách mang lại những bài học quý giá.'),
+       (5, 33, 4, 'Tôi thích cách xây dựng nhân vật trong câu chuyện.'),
+       (12, 44, 5, 'Tác phẩm xuất sắc, tôi sẽ giới thiệu cho bạn bè.'),
+       (17, 11, 2, 'Nội dung khó hiểu và không hấp dẫn như tôi nghĩ.'),
+       (26, 50, 3, 'Một cuốn sách hay nhưng chưa thực sự lôi cuốn.'),
+       (4, 14, 4, 'Tôi thực sự ấn tượng với cách viết của tác giả.'),
+       (33, 20, 5, 'Cuốn sách này thật sự rất hay, tôi học được nhiều điều.'),
+       (1, 12, 2, 'Nội dung không như mong đợi, hơi thất vọng.'),
+       (28, 8, 4, 'Cuốn sách này đã giúp tôi thay đổi cách nhìn về nhiều thứ.'),
+       (21, 60, 5, 'Tôi rất thích cuốn sách này, lời văn đầy cảm xúc.'),
+       (23, 3, 3, 'Câu chuyện ổn, nhưng chưa thực sự xuất sắc.'),
+       (39, 21, 4, 'Một cuốn sách đáng đọc và suy ngẫm.'),
+       (10, 32, 5, 'Cuốn sách này thật sự tuyệt vời, rất đáng để đọc.'),
+       (37, 45, 1, 'Tôi không thích cách xây dựng cốt truyện trong sách này.'),
+       (38, 9, 2, 'Thật sự thất vọng, tôi không nghĩ sách lại nhàm chán thế.'),
+       (22, 25, 4, 'Cuốn sách này thực sự mang lại cảm hứng cho tôi.'),
+       (11, 5, 5, 'Một tác phẩm xuất sắc, tôi rất yêu thích.'),
+       (18, 50, 2, 'Nội dung không lôi cuốn và khá dài dòng.'),
+       (7, 15, 4, 'Cuốn sách này thật sự ý nghĩa, tôi rất thích.'),
+       (30, 61, 5, 'Tôi đã học được nhiều điều từ cuốn sách này.');
 
 INSERT INTO userSavedBook (userId, bookId, savedDate)
 VALUES (1, 2, current_timestamp),
