@@ -7,6 +7,7 @@ import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.book.BookDetailController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -95,15 +96,6 @@ public final class ManageBookController extends ManageController<Book> {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getAvailableCopies());
             }
         });
-
-        searchFieldComboBox.setItems(FXCollections.observableArrayList(
-                idColumn.getText(),
-                bookNameColumn.getText(),
-                authorColumn.getText(),
-                genreColumn.getText(),
-                shortDescriptionColumn.getText()
-        ));
-        searchFieldComboBox.setValue(idColumn.getText());
     }
 
     @Override
@@ -139,13 +131,25 @@ public final class ManageBookController extends ManageController<Book> {
     }
 
     @Override
+    protected void addSearchFields() {
+        searchFieldComboBox.setItems(FXCollections.observableArrayList(
+                idColumn.getText(),
+                bookNameColumn.getText(),
+                authorColumn.getText(),
+                genreColumn.getText(),
+                shortDescriptionColumn.getText()
+        ));
+        searchFieldComboBox.setValue(idColumn.getText());
+    }
+
+    @Override
     @FXML
-    public void update() {
+    public void onUpdate() {
         try {
-            BookService.initialize();
+            bookService.loadAll();
             itemList.clear();
-            itemList = FXCollections.observableArrayList(BookService.bookList);
-            super.update();
+            itemList = FXCollections.observableArrayList(Book.bookSet);
+            super.onUpdate();
         } catch (DatabaseException e) {
             PopupManager.info("Cập nhật danh sách thất bại");
         }
@@ -164,16 +168,13 @@ public final class ManageBookController extends ManageController<Book> {
     @FXML
     private void removeBook() {
         if (getSelected() == null) {
-            noneSelected("cuốn sách");
             return;
         }
-
-        String message = String.format("Xác nhận xoá sách có id=%d (không thể hoàn tác)", getSelectedId());
+        String message = "You sure about removing this book (can't be undone)?";
         PopupManager.confirm(message, () -> {
             try {
-                int bookId = getSelectedId();
-                bookService.deleteBook(bookId);
-                update();
+                bookService.deleteBook(getSelectedId());
+                onUpdate();
             } catch (DatabaseException | UserException e) {
                 PopupManager.info(e.getMessage());
             } finally {
@@ -185,15 +186,11 @@ public final class ManageBookController extends ManageController<Book> {
     @FXML
     private void seeBook() {
         if (getSelected() == null) {
-            noneSelected("cuốn sách");
             return;
         }
-        BookPreviewController.getInstance().previewBook(BookService.bookMap.get(getSelectedId()));
-        BookPreviewController.getInstance().showDetail();
-    }
-
-    public static ManageBookController getInstance() {
-        return UIManager.getActivableController(UI.MANAGE_BOOK);
+        BookPreviewController bookPreviewController = UIManager.getController(UI.BOOK_PREVIEW);
+        bookPreviewController.setBook(Book.bookMap.get(getSelectedId()));
+        bookPreviewController.showDetail();
     }
 
 }

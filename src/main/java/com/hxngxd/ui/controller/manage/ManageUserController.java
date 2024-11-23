@@ -2,13 +2,12 @@ package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.AccountStatus;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Role;
-import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
-import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.Formatter;
 import com.hxngxd.utils.InputHandler;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -112,20 +111,6 @@ public final class ManageUserController extends ManageController<User> {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getAccountStatus().name());
             }
         });
-
-        searchFieldComboBox.setItems(FXCollections.observableArrayList(
-                idColumn.getText(),
-                lastNameColumn.getText(),
-                firstNameColumn.getText(),
-                dateOfBirthColumn.getText(),
-                usernameColumn.getText(),
-                emailColumn.getText(),
-                addressColumn.getText(),
-                roleColumn.getText(),
-                dateAddedColumn.getText(),
-                statusColumn.getText()
-        ));
-        searchFieldComboBox.setValue(idColumn.getText());
     }
 
     @Override
@@ -176,32 +161,48 @@ public final class ManageUserController extends ManageController<User> {
     }
 
     @Override
+    protected void addSearchFields() {
+        searchFieldComboBox.setItems(FXCollections.observableArrayList(
+                idColumn.getText(),
+                lastNameColumn.getText(),
+                firstNameColumn.getText(),
+                dateOfBirthColumn.getText(),
+                usernameColumn.getText(),
+                emailColumn.getText(),
+                addressColumn.getText(),
+                roleColumn.getText(),
+                dateAddedColumn.getText(),
+                statusColumn.getText()
+        ));
+        searchFieldComboBox.setValue(idColumn.getText());
+    }
+
+    @Override
     @FXML
-    public void update() {
+    public void onUpdate() {
         try {
-            userService.getAllUsers();
+            userService.loadAll();
             itemList.clear();
-            itemList = FXCollections.observableArrayList(UserService.userList);
-            super.update();
+            itemList = FXCollections.observableArrayList(User.userSet);
+            super.onUpdate();
         } catch (DatabaseException e) {
-            PopupManager.info("Cập nhật danh sách người dùng thất bại!");
+            PopupManager.info(LogMsg.GENERAL_FAIL.msg("update user list"));
         }
     }
 
     @FXML
     private void changePassword() {
         if (getSelected() == null) {
-            noneSelected("người dùng");
             return;
         }
-        String message = String.format("Đổi mật khẩu user có id=%d?", getSelectedId());
-        PopupManager.confirmInput(message, "Mật khẩu mới", () -> {
+        String message = String.format("Change password of user with id=%d?", getSelectedId());
+        PopupManager.confirmInput(message, "New password", () -> {
             String newPassword = PopupManager.getInputPeek().getText();
             try {
                 userService.changePassword(getSelectedId(), newPassword);
                 PopupManager.popInput();
                 PopupManager.closePopup();
-                update();
+                onUpdate();
             } catch (DatabaseException | UserException e) {
                 PopupManager.info(e.getMessage());
             }
@@ -210,30 +211,29 @@ public final class ManageUserController extends ManageController<User> {
 
     @FXML
     private void releaseUser() {
-        changeAccountStatus(AccountStatus.INACTIVE, "thả");
+        changeAccountStatus(AccountStatus.INACTIVE);
     }
 
     @FXML
     private void suspendUser() {
-        changeAccountStatus(AccountStatus.SUSPENDED, "khoá");
+        changeAccountStatus(AccountStatus.SUSPENDED);
     }
 
     @FXML
     private void banUser() {
-        changeAccountStatus(AccountStatus.BANNED, "cấm vĩnh viễn");
+        changeAccountStatus(AccountStatus.BANNED);
     }
 
     @FXML
     private void deleteUser() {
-        if (getSelected() == null || getSelectedId() == userService.getCurrentUser().getId()) {
-            noneSelected("người dùng");
+        if (getSelected() == null) {
             return;
         }
-        String message = String.format("Xác nhận xoá user có id = %d (không thể hoàn tác)", getSelectedId());
+        String message = "You sure about removing this user (can't be undone)?";
         PopupManager.confirm(message, () -> {
             try {
                 userService.deleteAccount(getSelectedId());
-                update();
+                onUpdate();
             } catch (DatabaseException | UserException e) {
                 PopupManager.info(e.getMessage());
             } finally {
@@ -242,17 +242,19 @@ public final class ManageUserController extends ManageController<User> {
         });
     }
 
-    private void changeAccountStatus(AccountStatus status, String action) {
-        if (getSelected() == null || getSelected().getAccountStatus() == status) {
-            noneSelected("người dùng");
+    private void changeAccountStatus(AccountStatus status) {
+        if (getSelected() == null) {
             return;
         }
-        String message = String.format("Xác nhận %s user có id=%d?", action, getSelectedId());
+        if (getSelected().getAccountStatus() == status) {
+            PopupManager.info("User have already been " + status.name());
+        }
+        String message = "Change user's status?";
         PopupManager.confirm(
                 message, () -> {
                     try {
                         userService.changeAccountStatus(getSelectedId(), status);
-                        update();
+                        onUpdate();
                     } catch (DatabaseException | UserException e) {
                         PopupManager.info(e.getMessage());
                     } finally {
@@ -273,16 +275,18 @@ public final class ManageUserController extends ManageController<User> {
     }
 
     private void changeRole(Role role) {
-        if (getSelected() == null || getSelected().getRole() == role) {
-            noneSelected("người dùng");
+        if (getSelected() == null) {
             return;
         }
-        String message = String.format("Xác nhận đổi vai trò của user có id=%d thành %s?", getSelectedId(), role.name());
+        if (getSelected().getRole() == role) {
+            PopupManager.info("User is already " + role.name());
+        }
+        String message = "Change user's role?";
         PopupManager.confirm(
                 message, () -> {
                     try {
                         userService.changeRole(getSelectedId(), role);
-                        update();
+                        onUpdate();
                     } catch (DatabaseException | UserException e) {
                         PopupManager.info(e.getMessage());
                     } finally {
@@ -290,10 +294,6 @@ public final class ManageUserController extends ManageController<User> {
                     }
                 }
         );
-    }
-
-    public static ManageUserController getInstance() {
-        return UIManager.getActivableController(UI.MANAGE_USER);
     }
 
 }

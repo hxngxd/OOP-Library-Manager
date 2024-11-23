@@ -1,7 +1,9 @@
 package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.entities.Entity;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.ui.PopupManager;
+import com.hxngxd.ui.Updatable;
 import com.hxngxd.utils.Formatter;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -18,7 +20,7 @@ import javafx.util.Duration;
 
 import java.time.LocalDateTime;
 
-public abstract class ManageController<T extends Entity> {
+public abstract class ManageController<T extends Entity> implements Updatable {
 
     @FXML
     protected TableView<T> itemTableView;
@@ -70,6 +72,11 @@ public abstract class ManageController<T extends Entity> {
             }
         });
 
+        searchItems();
+        addSearchFields();
+    }
+
+    private void searchItems() {
         PauseTransition pause = new PauseTransition(Duration.millis(250));
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 127) {
@@ -83,27 +90,25 @@ public abstract class ManageController<T extends Entity> {
 
     protected abstract void filterItems();
 
-    protected void loadItems() {
-        itemTableView.setItems(itemList);
-    }
+    protected abstract void addSearchFields();
 
     @FXML
-    public void update() {
+    public void onUpdate() {
         searchField.setText("");
-        loadItems();
-        PopupManager.info("Cập nhật thành công!");
+        itemTableView.setItems(itemList);
+        PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("update"));
     }
 
     protected T getSelected() {
-        return itemTableView.getSelectionModel().getSelectedItem();
+        T item = itemTableView.getSelectionModel().getSelectedItem();
+        if (item == null) {
+            PopupManager.info("None is being selected");
+        }
+        return item;
     }
 
     protected int getSelectedId() {
-        return itemTableView.getSelectionModel().getSelectedItem().getId();
-    }
-
-    protected void noneSelected(String type) {
-        PopupManager.info("Không có " + type + " nào được chọn");
+        return (getSelected() == null ? -1 : getSelected().getId());
     }
 
 }

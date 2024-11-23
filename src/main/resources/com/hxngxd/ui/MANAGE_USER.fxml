@@ -96,7 +96,7 @@
                     <children>
                         <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308"
                                 maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                onAction="#update" stylesheets="@style.css" text="CẬP NHẬT"
+                                onAction="#onUpdate" stylesheets="@style.css" text="CẬP NHẬT"
                                 HBox.hgrow="ALWAYS">
                             <font>
                                 <Font size="14.0"/>
