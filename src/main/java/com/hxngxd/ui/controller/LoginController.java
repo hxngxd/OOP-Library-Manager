@@ -9,6 +9,7 @@ import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.service.AuthorService;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.GenreService;
+import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
@@ -52,14 +53,7 @@ public final class LoginController extends AuthenticationController {
                 userService.login("23020078", "23020078", "Hung@07112005");
             }
             PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("log in"));
-
-            AuthorService.getInstance().loadAll();
-            GenreService.getInstance().loadAll();
-            BookService.getInstance().loadAll();
-            userService.loadSavedBooks(User.getCurrent());
-
-            StageManager.getInstance().setScene(UI.MAIN);
-            UIManager.getActivableController(UI.MAIN).onActive();
+            super.authenticate(event);
         } catch (DatabaseException | UserException | ValidationException e) {
             log.error(LogMsg.GENERAL_FAIL.msg("log in"), e);
             PopupManager.info(e.getMessage());

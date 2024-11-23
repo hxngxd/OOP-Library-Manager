@@ -46,7 +46,6 @@ public final class Book extends EntityWithPhoto {
         this.numberOfPages = numberOfPages;
         this.availableCopies = availableCopies;
         this.totalCopies = totalCopies;
-        BookService.getInstance().setReviews(this);
     }
 
     public String getTitle() {

@@ -117,7 +117,7 @@ public final class DatabaseManager {
             throws DatabaseException {
         String updatePart = String.join(", ", updateFields.stream().map(f -> f + " = ?").toList());
         String conditionPart = String.join(" and ", conditionFields.stream().map(f -> f + " = ?").toList());
-        String query = String.format("onUpdate %s set %s where %s", table, updatePart, conditionPart);
+        String query = String.format("update %s set %s where %s", table, updatePart, conditionPart);
 
         try (PreparedStatement pStatement = connection.prepareStatement(query)) {
             int paramId = 1;
@@ -128,7 +128,7 @@ public final class DatabaseManager {
                 pStatement.setObject(paramId++, condition);
             }
             if (pStatement.executeUpdate() < 1) {
-                throw new SQLException(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg("executing onUpdate query"));
+                throw new SQLException(LogMsg.GENERAL_SOMETHING_WENT_WRONG.msg("executing update query"));
             }
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
@@ -139,7 +139,6 @@ public final class DatabaseManager {
         String fieldsPart = String.join(", ", fields);
         String valuesPart = String.join(", ", fields.stream().map(f -> "?").toList());
         String query = String.format("insert into %s (%s) values (%s)", table, fieldsPart, valuesPart);
-
         try (PreparedStatement pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setParameters(pStatement, values);
             int updates = pStatement.executeUpdate();

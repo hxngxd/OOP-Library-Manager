@@ -147,16 +147,16 @@ public final class MainController extends NavigateController {
     }
 
     private void showBookGallery(Boolean save) {
+        BookGalleryController bookGalleryController = UIManager.getController(UI.BOOK_GALLERY);
+        bookGalleryController.setShowSaved(save);
+        bookGalleryController.onActive();
+
         UI ui = UI.BOOK_GALLERY;
         if (currentTab == ui) {
             return;
         }
         currentTab = ui;
         navigate(UIManager.getRootOnce(ui));
-
-        BookGalleryController bookGalleryController = UIManager.getController(UI.BOOK_GALLERY);
-        bookGalleryController.setShowSaved(save);
-        bookGalleryController.onActive();
 
         BookPreviewController bookPreviewController = UIManager.getController(UI.BOOK_PREVIEW);
         if (!bookPreviewController.isPreviewing()) {

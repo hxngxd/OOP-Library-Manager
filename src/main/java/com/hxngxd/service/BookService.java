@@ -88,8 +88,16 @@ public final class BookService extends Service<Book> {
         Book.bookSet.addAll(Book.bookMap.values());
     }
 
+    public void setAllReviews() {
+        for (Book book : Book.bookSet) {
+            setReviews(book);
+        }
+    }
+
     public void setReviews(Book book) {
         book.getReviews().clear();
+        book.setAverageRating(0);
+        book.setNumberOfReviews(0);
         String query = "select * from review where bookId = ?";
         try {
             DatabaseManager.getInstance().select("load reviews", query, resultSet -> {

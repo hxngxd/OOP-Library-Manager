@@ -47,7 +47,7 @@ public class UserReviewController {
         elapseLabel.setText(Formatter.timeElapsed(review.getTimestamp()));
 
         userRatingLabel.setText(review.getStringRating());
-        
+
         userReviewLabel.setText(review.getComment());
 
         if (deletable) {
@@ -66,7 +66,7 @@ public class UserReviewController {
             buttons.add(new Pair<>("CANCEL", PopupManager::closePopup));
 
             container.setOnMouseClicked(event -> {
-                PopupManager.navigate("EDIT YOUR REVIEW", buttons);
+                PopupManager.navigate("Edit review", buttons);
             });
         }
     }

@@ -349,6 +349,7 @@ public final class UserService extends Service<User> {
             return null;
         });
         User.userSet.addAll(User.userMap.values());
+        User.userSet.remove(user);
     }
 
     private User loadUserInformation(Boolean inDetail, ResultSet rs)
@@ -424,7 +425,7 @@ public final class UserService extends Service<User> {
         if (isSave) {
             if (!user.getSavedBooks().contains(book)) {
                 user.getSavedBooks().add(book);
-                db.insert("save book", false, List.of("userId", "bookId"), user.getId(), book.getId());
+                db.insert("userSavedBook", false, List.of("userId", "bookId"), user.getId(), book.getId());
                 log.info(LogMsg.GENERAL_SUCCESS.msg("save book"));
             } else {
                 throw new DatabaseException("This book is already saved");
@@ -434,7 +435,7 @@ public final class UserService extends Service<User> {
 
         if (user.getSavedBooks().contains(book)) {
             user.getSavedBooks().remove(book);
-            db.delete("unsave book", List.of("userId", "bookId"), user.getId(), book.getId());
+            db.delete("userSavedBook", List.of("userId", "bookId"), user.getId(), book.getId());
             log.info(LogMsg.GENERAL_SUCCESS.msg("unsave book"));
         } else {
             throw new DatabaseException("The book is not saved");

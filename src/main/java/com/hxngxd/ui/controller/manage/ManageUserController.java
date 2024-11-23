@@ -247,7 +247,8 @@ public final class ManageUserController extends ManageController<User> {
             return;
         }
         if (getSelected().getAccountStatus() == status) {
-            PopupManager.info("User have already been " + status.name());
+            PopupManager.info("User has already been " + status.name());
+            return;
         }
         String message = "Change user's status?";
         PopupManager.confirm(
@@ -280,6 +281,7 @@ public final class ManageUserController extends ManageController<User> {
         }
         if (getSelected().getRole() == role) {
             PopupManager.info("User is already " + role.name());
+            return;
         }
         String message = "Change user's role?";
         PopupManager.confirm(
