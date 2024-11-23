@@ -29,6 +29,7 @@ public class BookPreviewController extends BookDisplayController implements Acti
     @Override
     public void onActive() {
         setImageView(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
+        ImageHandler.roundCorner(imageView, 20);
         setSaveButtonState();
         setName(book.getTitle());
         setInformation(book.toStringDetail());

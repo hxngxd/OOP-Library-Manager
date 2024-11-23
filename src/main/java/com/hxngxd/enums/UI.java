@@ -13,7 +13,8 @@ public enum UI {
     MANAGE_USER,
     MANAGE_BOOK,
     USER_REVIEW,
-    POPUP;
+    POPUP,
+    BORROWING_REQUEST;
 
     public String getPath() {
         return this.name() + ".fxml";

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,6 +77,14 @@ public final class ImageHandler {
         imageView.setFitHeight(size);
         imageView.setPreserveRatio(true);
         imageView.setClip(new Circle(size / 2, size / 2, size / 2));
+    }
+
+    public static void roundCorner(ImageView imageView, double corner) {
+        imageView.setPreserveRatio(false);
+        Rectangle clip = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+        clip.setArcWidth(corner);
+        clip.setArcHeight(corner);
+        imageView.setClip(clip);
     }
 
     public static Image cropImageByRatio(byte[] imageBytes, double widthRatio, double heightRatio) {

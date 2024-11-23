@@ -11,6 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
+import java.awt.*;
+
 public final class BookCardController extends BookDisplayController {
 
     @FXML
@@ -21,13 +23,7 @@ public final class BookCardController extends BookDisplayController {
         super.setBook(book);
 
         setImageView(ImageHandler.cropImageByRatio(book.getImage(), 1, 1.5));
-        Rectangle clip = new Rectangle(this.imageView.getFitWidth(), this.imageView.getFitHeight());
-        clip.setArcWidth(15);
-        clip.setArcHeight(15);
-        this.imageView.setFitWidth(190);
-        this.imageView.setFitHeight(285);
-        this.imageView.setPreserveRatio(false);
-        this.imageView.setClip(clip);
+        ImageHandler.roundCorner(this.imageView, 20);
 
         setName(book.getTitle());
         setInformation(book.toString());

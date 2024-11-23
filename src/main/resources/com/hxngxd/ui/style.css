@@ -38,7 +38,7 @@
 /* Box styles */
 .box {
     -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */
-    -fx-background-radius: 0; /* Không bo góc */
+    -fx-background-radius: 10; /* Không bo góc */
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0); /* Drop shadow rộng hơn */
     -fx-scale-x: 1; /* Kích thước gốc */

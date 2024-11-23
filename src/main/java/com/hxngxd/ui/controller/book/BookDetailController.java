@@ -5,15 +5,19 @@ import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.Permission;
+import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.BorrowingRequestController;
+import com.hxngxd.ui.controller.MainController;
 import com.hxngxd.utils.ImageHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -65,6 +69,9 @@ public final class BookDetailController extends BookPreviewController {
     private final Image star = ImageHandler.loadImageFromResource("star.png");
     private final Image star_empty = ImageHandler.loadImageFromResource("star_empty.png");
 
+    @FXML
+    private Button borrrowButton;
+
     @Override
     public void onActive() {
         super.onActive();
@@ -79,6 +86,8 @@ public final class BookDetailController extends BookPreviewController {
         starHover();
         displayReviews();
         ratingLabel.setText(book.getDetailedRating());
+
+//        borrrowButton.setVisible(User.getCurrent().getRole() == Role.USER);
     }
 
     private void commentBox() {
@@ -218,6 +227,19 @@ public final class BookDetailController extends BookPreviewController {
                 reviewsVbox.getChildren().add(loader.getRoot());
             }
         }
+    }
+
+    @FXML
+    private void requestBorrowing() {
+        UI ui = UI.BORROWING_REQUEST;
+        MainController mainController = UIManager.getController(UI.MAIN);
+        if (mainController.getCurrentTab() == ui) {
+            return;
+        }
+        mainController.setCurrentTab(ui);
+        mainController.navigate(UIManager.getRootOnce(ui));
+        ((BorrowingRequestController) UIManager.getController(UI.BORROWING_REQUEST)).setBook(book);
+        UIManager.getActivableController(UI.BORROWING_REQUEST).onActive();
     }
 
 }
