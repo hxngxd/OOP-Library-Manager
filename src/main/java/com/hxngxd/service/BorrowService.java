@@ -1,6 +1,22 @@
 package com.hxngxd.service;
 
-public final class BorrowService {
+import com.hxngxd.actions.Borrowing;
+import com.hxngxd.entities.Book;
+import com.hxngxd.entities.User;
+import com.hxngxd.enums.BorrowStatus;
+import com.hxngxd.enums.LogMsg;
+import com.hxngxd.enums.Role;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.ValidationException;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+public final class BorrowService extends Service {
 
     private BorrowService() {
     }
@@ -11,6 +27,76 @@ public final class BorrowService {
 
     public static BorrowService getInstance() {
         return BorrowService.SingletonHolder.instance;
+    }
+
+    @Override
+    public void loadAll() throws DatabaseException {
+        Borrowing.borrowingSet.clear();
+        boolean isUser = User.getCurrent().getRole() == Role.USER;
+        String query = String.format("select * from borrowing where %s = ?", isUser ? "requesterId" : "handlerId");
+        db.select("get borrowing", query, resultSet -> {
+            while (resultSet.next()) {
+                Borrowing borrowing = new Borrowing(resultSet.getInt("id"));
+
+                borrowing.setUser(User.userMap.get(resultSet.getInt("requesterId")));
+
+                borrowing.setHandler(User.userMap.get(resultSet.getInt("handlerId")));
+
+                borrowing.setBook(Book.bookMap.get(resultSet.getInt("bookId")));
+
+                borrowing.setTimestamp(resultSet.getTimestamp("requestDate").toLocalDateTime());
+
+                Timestamp approvalDate = resultSet.getTimestamp("approvalDate");
+                if (approvalDate != null) {
+                    borrowing.setApprovalDate(approvalDate.toLocalDateTime());
+                }
+
+                Timestamp borrowDate = resultSet.getTimestamp("borrowDate");
+                if (borrowDate != null) {
+                    borrowing.setBorrowDate(borrowDate.toLocalDateTime());
+                }
+
+                borrowing.setEstimatedReturnDate(resultSet.getDate("estimatedReturnDate").toLocalDate());
+
+                Timestamp actualReturnDate = resultSet.getTimestamp("actualReturnDate");
+                if (actualReturnDate != null) {
+                    borrowing.setActualReturnDate(actualReturnDate.toLocalDateTime());
+                }
+
+                borrowing.setStatus(BorrowStatus.valueOf(resultSet.getString("status")));
+
+                Borrowing.borrowingSet.add(borrowing);
+            }
+            return null;
+        }, User.getCurrent().getId());
+    }
+
+    public void submitRequest(User requester, Book book, LocalDate estimatedReturnDate)
+            throws DatabaseException, ValidationException {
+        int handlerId = -1;
+        for (User user : User.userSet) {
+            if (user.getRole() == Role.MODERATOR) {
+                handlerId = user.getId();
+                break;
+            }
+        }
+
+        if (estimatedReturnDate.isBefore(LocalDate.now()) ||
+                estimatedReturnDate.isEqual(LocalDate.now())) {
+            throw new ValidationException("Return date must be after today");
+        }
+
+        if (ChronoUnit.DAYS.between(LocalDate.now(), estimatedReturnDate) > 30) {
+            throw new ValidationException("Less than 30 days please");
+        }
+
+        db.insert("borrowing", false,
+                List.of("requesterId", "bookId", "handlerId", "estimatedReturnDate"),
+                requester.getId(), book.getId(), handlerId, Date.valueOf(estimatedReturnDate));
+
+        loadAll();
+
+        log.info(LogMsg.GENERAL_SUCCESS.msg("add borrowing"));
     }
 
 }

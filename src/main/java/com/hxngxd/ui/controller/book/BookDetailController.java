@@ -1,5 +1,6 @@
 package com.hxngxd.ui.controller.book;
 
+import com.hxngxd.actions.Borrowing;
 import com.hxngxd.actions.Review;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.User;
@@ -9,7 +10,6 @@ import com.hxngxd.enums.Role;
 import com.hxngxd.enums.UI;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.BookService;
-import com.hxngxd.service.UserService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.BorrowingRequestController;
@@ -27,6 +27,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class BookDetailController extends BookPreviewController {
@@ -87,7 +89,7 @@ public final class BookDetailController extends BookPreviewController {
         displayReviews();
         ratingLabel.setText(book.getDetailedRating());
 
-//        borrrowButton.setVisible(User.getCurrent().getRole() == Role.USER);
+        borrrowButton.setVisible(User.getCurrent().getRole() == Role.USER);
     }
 
     private void commentBox() {
@@ -212,7 +214,10 @@ public final class BookDetailController extends BookPreviewController {
             return;
         }
 
-        for (Review review : book.getReviews()) {
+        List<Review> sortedReviews = new ArrayList<>(book.getReviews());
+        sortedReviews.sort(Comparator.comparing(Review::getTimestamp).reversed());
+
+        for (Review review : sortedReviews) {
             FXMLLoader loader = UIManager.load(UI.USER_REVIEW);
             UserReviewController urc = loader.getController();
 
@@ -231,6 +236,27 @@ public final class BookDetailController extends BookPreviewController {
 
     @FXML
     private void requestBorrowing() {
+        if (book.getAvailableCopies() == 0) {
+            PopupManager.info("There isn't any available copies, try again later");
+            return;
+        }
+
+        boolean canBorrowAgain = true;
+        for (Borrowing borrowing : Borrowing.borrowingSet) {
+            if (!borrowing.getBook().equals(book)) {
+                continue;
+            }
+            if (!borrowing.getStatus().canBorrowAgain()) {
+                canBorrowAgain = false;
+                break;
+            }
+        }
+
+        if (!canBorrowAgain) {
+            PopupManager.info("You can't not borrow this book for now, try again later");
+            return;
+        }
+
         UI ui = UI.BORROWING_REQUEST;
         MainController mainController = UIManager.getController(UI.MAIN);
         if (mainController.getCurrentTab() == ui) {

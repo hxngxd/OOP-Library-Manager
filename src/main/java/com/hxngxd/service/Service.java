@@ -5,7 +5,7 @@ import com.hxngxd.entities.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class Service<T extends Entity> implements Loadable {
+public abstract class Service implements Loadable {
 
     protected static final Logger log = LogManager.getLogger(Service.class);
 

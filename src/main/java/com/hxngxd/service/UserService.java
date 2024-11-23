@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public final class UserService extends Service<User> {
+public final class UserService extends Service {
 
     private UserService() {
     }
