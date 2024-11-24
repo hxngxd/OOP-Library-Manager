@@ -10,9 +10,9 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.ValidationException;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -33,7 +33,9 @@ public final class BorrowService extends Service {
     public void loadAll() throws DatabaseException {
         Borrowing.borrowingSet.clear();
         boolean isUser = User.getCurrent().getRole() == Role.USER;
+        boolean isAdmin = User.getCurrent().getRole() == Role.ADMIN;
         String query = String.format("select * from borrowing where %s = ?", isUser ? "requesterId" : "handlerId");
+        query = (isAdmin ? "select * from borrowing" : query);
         db.select("get borrowing", query, resultSet -> {
             while (resultSet.next()) {
                 Borrowing borrowing = new Borrowing(resultSet.getInt("id"));
@@ -68,7 +70,7 @@ public final class BorrowService extends Service {
                 Borrowing.borrowingSet.add(borrowing);
             }
             return null;
-        }, User.getCurrent().getId());
+        }, isAdmin ? null : User.getCurrent().getId());
     }
 
     public void submitRequest(User requester, Book book, LocalDate estimatedReturnDate)
@@ -97,6 +99,39 @@ public final class BorrowService extends Service {
         loadAll();
 
         log.info(LogMsg.GENERAL_SUCCESS.msg("add borrowing"));
+    }
+
+    public void updateStatus(Borrowing borrowing, BorrowStatus status)
+            throws DatabaseException {
+        if (status == BorrowStatus.PENDING) {
+            return;
+        }
+        if (status == BorrowStatus.APPROVED
+                || status == BorrowStatus.REJECTED) {
+            db.update("borrowing",
+                    List.of("approvalDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+        } else if (status == BorrowStatus.BORROWED) {
+            db.update("borrowing",
+                    List.of("borrowDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+            BookService.getInstance().loadAll();
+            db.update("book", "availableCopies", borrowing.getBook().getAvailableCopies() - 1,
+                    "id", borrowing.getBook().getId());
+        } else if (status == BorrowStatus.RETURNED_LATE
+                || status == BorrowStatus.RETURNED_ON_TIME) {
+            db.update("borrowing",
+                    List.of("actualReturnDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+            BookService.getInstance().loadAll();
+            db.update("book", "availableCopies", borrowing.getBook().getAvailableCopies() + 1,
+                    "id", borrowing.getBook().getId());
+        }
+        loadAll();
+        log.info(LogMsg.GENERAL_SUCCESS.msg("update borrow status"));
     }
 
 }

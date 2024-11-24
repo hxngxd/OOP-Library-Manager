@@ -20,7 +20,7 @@ import javafx.util.Callback;
 
 import java.time.LocalDate;
 
-public final class ManageUserController extends ManageController<User> {
+public final class ManageUserController extends EntityManageController<User> {
 
     @FXML
     private TableColumn<User, String> firstNameColumn;
@@ -50,7 +50,7 @@ public final class ManageUserController extends ManageController<User> {
 
     @Override
     @FXML
-    public void initialize() {
+    protected void initialize() {
         super.initialize();
 
         firstNameColumn.setCellValueFactory(new Callback<>() {

@@ -36,8 +36,8 @@ public enum BorrowStatus {
 
     public boolean canBorrowAgain() {
         return switch (this) {
-            case RETURNED_ON_TIME, RETURNED_LATE -> true;
-            case PENDING, APPROVED, BORROWED, OVERDUE, REJECTED -> false;
+            case RETURNED_ON_TIME, RETURNED_LATE, REJECTED -> true;
+            case PENDING, APPROVED, BORROWED, OVERDUE -> false;
         };
     }
 
