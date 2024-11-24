@@ -24,6 +24,7 @@
                      </font>
                   </Label>
                   <ImageView fitHeight="201.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button layoutX="300.0" layoutY="624.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#saveInformation" prefHeight="40.0" prefWidth="173.0" stylesheets="@style.css" text="THAY BÌA SÁCH" />
                   <HBox alignment="CENTER" layoutX="276.0" layoutY="257.0" prefWidth="700.0" spacing="15.0">
                      <children>
                         <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
