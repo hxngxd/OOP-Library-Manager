@@ -180,7 +180,9 @@ public final class DatabaseManager {
 
     public <T> T select(String action, String query, ResultSetMapper<T> mapper, Object... params) throws DatabaseException {
         try (PreparedStatement pStatement = connection.prepareStatement(query)) {
-            setParameters(pStatement, params);
+            if (params.length != 0 && params[0] != null) {
+                setParameters(pStatement, params);
+            }
             try (ResultSet resultSet = pStatement.executeQuery()) {
                 return mapper.map(resultSet);
             }

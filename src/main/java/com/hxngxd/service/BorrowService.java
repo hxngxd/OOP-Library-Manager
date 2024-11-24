@@ -33,7 +33,9 @@ public final class BorrowService extends Service {
     public void loadAll() throws DatabaseException {
         Borrowing.borrowingSet.clear();
         boolean isUser = User.getCurrent().getRole() == Role.USER;
+        boolean isAdmin = User.getCurrent().getRole() == Role.ADMIN;
         String query = String.format("select * from borrowing where %s = ?", isUser ? "requesterId" : "handlerId");
+        query = (isAdmin ? "select * from borrowing" : query);
         db.select("get borrowing", query, resultSet -> {
             while (resultSet.next()) {
                 Borrowing borrowing = new Borrowing(resultSet.getInt("id"));
@@ -68,7 +70,7 @@ public final class BorrowService extends Service {
                 Borrowing.borrowingSet.add(borrowing);
             }
             return null;
-        }, User.getCurrent().getId());
+        }, isAdmin ? null : User.getCurrent().getId());
     }
 
     public void submitRequest(User requester, Book book, LocalDate estimatedReturnDate)

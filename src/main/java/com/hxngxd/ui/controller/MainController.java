@@ -126,35 +126,25 @@ public final class MainController extends NavigateController {
     private void showManage(ActionEvent event) {
         List<Pair<String, Runnable>> buttons = new ArrayList<>();
 
-        buttons.add(new Pair<>("NGƯỜI DÙNG", () -> {
-            UI ui = UI.MANAGE_USER;
-            PopupManager.closePopup();
-            if (currentTab != ui) {
-                currentTab = ui;
-                navigate(UIManager.getRootOnce(ui));
-                UIManager.getUpdatableController(UI.MANAGE_USER).onUpdate();
-            }
-        }));
-
-        buttons.add(new Pair<>("SÁCH", () -> {
-            UI ui = UI.MANAGE_BOOK;
-            PopupManager.closePopup();
-            if (currentTab != ui) {
-                currentTab = ui;
-                navigate(UIManager.getRootOnce(ui));
-                UIManager.getUpdatableController(UI.MANAGE_BOOK).onUpdate();
-            }
-        }));
-
-        buttons.add(new Pair<>("MƯỢN SÁCH", () -> {
-        }));
-
+        buttons.add(createManageButton("NGƯỜI DÙNG", UI.MANAGE_USER));
+        buttons.add(createManageButton("SÁCH", UI.MANAGE_BOOK));
+        buttons.add(createManageButton("MƯỢN SÁCH", UI.MANAGE_BORROWING_1));
         buttons.add(new Pair<>("TÁC GIẢ", () -> {
         }));
-
         buttons.add(new Pair<>("HUỶ", PopupManager::closePopup));
 
         PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", buttons);
+    }
+
+    private Pair<String, Runnable> createManageButton(String label, UI ui) {
+        return new Pair<>(label, () -> {
+            PopupManager.closePopup();
+            if (currentTab != ui) {
+                currentTab = ui;
+                navigate(UIManager.getRootOnce(ui));
+                UIManager.getUpdatableController(ui).onUpdate();
+            }
+        });
     }
 
     private void showBookGallery(Boolean save) {

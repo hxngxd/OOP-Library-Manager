@@ -7,7 +7,6 @@ import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
-import com.hxngxd.ui.controller.book.BookDetailController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -19,7 +18,7 @@ import javafx.scene.control.*;
 
 import javafx.util.Callback;
 
-public final class ManageBookController extends ManageController<Book> {
+public final class ManageBookController extends EntityManageController<Book> {
 
     @FXML
     private TableColumn<Book, String> bookNameColumn;
@@ -45,7 +44,7 @@ public final class ManageBookController extends ManageController<Book> {
     private final BookService bookService = BookService.getInstance();
 
     @FXML
-    public void initialize() {
+    protected void initialize() {
         super.initialize();
 
         bookNameColumn.setCellValueFactory(new Callback<>() {
