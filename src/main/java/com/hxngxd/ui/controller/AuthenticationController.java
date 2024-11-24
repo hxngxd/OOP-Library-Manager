@@ -7,6 +7,8 @@ import com.hxngxd.service.*;
 import com.hxngxd.ui.StageManager;
 import com.hxngxd.ui.UIManager;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -42,16 +44,26 @@ public abstract class AuthenticationController extends NavigateController {
 
     @FXML
     protected void authenticate(ActionEvent event) {
-        AuthorService.getInstance().loadAll();
-        GenreService.getInstance().loadAll();
-        BookService.getInstance().loadAll();
-        UserService.getInstance().loadAll();
-        BookService.getInstance().setAllReviews();
-        userService.loadSavedBooks(User.getCurrent());
-        BorrowService.getInstance().loadAll();
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                AuthorService.getInstance().loadAll();
+                GenreService.getInstance().loadAll();
+                BookService.getInstance().loadAll();
+                UserService.getInstance().loadAll();
+                BookService.getInstance().setAllReviews();
+                userService.loadSavedBooks(User.getCurrent());
+                BorrowService.getInstance().loadAll();
+                UIManager.getActivableController(UI.MAIN).onActive();
+                Thread.sleep(2000);
+                Platform.runLater(() -> {
+                    StageManager.getInstance().setScene(UI.MAIN);
+                });
+                return null;
+            }
+        };
 
-        StageManager.getInstance().setScene(UI.MAIN);
-        UIManager.getActivableController(UI.MAIN).onActive();
+        new Thread(task).start();
     }
 
     protected void authenticateOnEnter(KeyEvent event) {

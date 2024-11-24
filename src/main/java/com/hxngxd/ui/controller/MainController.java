@@ -48,11 +48,6 @@ public final class MainController extends NavigateController {
     @FXML
     private Button manageButton;
 
-    @FXML
-    private void initialize() {
-        showHome(null);
-    }
-
     @Override
     public void onActive() {
         User user = User.getCurrent();
