@@ -14,7 +14,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class BorrowService extends Service {
 
@@ -76,12 +78,13 @@ public final class BorrowService extends Service {
     public void submitRequest(User requester, Book book, LocalDate estimatedReturnDate)
             throws DatabaseException, ValidationException {
         int handlerId = -1;
+        List<Integer> moderatorList = new ArrayList<>();
         for (User user : User.userSet) {
             if (user.getRole() == Role.MODERATOR) {
-                handlerId = user.getId();
-                break;
+                moderatorList.add(user.getId());
             }
         }
+        handlerId = moderatorList.get(ThreadLocalRandom.current().nextInt(moderatorList.size()));
 
         if (estimatedReturnDate.isBefore(LocalDate.now()) ||
                 estimatedReturnDate.isEqual(LocalDate.now())) {
