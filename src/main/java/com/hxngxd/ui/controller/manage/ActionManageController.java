@@ -27,7 +27,9 @@ public abstract class ActionManageController<T extends Action> extends ManageCon
         userColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<T, String> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getUser().getFullNameLastThenFirst());
+                return new ReadOnlyObjectWrapper<>(
+                        String.format("(%d) %s", param.getValue().getUser().getId(), param.getValue().getUser().getFullNameLastThenFirst())
+                );
             }
         });
 

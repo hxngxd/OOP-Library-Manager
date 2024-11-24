@@ -76,22 +76,22 @@
                         </Button>
                         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                             <children>
-                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="CHẤP NHẬN YÊU CẦU" HBox.hgrow="ALWAYS">
+                                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#approve" stylesheets="@style.css" text="CHẤP NHẬN YÊU CẦU" HBox.hgrow="ALWAYS">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button layoutX="528.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="TỪ CHỐI YÊU CẦU" HBox.hgrow="ALWAYS">
+                                <Button layoutX="528.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#reject" stylesheets="@style.css" text="TỪ CHỐI YÊU CẦU" HBox.hgrow="ALWAYS">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="CHO MƯỢN SÁCH" HBox.hgrow="ALWAYS">
+                                <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#lend" stylesheets="@style.css" text="CHO MƯỢN SÁCH" HBox.hgrow="ALWAYS">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button layoutX="412.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" stylesheets="@style.css" text="TRẢ TRỄ HẠN" HBox.hgrow="ALWAYS">
+                                <Button layoutX="412.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#returnBook" stylesheets="@style.css" text="TRẢ SÁCH" HBox.hgrow="ALWAYS">
                                     <font>
                                         <Font size="14.0" />
                                     </font>

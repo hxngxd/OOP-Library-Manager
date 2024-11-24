@@ -1,8 +1,7 @@
 package com.hxngxd.ui.controller.manage;
 
 import com.hxngxd.actions.Borrowing;
-import com.hxngxd.entities.Book;
-import com.hxngxd.entities.User;
+import com.hxngxd.enums.BorrowStatus;
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.service.BorrowService;
@@ -51,14 +50,18 @@ public class ManageBorrow1Controller extends ActionManageController<Borrowing> {
         bookColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Borrowing, String> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getBook().getTitle());
+                return new ReadOnlyObjectWrapper<>(
+                        String.format("(%d) %s", param.getValue().getBook().getId(), param.getValue().getBook().getTitle())
+                );
             }
         });
 
         handlerColumn.setCellValueFactory(new Callback<>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Borrowing, String> param) {
-                return new ReadOnlyObjectWrapper<>(param.getValue().getHandler().getFullNameLastThenFirst());
+                return new ReadOnlyObjectWrapper<>(
+                        String.format("(%d) %s", param.getValue().getHandler().getId(), param.getValue().getHandler().getFullNameLastThenFirst())
+                );
             }
         });
 
@@ -108,7 +111,6 @@ public class ManageBorrow1Controller extends ActionManageController<Borrowing> {
                 );
             }
         });
-
     }
 
     @Override
@@ -131,6 +133,65 @@ public class ManageBorrow1Controller extends ActionManageController<Borrowing> {
         } catch (DatabaseException e) {
             PopupManager.info(LogMsg.GENERAL_FAIL.msg("update borrowing list"));
         }
+    }
+
+    @FXML
+    private void approve() {
+        unPending("Approve this request?", BorrowStatus.APPROVED);
+    }
+
+    @FXML
+    private void reject() {
+        unPending("Reject this request?", BorrowStatus.REJECTED);
+    }
+
+    @FXML
+    private void lend() {
+        if (getSelected() == null) {
+            return;
+        }
+        if (getSelected().getStatus() != BorrowStatus.APPROVED) {
+            PopupManager.info("Not right now");
+            return;
+        }
+        updateStatus("Lend this book?", BorrowStatus.BORROWED);
+    }
+
+    @FXML
+    private void returnBook() {
+        if (getSelected() == null) {
+            return;
+        }
+        if (getSelected().getStatus() != BorrowStatus.BORROWED) {
+            PopupManager.info("Not right now");
+            return;
+        }
+        boolean isLate = LocalDate.now().isAfter(getSelected().getEstimatedReturnDate());
+        updateStatus("Book is returned?", isLate ? BorrowStatus.RETURNED_LATE : BorrowStatus.RETURNED_ON_TIME);
+    }
+
+    private void unPending(String msg, BorrowStatus status) {
+        if (getSelected() == null) {
+            return;
+        }
+        if (getSelected().getStatus() != BorrowStatus.PENDING) {
+            PopupManager.info("Already handled");
+            return;
+        }
+        updateStatus(msg, status);
+    }
+
+    private void updateStatus(String msg, BorrowStatus status) {
+        PopupManager.confirm(msg, () -> {
+            try {
+                borrowService.updateStatus(getSelected(), status);
+                onUpdate();
+            } catch (DatabaseException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
     }
 
 }

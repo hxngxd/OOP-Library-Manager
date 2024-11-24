@@ -23,7 +23,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label fx:id="statusLabel" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="140.0" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="trạng thái" wrapText="true">
+            <Label fx:id="statusLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="10.0" layoutY="140.0" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="trạng thái" wrapText="true">
                <font>
                   <Font name="System Bold Italic" size="16.0" />
                </font>

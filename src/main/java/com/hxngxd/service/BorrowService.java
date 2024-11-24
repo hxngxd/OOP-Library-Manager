@@ -10,9 +10,9 @@ import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.ValidationException;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -99,6 +99,39 @@ public final class BorrowService extends Service {
         loadAll();
 
         log.info(LogMsg.GENERAL_SUCCESS.msg("add borrowing"));
+    }
+
+    public void updateStatus(Borrowing borrowing, BorrowStatus status)
+            throws DatabaseException {
+        if (status == BorrowStatus.PENDING) {
+            return;
+        }
+        if (status == BorrowStatus.APPROVED
+                || status == BorrowStatus.REJECTED) {
+            db.update("borrowing",
+                    List.of("approvalDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+        } else if (status == BorrowStatus.BORROWED) {
+            db.update("borrowing",
+                    List.of("borrowDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+            BookService.getInstance().loadAll();
+            db.update("book", "availableCopies", borrowing.getBook().getAvailableCopies() - 1,
+                    "id", borrowing.getBook().getId());
+        } else if (status == BorrowStatus.RETURNED_LATE
+                || status == BorrowStatus.RETURNED_ON_TIME) {
+            db.update("borrowing",
+                    List.of("actualReturnDate", "status"),
+                    List.of(Timestamp.valueOf(LocalDateTime.now()), status.name()),
+                    List.of("id"), List.of(borrowing.getId()));
+            BookService.getInstance().loadAll();
+            db.update("book", "availableCopies", borrowing.getBook().getAvailableCopies() + 1,
+                    "id", borrowing.getBook().getId());
+        }
+        loadAll();
+        log.info(LogMsg.GENERAL_SUCCESS.msg("update borrow status"));
     }
 
 }
