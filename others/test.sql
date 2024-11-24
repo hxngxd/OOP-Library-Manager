@@ -415,7 +415,17 @@ VALUES ('novel', 'A long narrative work of fiction with complex characters.'),
        ('spiritual', 'Explores religious or spiritual themes.'),
        ('children', 'Written for children and young readers.'),
        ('young adult', 'Written for teenagers and young adults.'),
-       ('classic', 'A work that is considered to be of high quality and lasting value.');
+       ('classic', 'A work that is considered to be of high quality and lasting value.'),
+       ('mystery', 'Involves a mysterious event or puzzle that is solved by the end.'),
+       ('apocalyptic', 'Describes the end of the world or a major catastrophe.'),
+       ('horror', 'Intended to frighten, scare, or disgust the reader.'),
+       ('comedy', 'Intended to amuse and entertain the reader.'),
+       ('survival', 'Focuses on the struggle to survive in extreme conditions.'),
+       ('autobiography', 'Tells the life story of the author.');
+
+
+
+
 
 INSERT INTO bookAuthor (bookId, authorId)
 VALUES (1, 1),   -- 1984 by George Orwell
@@ -496,6 +506,7 @@ VALUES (1, 1),
        (11, 1),
        (11, 6), -- The Great Gatsby
        (12, 1),
+       (12, 7),
        (12, 6), -- The Catcher in the Rye
        (13, 1),
        (13, 6), -- To Kill a Mockingbird
@@ -504,73 +515,85 @@ VALUES (1, 1),
        (15, 1),
        (15, 6), -- The Picture of Dorian Gray
        (16, 1),
+       (16, 3),
        (16, 6), -- The Hobbit
        (17, 1),
+       (17, 17),
        (17, 6), -- The Alchemist
        (18, 1),
+       (18, 3),
+       (18, 5),
        (18, 6), -- The Hunger Games
-       (19, 1),
+       (19, 7),
        (19, 6), -- The Fault in Our Stars
        (20, 1),
        (20, 6), -- War and Peace
        (21, 1),
        (21, 6), -- Wuthering Heights
-       (22, 1),
-       (22, 6), -- The Little Prince
-       (23, 1),
-       (23, 6), -- Enders Game
-       (24, 1),
+       (22,17),
+       (22, 1), -- The Little Prince
+       (23, 3),
+       (23, 1), -- Enders Game
+       (24, 3),
        (24, 6), -- The Giver
        (25, 1),
+       (25, 3),
        (25, 6), -- Fahrenheit 451
-       (26, 1),
-       (26, 6), -- The Road
-       (27, 1),
-       (27, 6), -- Harry Potter and the Sorcerers Stone
-       (28, 1),
-       (28, 6), -- The Adventures of Huckleberry Finn
+       (26, 18),
+       (26, 1), -- The Road
+       (27, 5),
+       (27, 17),
+       (27, 13),
+       (27, 1), -- Harry Potter and the Sorcerers Stone
+       (28, 5),
+       (28, 1), -- The Adventures of Huckleberry Finn
        (29, 1),
-       (29, 6), -- The Adventures of Sherlock Holmes
-       (30, 1),
-       (30, 6), -- The Body
-       (31, 1),
-       (31, 6), -- Don Quixote
-       (32, 1),
+       (29, 5), -- The Adventures of Sherlock Holmes
+       (30, 19),
+       (30, 1), -- The Body
+       (31, 20),
+       (31, 5),
+       (31, 1), -- Don Quixote
+       (32, 19),
+       (32, 3),
        (32, 6), -- Dracula
-       (33, 1),
-       (33, 6), -- Frankenstein
+       (33, 19),
+       (33, 3),
+       (33, 1), -- Frankenstein
        (34, 1),
+       (34, 7),
        (34, 6), -- Gone with the Wind
        (35, 1),
-       (35, 6), -- Invisible Man
+       (35, 2), -- Invisible Man
        (36, 1),
-       (36, 6), -- Jane Eyre
+       (36, 7), -- Jane Eyre
        (37, 1),
-       (37, 6), -- Life of Pi
+       (37, 5), -- Life of Pi
        (38, 1),
-       (38, 6), -- Lord of the Flies
+       (38, 21), -- Lord of the Flies
        (39, 1),
-       (39, 6), -- Rebecca
+       (39,17),
+       (39, 7), -- Rebecca
        (40, 1),
-       (40, 6), -- The Stranger
+       (40, 8), -- The Stranger
      (41, 1),
-     (41, 6), -- The Glass Castle
+     (41, 22), -- The Glass Castle
      (42, 1),
-     (42, 6), -- The Grapes of Wrath
+     (42, 2), -- The Grapes of Wrath
      (43, 1),
-     (43, 6), -- The Idiot
-     (44, 1),
-     (44, 6), -- The Godfather
+     (43, 2), -- The Idiot
+     (44, 1), -- The Godfather
      (45, 1),
-     (45, 6), -- The Jungle
+     (45, 2), -- The Jungle
      (46, 1),
      (46, 6), -- The Iliad
      (47, 1),
-     (47, 6), -- The Metamorphosis
+     (47, 8), -- The Metamorphosis
      (48, 1),
-     (48, 6), -- The Trial
+     (48, 8), -- The Trial
      (49, 1),
-     (49, 6), -- Snow Crash
+     (49, 3), -- Snow Crash
+     (50, 5),
      (50, 1); -- Native Son
 
 INSERT INTO review (userId, bookId, rating, comment)
