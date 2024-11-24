@@ -8,9 +8,13 @@ import com.hxngxd.entities.Genre;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.LogMsg;
 import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.ValidationException;
 import com.hxngxd.utils.ImageHandler;
+import com.hxngxd.utils.InputHandler;
 
+import java.io.File;
 import java.sql.Timestamp;
+import java.util.List;
 
 public final class BookService extends Service {
 
@@ -135,6 +139,63 @@ public final class BookService extends Service {
         Book.bookMap.remove(bookId);
         DatabaseManager.getInstance().delete("book", "id", bookId);
         log.info(LogMsg.GENERAL_SUCCESS.msg("delete book"));
+    }
+
+    public void addBook(String title, int yearOfPublication, String description,
+                        int numberOfPages, int numberOfCopies, File coverImageFile)
+            throws DatabaseException, ValidationException {
+        InputHandler.validateInput(title, description);
+
+        if (numberOfPages <= 0) {
+            throw new ValidationException("The number of pages must be positive");
+        }
+        if (yearOfPublication <= 0) {
+            throw new ValidationException("The year of publication must be positive");
+        }
+        if (numberOfCopies < 0) {
+            throw new ValidationException("The number of copies cannot be negative");
+        }
+
+        byte[] imageBytes = null;
+        if (coverImageFile != null) {
+            imageBytes = ImageHandler.fileToByteArray(coverImageFile);
+        }
+
+        db.insert("book", true,
+                List.of("title", "yearOfPublication", "description", "numberOfPages", "copies", "coverImage"),
+                title, yearOfPublication, description, numberOfPages, numberOfCopies, imageBytes);
+
+        log.info(LogMsg.GENERAL_SUCCESS.msg("add new book"));
+    }
+
+    public void updateBook(Book book, File newImageFile, String newTitle, int newYearOfPublication,
+                           String newDescription, int newNumberOfPages, int copyDifference)
+            throws DatabaseException, ValidationException {
+        byte[] imageBytes = null;
+        if (newImageFile != null) {
+            imageBytes = ImageHandler.fileToByteArray(newImageFile);
+        }
+
+        InputHandler.validateInput(newTitle, newDescription);
+
+        if (newNumberOfPages <= 0) {
+            throw new ValidationException("The number of pages must be positive");
+        }
+        if (newYearOfPublication <= 0) {
+            throw new ValidationException("The year of publication must be positive");
+        }
+
+        int updatedCopies = book.getTotalCopies() + copyDifference;
+        if (updatedCopies < 0) {
+            throw new ValidationException("The number of copies cannot be negative");
+        }
+
+        db.update("book",
+                List.of("title", "yearOfPublication", "description", "numberOfPages", "copies", "coverImage"),
+                List.of(newTitle, newYearOfPublication, newDescription, newNumberOfPages, updatedCopies, imageBytes),
+                List.of("id"), List.of(book.getId()));
+
+        log.info(LogMsg.GENERAL_SUCCESS.msg("update book"));
     }
 
 }
