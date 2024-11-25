@@ -7,6 +7,9 @@ import com.hxngxd.exceptions.UserException;
 import com.hxngxd.service.BookService;
 import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
+import com.hxngxd.ui.controller.BorrowingRequestController;
+import com.hxngxd.ui.controller.MainController;
+import com.hxngxd.ui.controller.book.BookEditController;
 import com.hxngxd.ui.controller.book.BookPreviewController;
 import com.hxngxd.utils.InputHandler;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -161,7 +164,15 @@ public final class ManageBookController extends EntityManageController<Book> {
 
     @FXML
     private void editBook() {
-
+        UI ui = UI.BOOK_EDIT;
+        MainController mainController = UIManager.getController(UI.MAIN);
+        if (mainController.getCurrentTab() == ui) {
+            return;
+        }
+        mainController.setCurrentTab(ui);
+        mainController.navigate(UIManager.getRootOnce(ui));
+        ((BookEditController) UIManager.getController(ui)).setBook(getSelected());
+        UIManager.getActivableController(ui).onActive();
     }
 
     @FXML

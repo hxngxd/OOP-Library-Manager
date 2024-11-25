@@ -9,6 +9,7 @@ public enum UI {
     BOOK_CARD,
     BOOK_PREVIEW,
     BOOK_DETAIL,
+    BOOK_EDIT,
     ACCOUNT,
     MANAGE_USER,
     MANAGE_BOOK,
