@@ -184,6 +184,9 @@ public final class BookService extends Service {
         if (newYearOfPublication <= 0) {
             throw new ValidationException("The year of publication must be positive");
         }
+        if (newYearOfPublication > 9999) {
+            throw new ValidationException("Invalid year");
+        }
 
         int updatedCopies = book.getTotalCopies() + copyDifference;
         if (updatedCopies < 0) {
