@@ -1,6 +1,5 @@
 package com.hxngxd.ui.controller;
 
-import com.hxngxd.actions.Borrowing;
 import com.hxngxd.entities.User;
 import com.hxngxd.enums.UI;
 import com.hxngxd.service.*;
@@ -55,7 +54,6 @@ public abstract class AuthenticationController extends NavigateController {
                 userService.loadSavedBooks(User.getCurrent());
                 BorrowService.getInstance().loadAll();
                 UIManager.getActivableController(UI.MAIN).onActive();
-                Thread.sleep(2000);
                 Platform.runLater(() -> {
                     StageManager.getInstance().setScene(UI.MAIN);
                 });

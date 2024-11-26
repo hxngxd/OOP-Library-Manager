@@ -190,10 +190,24 @@ public final class BookService extends Service {
             throw new ValidationException("The number of copies cannot be negative");
         }
 
-        db.update("book",
-                List.of("title", "yearOfPublication", "description", "numberOfPages", "copies", "coverImage"),
-                List.of(newTitle, newYearOfPublication, newDescription, newNumberOfPages, updatedCopies, imageBytes),
-                List.of("id"), List.of(book.getId()));
+        if (newImageFile == null) {
+            db.update("book",
+                    List.of("title", "yearOfPublication", "shortDescription", "numberOfPages", "totalCopies"),
+                    List.of(newTitle, newYearOfPublication, newDescription, newNumberOfPages, updatedCopies),
+                    List.of("id"), List.of(book.getId()));
+        } else {
+            db.update("book",
+                    List.of("title", "yearOfPublication", "shortDescription", "numberOfPages", "totalCopies", "coverImage"),
+                    List.of(newTitle, newYearOfPublication, newDescription, newNumberOfPages, updatedCopies, imageBytes),
+                    List.of("id"), List.of(book.getId()));
+            book.setImage(ImageHandler.loadImageFromFile(newImageFile));
+        }
+
+        book.setTitle(newTitle);
+        book.setYearOfPublication(newYearOfPublication);
+        book.setShortDescription(newDescription);
+        book.setNumberOfPages(newNumberOfPages);
+        book.setAvailableCopies(updatedCopies);
 
         log.info(LogMsg.GENERAL_SUCCESS.msg("update book"));
     }

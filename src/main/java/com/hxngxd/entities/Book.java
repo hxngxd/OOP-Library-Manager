@@ -1,8 +1,6 @@
 package com.hxngxd.entities;
 
 import com.hxngxd.actions.Review;
-import com.hxngxd.exceptions.DatabaseException;
-import com.hxngxd.service.BookService;
 import com.hxngxd.utils.Formatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +13,7 @@ public final class Book extends EntityWithPhoto {
     private static final Logger log = LogManager.getLogger(Book.class);
 
     private String title;
-    private short yearOfPublication;
+    private int yearOfPublication;
     private String shortDescription;
     private int numberOfPages;
     private int availableCopies;
@@ -56,11 +54,11 @@ public final class Book extends EntityWithPhoto {
         this.title = title;
     }
 
-    public short getYearOfPublication() {
+    public int getYearOfPublication() {
         return yearOfPublication;
     }
 
-    public void setYearOfPublication(short yearOfPublication) {
+    public void setYearOfPublication(int yearOfPublication) {
         this.yearOfPublication = yearOfPublication;
     }
 

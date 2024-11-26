@@ -30,7 +30,7 @@ public final class ManageBookController extends EntityManageController<Book> {
     private TableColumn<Book, String> authorColumn;
 
     @FXML
-    private TableColumn<Book, Short> yearOfPublicationColumn;
+    private TableColumn<Book, Integer> yearOfPublicationColumn;
 
     @FXML
     private TableColumn<Book, String> genreColumn;
@@ -66,7 +66,7 @@ public final class ManageBookController extends EntityManageController<Book> {
 
         yearOfPublicationColumn.setCellValueFactory(new Callback<>() {
             @Override
-            public ObservableValue<Short> call(TableColumn.CellDataFeatures<Book, Short> param) {
+            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Book, Integer> param) {
                 return new ReadOnlyObjectWrapper<>(param.getValue().getYearOfPublication());
             }
         });

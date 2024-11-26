@@ -37,7 +37,7 @@
                                                 <Insets left="7.0" />
                                             </VBox.margin>
                                         </Label>
-                              <TextField disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="0000">
+                              <TextField fx:id="bookIdField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="0000">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -54,7 +54,7 @@
                                                 <Insets left="7.0" />
                                             </VBox.margin>
                                         </Label>
-                              <TextField maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Tên sách">
+                              <TextField fx:id="bookTitleField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Tên sách">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -71,7 +71,7 @@
                                                 <Insets left="7.0" />
                                             </VBox.margin>
                                         </Label>
-                              <TextField maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Năm phát hành">
+                              <TextField fx:id="yearField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Năm phát hành">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

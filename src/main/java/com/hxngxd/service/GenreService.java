@@ -1,6 +1,5 @@
 package com.hxngxd.service;
 
-import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Genre;
 import com.hxngxd.exceptions.DatabaseException;
 

@@ -1,11 +1,16 @@
 package com.hxngxd.ui.controller.book;
 
 import com.hxngxd.entities.Book;
+import com.hxngxd.enums.LogMsg;
 import com.hxngxd.enums.UI;
+import com.hxngxd.service.BookService;
 import com.hxngxd.ui.Activable;
+import com.hxngxd.ui.PopupManager;
 import com.hxngxd.ui.UIManager;
 import com.hxngxd.ui.controller.MainController;
 import com.hxngxd.utils.ImageHandler;
+import com.hxngxd.exceptions.DatabaseException;
+import com.hxngxd.exceptions.ValidationException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
@@ -23,13 +28,13 @@ public final class BookEditController implements Activable {
     private ImageView imageView;
 
     @FXML
-    private TextArea bookIdField;
+    private TextField bookIdField;
 
     @FXML
-    private TextArea bookTitleField;
+    private TextField bookTitleField;
 
     @FXML
-    private TextArea yearField;
+    private TextField yearField;
 
     @FXML
     private TextField authorField;
@@ -43,19 +48,18 @@ public final class BookEditController implements Activable {
     @FXML
     private TextArea descriptionField;
 
+    private File newImageFile;
+
     @Override
     public void onActive() {
         if (book != null) {
-            // Set thông tin cho các trường từ book
             bookIdField.setText(String.valueOf(book.getId()));
             bookTitleField.setText(book.getTitle());
             yearField.setText(String.valueOf(book.getYearOfPublication()));
             authorField.setText(book.authorsToString());
             genreField.setText(book.genresToString());
-            copiesField.setText(book.getAvailableCopies() + "/" + book.getTotalCopies());
+            copiesField.setText("0");
             descriptionField.setText(book.getShortDescription());
-
-            // Set image trực tiếp từ book.getImage()
             setImage(imageView, book.getImage());
         }
     }
@@ -93,12 +97,33 @@ public final class BookEditController implements Activable {
         if (file == null) {
             return;
         }
+        newImageFile = file;
         Image loadedImage = ImageHandler.loadImageFromFile(file);
         setImage(imageView, loadedImage);
     }
 
     @FXML
     private void save(ActionEvent event) {
-
+        PopupManager.confirm("Are you sure you want to save changes?", () -> {
+            try {
+                String newTitle = bookTitleField.getText();
+                int newYearOfPublication = Integer.parseInt(yearField.getText());
+                String newDescription = descriptionField.getText();
+                int newNumberOfPages = book.getNumberOfPages();
+                int copyDifference = Integer.parseInt(copiesField.getText());
+                if (copyDifference < 0) {
+                    throw new ValidationException("The copy difference must be positive");
+                }
+                BookService.getInstance().updateBook(book, newImageFile, newTitle,
+                        newYearOfPublication, newDescription, newNumberOfPages, copyDifference);
+                PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("update book"));
+            } catch (NumberFormatException e) {
+                PopupManager.info("Invalid number format");
+            } catch (DatabaseException | ValidationException e) {
+                PopupManager.info(e.getMessage());
+            } finally {
+                PopupManager.closePopup();
+            }
+        });
     }
 }
