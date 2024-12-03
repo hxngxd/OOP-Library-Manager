@@ -124,8 +124,6 @@ public final class MainController extends NavigateController {
         buttons.add(createManageButton("NGƯỜI DÙNG", UI.MANAGE_USER));
         buttons.add(createManageButton("SÁCH", UI.MANAGE_BOOK));
         buttons.add(createManageButton("MƯỢN SÁCH", UI.MANAGE_BORROWING_1));
-        buttons.add(new Pair<>("TÁC GIẢ", () -> {
-        }));
         buttons.add(new Pair<>("HUỶ", PopupManager::closePopup));
 
         PopupManager.navigate("QUẢN LÝ\n (MOD, ADMIN)", buttons);

@@ -18,6 +18,8 @@ import java.util.List;
 
 public final class BookService extends Service {
 
+    private int maxBookId = -1;
+
     private BookService() {
     }
 
@@ -27,6 +29,10 @@ public final class BookService extends Service {
 
     public static BookService getInstance() {
         return BookService.SingletonHolder.instance;
+    }
+
+    public int getMaxBookId() {
+        return maxBookId;
     }
 
     @Override
@@ -41,6 +47,7 @@ public final class BookService extends Service {
         DatabaseManager.getInstance().select("getting books", query, resultSet -> {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
+                maxBookId = Math.max(maxBookId, id);
                 Book book;
 
                 if (!Book.bookMap.containsKey(id)) {

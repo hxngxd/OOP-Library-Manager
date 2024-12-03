@@ -3,14 +3,12 @@ package com.hxngxd.service;
 import com.hxngxd.database.DatabaseManager;
 import com.hxngxd.entities.Book;
 import com.hxngxd.entities.User;
-import com.hxngxd.enums.AccountStatus;
-import com.hxngxd.enums.LogMsg;
-import com.hxngxd.enums.Permission;
-import com.hxngxd.enums.Role;
+import com.hxngxd.enums.*;
 import com.hxngxd.exceptions.DatabaseException;
 import com.hxngxd.exceptions.PasswordException;
 import com.hxngxd.exceptions.UserException;
 import com.hxngxd.exceptions.ValidationException;
+import com.hxngxd.ui.UIManager;
 import com.hxngxd.utils.ImageHandler;
 import com.hxngxd.utils.InputHandler;
 import com.hxngxd.utils.PasswordEncoder;
@@ -176,6 +174,7 @@ public final class UserService extends Service {
         User.getCurrent().setLastName(newLastName);
         User.getCurrent().setDateOfBirth(newDateOfBirth);
         User.getCurrent().setAddress(newAddress);
+        UIManager.getActivableController(UI.MAIN).onActive();
 
         log.info(LogMsg.GENERAL_SUCCESS.msg("update profile"));
     }

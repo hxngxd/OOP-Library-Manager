@@ -64,6 +64,11 @@ public final class BookEditController implements Activable {
 
     private File newImageFile;
 
+    private List<Author> selectedAuthors;
+    private List<Genre> selectedGenres;
+
+    private final Image blankCover = ImageHandler.loadImageFromResource("bookcover.png");
+
     @Override
     public void onActive() {
         if (book != null) {
@@ -72,10 +77,18 @@ public final class BookEditController implements Activable {
             yearField.setText(String.valueOf(book.getYearOfPublication()));
             authorField.setText(book.authorsToString());
             genreField.setText(book.genresToString());
-            copiesField.setText("0");
             descriptionField.setText(book.getShortDescription());
             setImage(imageView, book.getImage());
+        } else {
+            bookIdField.setText(String.valueOf(BookService.getInstance().getMaxBookId()));
+            bookTitleField.clear();
+            yearField.clear();
+            authorField.clear();
+            genreField.clear();
+            descriptionField.clear();
+            setImage(imageView, blankCover);
         }
+        copiesField.setText("0");
 
         ObservableList<String> authorData = FXCollections.observableArrayList();
         for (Author author : Author.authorSet) {
@@ -83,7 +96,7 @@ public final class BookEditController implements Activable {
         }
         authorMenu.setItems(authorData);
 
-        List<Author> selectedAuthors = new ArrayList<>();
+        selectedAuthors = new ArrayList<>();
         authorMenu.setOnAction(event -> {
             String selectedAuthor = authorMenu.getValue();
             if (selectedAuthor != null) {
@@ -115,7 +128,7 @@ public final class BookEditController implements Activable {
         }
         genreMenu.setItems(genreData);
 
-        List<Genre> selectedGenres = new ArrayList<>();
+        selectedGenres = new ArrayList<>();
         genreMenu.setOnAction(event -> {
             String selectedGenre = genreMenu.getValue();
             if (selectedGenre != null) {
@@ -208,6 +221,9 @@ public final class BookEditController implements Activable {
     @FXML
     private void save(ActionEvent event) {
         PopupManager.confirm("Are you sure you want to save changes?", () -> {
+            if (this.book == null) {
+                return;
+            }
             try {
                 String newTitle = bookTitleField.getText();
                 int newYearOfPublication = Integer.parseInt(yearField.getText());
@@ -219,7 +235,6 @@ public final class BookEditController implements Activable {
                 }
                 BookService.getInstance().updateBook(book, newImageFile, newTitle,
                         newYearOfPublication, newDescription, newNumberOfPages, copyDifference);
-
                 PopupManager.info(LogMsg.GENERAL_SUCCESS.msg("update book"));
             } catch (NumberFormatException e) {
                 PopupManager.info("Invalid number format");

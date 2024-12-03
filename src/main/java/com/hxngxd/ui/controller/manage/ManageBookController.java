@@ -159,11 +159,22 @@ public final class ManageBookController extends EntityManageController<Book> {
 
     @FXML
     private void addBook() {
-
+        UI ui = UI.BOOK_EDIT;
+        MainController mainController = UIManager.getController(UI.MAIN);
+        if (mainController.getCurrentTab() == ui) {
+            return;
+        }
+        mainController.setCurrentTab(ui);
+        mainController.navigate(UIManager.getRootOnce(ui));
+        ((BookEditController) UIManager.getController(ui)).setBook(null);
+        UIManager.getActivableController(ui).onActive();
     }
 
     @FXML
     private void editBook() {
+        if (getSelected() == null) {
+            return;
+        }
         UI ui = UI.BOOK_EDIT;
         MainController mainController = UIManager.getController(UI.MAIN);
         if (mainController.getCurrentTab() == ui) {
