@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefWidth="300.0" xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hxngxd.ui.PopupManager">
+    <children>
+        <VBox fx:id="mainVbox" spacing="10.0" AnchorPane.bottomAnchor="15.0"
+              AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0"
+              AnchorPane.topAnchor="15.0">
+            <children>
+                <Label fx:id="messageLabel" alignment="CENTER" contentDisplay="CENTER"
+                       maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                       prefHeight="60.0" text="This label will be used to display certain logs"
+                       textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font size="18.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="textField" maxHeight="1.7976931348623157E308"
+                           maxWidth="1.7976931348623157E308" prefHeight="50.0" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </TextField>
+                <TextArea fx:id="textArea" prefHeight="100.0" wrapText="true" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </TextArea>
+                <VBox fx:id="buttonVbox" alignment="CENTER" maxHeight="1.7976931348623157E308"
+                      maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                    <children>
+                        <HBox fx:id="confirmation" alignment="CENTER"
+                              maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                              prefHeight="50.0" VBox.vgrow="ALWAYS">
+                            <children>
+                                <Button fx:id="okButton" alignment="CENTER"
+                                        maxHeight="1.7976931348623157E308"
+                                        maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                        prefHeight="50.0" stylesheets="@style.css" text="OK"
+                                        HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Button>
+                                <Button fx:id="cancelButton" alignment="CENTER"
+                                        maxHeight="1.7976931348623157E308"
+                                        maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                        prefHeight="50.0" stylesheets="@style.css" text="HUỶ"
+                                        HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Button>
+                            </children>
+                        </HBox>
+                        <Button fx:id="navigate" alignment="CENTER"
+                                maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                mnemonicParsing="false" prefHeight="50.0" stylesheets="@style.css"
+                                text="OK" VBox.vgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

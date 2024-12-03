@@ -1,0 +1,67 @@
+/* Button styles */
+.button {
+    -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */
+    -fx-text-fill: black; /* Chữ màu đen */
+    -fx-font-size: 16px;
+    -fx-background-radius: 0; /* Không bo góc */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0); /* Drop shadow rộng hơn */
+    /*-fx-padding: 0 0 0 30px;*/
+    /*-fx-alignment: CENTER_LEFT;*/
+}
+
+/* Gray border and drop shadow on hover */
+.button:hover {
+    -fx-background-color: #d7d7d7; /* Màu xám đậm hơn khi hover */
+}
+
+/* Light blue background on click */
+.button:pressed {
+    -fx-background-color: #52baff; /* Màu xanh nhạt khi nhấn */
+    -fx-text-fill: white; /* Chữ màu trắng khi nhấn */
+}
+
+.review {
+
+}
+
+.review:hover {
+    -fx-background-color: #e8e8e8;
+}
+
+.review:pressed {
+    -fx-background-color: #d6d6d6;
+    -fx-scale-x: 1.01; /* Giảm kích thước xuống 1% */
+    -fx-scale-y: 1.01; /* Giảm kích thước xuống 1% */
+}
+
+/* Box styles */
+.box {
+    -fx-background-color: #f4f4f4; /* Màu xám nhạt cho nền */
+    -fx-background-radius: 10; /* Không bo góc */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0); /* Drop shadow rộng hơn */
+    -fx-scale-x: 1; /* Kích thước gốc */
+    -fx-scale-y: 1; /* Kích thước gốc */
+}
+
+/* Scale up by 2.5% on hover */
+.box:hover {
+    -fx-background-color: #d7d7d7; /* Màu xám đậm hơn khi hover */
+    -fx-scale-x: 1.025; /* Tăng kích thước lên 2.5% */
+    -fx-scale-y: 1.025; /* Tăng kích thước lên 2.5% */
+}
+
+/* Scale down by 1% on click */
+.box:pressed {
+    /*-fx-background-color: #52baff; !* Màu xanh nhạt khi nhấn *!*/
+    -fx-scale-x: 0.99; /* Giảm kích thước xuống 1% */
+    -fx-scale-y: 0.99; /* Giảm kích thước xuống 1% */
+}
+
+.image {
+    -fx-border-color: #3498db; /* Màu đường viền */
+    -fx-border-width: 5px; /* Độ dày đường viền */
+    -fx-border-radius: 50%; /* Làm tròn góc viền, dùng 50% cho hình tròn */
+    -fx-background-radius: 50%; /* Làm tròn góc nền để khớp với border tròn */
+}

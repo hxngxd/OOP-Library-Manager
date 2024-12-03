@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox alignment="CENTER" maxHeight="225.0" maxWidth="1.7976931348623157E308" minHeight="225.0" prefHeight="225.0" prefWidth="1280.0" spacing="15.0" styleClass="review" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.manage.BorrowCardController">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="187.5" fitWidth="125.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="nameLabel" alignment="TOP_LEFT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="TITLE" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="informationLabel" alignment="TOP_LEFT" contentDisplay="CENTER" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="eqweweqweq" wrapText="true" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="statusLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="10.0" layoutY="140.0" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="trạng thái" wrapText="true">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fx:id="statusIcon" size="20" />
+               </graphic>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+   </padding>
+</HBox>

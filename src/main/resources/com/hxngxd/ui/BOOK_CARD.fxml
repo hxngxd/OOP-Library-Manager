@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="cardContainer" alignment="CENTER" spacing="5.0" styleClass="box"
+      stylesheets="@style.css" xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.hxngxd.ui.controller.book.BookCardController">
+    <children>
+        <ImageView fx:id="imageView" fitHeight="285.0" fitWidth="190.0" pickOnBounds="true"
+                   preserveRatio="true" VBox.vgrow="ALWAYS">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </VBox.margin>
+        </ImageView>
+        <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity"
+               maxWidth="200.0" prefHeight="30.0" text="TITLE" wrapText="true" VBox.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+            <VBox.margin>
+                <Insets left="5.0" right="5.0"/>
+            </VBox.margin>
+        </Label>
+        <Label fx:id="informationLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0"
+               layoutY="160.0" lineSpacing="5.0" maxHeight="1.7976931348623157E308" maxWidth="200.0"
+               text="infomation" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+            <font>
+                <Font size="14.0"/>
+            </font>
+            <VBox.margin>
+                <Insets bottom="10.0" left="5.0" right="5.0"/>
+            </VBox.margin>
+        </Label>
+    </children>
+</VBox>

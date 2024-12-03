@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hxngxd.ui.controller.book.BookEditController">
+    <children>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutY="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <content>
+                <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" spacing="10.0">
+                    <children>
+                        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="SỬA THÔNG TIN SÁCH">
+                            <font>
+                                <Font name="System Bold" size="28.0" />
+                            </font>
+                        </Label>
+                        <ImageView fx:id="imageView" fitHeight="225.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                        <Button layoutX="300.0" layoutY="624.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#browseImage" prefHeight="40.0" prefWidth="200.0" stylesheets="@style.css" text="THAY BÌA SÁCH" />
+                        <HBox alignment="CENTER" layoutX="276.0" layoutY="257.0" prefWidth="700.0" spacing="15.0">
+                            <children>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Mã sách">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                              <TextField fx:id="bookIdField" disable="true" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="0000">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Tên sách">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                              <TextField fx:id="bookTitleField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Tên sách">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" layoutX="372.0" layoutY="10.0">
+                                    <children>
+                                        <Label text="Năm phát hành">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                              <TextField fx:id="yearField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Năm phát hành">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefWidth="700.0" spacing="15.0">
+                            <children>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Tác giả">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                              <TextField fx:id="authorField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Tác giả">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </TextField>
+                              <ComboBox fx:id="authorMenu" maxWidth="1.7976931348623157E308" minHeight="25.0" prefHeight="25.0" prefWidth="300.0" />
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Thể loại">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                                        <TextField fx:id="genreField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="Thể loại">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                              <ComboBox fx:id="genreMenu" maxWidth="1.7976931348623157E308" minHeight="25.0" prefHeight="25.0" prefWidth="300.0" />
+                                    </children>
+                                </VBox>
+                            </children>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="276.0" layoutY="257.0" prefHeight="60.0" prefWidth="700.0" spacing="15.0">
+                            <children>
+                                <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="Số lượng điều chỉnh bản sao (chỉ thêm)" textAlignment="CENTER">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <VBox.margin>
+                                                <Insets left="7.0" />
+                                            </VBox.margin>
+                                        </Label>
+                                        <TextField fx:id="copiesField" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="40.0" prefWidth="300.0" promptText="0000">
+                                            <font>
+                                                <Font size="16.0" />
+                                            </font>
+                                        </TextField>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT" layoutX="276.0" layoutY="468.0" prefWidth="700.0">
+                            <children>
+                                <Label text="Mô tả">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                    <VBox.margin>
+                                        <Insets left="7.0" />
+                                    </VBox.margin>
+                                </Label>
+                                <TextArea fx:id="descriptionField" maxWidth="1.7976931348623157E308" minHeight="90.0" prefHeight="90.0" prefWidth="300.0" promptText="Mô tả ngắn về sách">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </TextArea>
+                            </children>
+                        </VBox>
+                  <HBox alignment="CENTER" layoutX="292.0" layoutY="432.0" prefWidth="700.0" spacing="15.0">
+                     <children>
+                              <Button maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#goBack" prefHeight="40.0" prefWidth="700.0" stylesheets="@style.css" text="QUAY LẠI" />
+                        <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minHeight="40.0" mnemonicParsing="false" onAction="#save" prefHeight="40.0" prefWidth="700.0" stylesheets="@style.css" text="LƯU" />
+                     </children>
+                  </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="50.0" top="15.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>
